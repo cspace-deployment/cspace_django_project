@@ -6,5 +6,5 @@ imagesLoaded.makeJQueryPlugin( $ );
 var d3 = require('d3');
 var Masonry = require('masonry-layout');
 var Clipboard = require('clipboard');
-var ga = require('./ua.js');
+var xga = require('./ua.js');
 require('./PublicSearch.js');

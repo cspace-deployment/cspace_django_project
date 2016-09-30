@@ -66,7 +66,7 @@ elif [ "${COMMAND}" = "deploy" ]; then
     rm fixtures/*.json
     if [ "$2" = "default" ]; then
         cp config.examples/* config
-        cp cspace_django_site/static/cspace_django_site/images/CollectionToolzSmall.png cspace_django_site/static/cspace_django_site/images/header-logo.png
+        cp client_modules/static_assets/cspace_django_site/images/CollectionToolzSmall.png client_modules/static_assets/cspace_django_site/images/header-logo.png
     else
         if [ ! -d "${CONFIGDIR}/$2" ]; then
             echo "can't deploy tenant $2: ${CONFIGDIR}/$2 does not exist"
@@ -77,7 +77,8 @@ elif [ "${COMMAND}" = "deploy" ]; then
         git pull -v
         cd ${CURRDIR}
         cp ${CONFIGDIR}/$2/* config
-        cp cspace_django_site/static/cspace_django_site/images/header-logo-$2.png cspace_django_site/static/cspace_django_site/images/header-logo.png
+        cp client_modules/static_assets/cspace_django_site/images/header-logo-$2.png client_modules/static_assets/cspace_django_site/images/header-logo.png
+
     fi
     mv config/main.cfg cspace_django_site
     rm fixtures/*.json
