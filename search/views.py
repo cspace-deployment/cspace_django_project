@@ -86,6 +86,10 @@ def retrieveJSON(request):
     else:
         return HttpResponse(json.dumps('no data seen'))
 
+def JSONentry(request): 
+    context = setConstants({}, prmz, request)
+    
+    return render(request, 'json_searchentry.html', context)
 
 def bmapper(request):
     if request.method == 'POST' and request.POST != {}:
