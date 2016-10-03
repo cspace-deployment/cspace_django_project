@@ -4,16 +4,12 @@
 <head>
     <title>{% block title %}{% endblock %}</title>
     {% block scripts %}
-        <script type="text/javascript" src="{% static "cspace_django_site/js/jquery-1.10.0.min.js" %}"></script>
-        <script type="text/javascript" src="{% static "cspace_django_site/js/jquery-ui-1.10.3.custom.min.js" %}"></script>
-        <script type="text/javascript" src="{% static "common/js/PublicSearch.js" %}"></script>
-        <script type="text/javascript" src="{% static "cspace_django_site/js/jquery.tablesorter.min.js" %}"></script>
-        <script type="text/javascript" src="{% static "cspace_django_site/js/ua.js" %}"></script>
+        <script type="text/javascript" src="{% static "app.bundle.js" %}"></script>
         <script type="text/javascript">
             var trackingid = '{{ UA_TRACKING_ID }}';
             // if there is a tracker id, go ahead and create a tracking object...
             if (trackingid != '') {
-                ga('create', trackingid, 'auto');
+                xga('create', trackingid, 'auto', true);
                 xga('send', 'pageview', undefined, trackingid);
             }
         </script>
@@ -72,4 +68,6 @@
 <!-- END Container -->
 
 </body>
+{% block footerScript %}
+{% endblock %}
 </html>

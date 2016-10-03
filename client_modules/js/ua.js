@@ -5,6 +5,7 @@
  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
+
 function xga(method, id, obj, trackerid) {
     // if there is a tracker id, go ahead and send something to UA...
     if (trackerid != '') {
@@ -15,3 +16,5 @@ function xga(method, id, obj, trackerid) {
        }
     }
 }
+
+module.exports = xga

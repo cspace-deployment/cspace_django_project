@@ -1,0 +1,103 @@
+{% extends "cspace_django_site/base_site.html" %}
+{% load i18n admin_static %}
+{% load staticfiles %}
+
+{% block scripts %}
+  <script type="text/javascript" src="{% static "app.bundle.js" %}"></script>
+  <script type="text/javascript">
+      var trackingid = '{{ UA_TRACKING_ID }}';
+      // if there is a tracker id, go ahead and create a tracking object...
+      if (trackingid != '') {
+          xga('create', trackingid, 'auto', true);
+          xga('send', 'pageview', undefined, trackingid);
+      }
+  </script>
+  <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
+  <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+  <script src="https://unpkg.com/babel-core@5.8.38/browser.min.js"></script>
+  <script src="https://unpkg.com/jquery@3.1.0/dist/jquery.min.js"></script>
+  <!-- // <script type="text/javascript" src="{% static "searchResults.jsx" %}"></script> -->
+{% endblock %}
+
+
+{% block content %}
+  <div id="searchResults">
+  </div>
+{% endblock %}
+
+{% block footerScript %}
+
+<script type="text/babel">
+
+  var ResultRow = React.createClass({
+    render: function() {
+      return (
+        <tr className="searchResult">
+          <td><input type="checkbox" className="sel-item" name="item-0" value="51f8e290-1a1e-481b-b99c-f8509f98f605" checked=""/></td>
+          <td><a className="facet-item" data-facettype="accessionnumber" data-sort="2000.0261">2000.0261</a></td>
+          <td><a className="facet-item" data-facettype="determination">Viburnum trilobum Marshall</a></td>
+          <td><a className="facet-item" data-facettype="family">ADOXACEAE</a></td>
+          <td><a className="facet-item" data-facettype="gardenlocation"></a></td>
+          <td><a className="facet-item" data-facettype="locality">Maine, U.S.A., North America</a></td>
+          <td><a className="facet-item" data-facettype="collector">Clark, T.</a></td>
+          <td><a className="facet-item" data-facettype="collectornumber">s.n.</a></td>
+          <td><a className="facet-item" data-facettype="rare">no</a></td>
+          <td><a className="facet-item" data-facettype="deadflag">yes</a></td>
+          <td><a className="facet-item" data-facettype="flowercolor"></a></td>
+        </tr>
+      )
+    }
+  });
+
+  var SearchResults = React.createClass({
+    getInitialState: function() {
+      return {data: []};
+    },
+    componentDidMount: function() {
+      $.ajax({
+        url: this.props.url,
+        dataType: 'json', 
+        cache: false,
+        success: function(data) {
+          this.setState({data: data});
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.error(this.props.url, status, err.toString());
+        }.bind(this)
+      });
+    },
+    render: function() {
+      console.log(this.state.data.items);
+      return (
+        <div id="results">
+          <table id="resultsListing" className="tablesorter-blue">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Accession Number</th>
+                <th>Scientific Name</th>
+                <th>Family</th>
+                <th>Garden Location</th>
+                <th>Geographic Place Name</th>
+                <th>Collector</th>
+                <th>Collector Number</th>
+                <th>Rare?</th>
+                <th>Dead?</th>
+                <th>Flower Color</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ResultRow />
+            </tbody>
+          </table>
+        </div>
+      );
+    }
+  });
+
+  ReactDOM.render(
+    <SearchResults url="/search/json/?displayType=list&flowercolor=red%20white&flowercolor_qualifier=keyword&maxresults=100&start=1&family=SAXIFRAGACEAE" />,
+    document.getElementById('searchResults')
+  );
+</script>  
+{% endblock %}
