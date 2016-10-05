@@ -9,8 +9,8 @@
             var trackingid = '{{ UA_TRACKING_ID }}';
             // if there is a tracker id, go ahead and create a tracking object...
             if (trackingid != '') {
-                xga('create', trackingid, 'auto', true);
-                xga('send', 'pageview', undefined, trackingid);
+                webappstuff.xga('create', trackingid, 'auto', true);
+                webappstuff.xga('send', 'pageview', undefined, trackingid);
             }
         </script>
     {% endblock %}
@@ -68,4 +68,6 @@
 <!-- END Container -->
 
 </body>
+{% block footerScript %}
+{% endblock %}
 </html>

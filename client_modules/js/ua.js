@@ -6,7 +6,7 @@
  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
 
-function xga(method, id, obj, trackerid) {
+module.exports = function xga(method, id, obj, trackerid) {
     // if there is a tracker id, go ahead and send something to UA...
     if (trackerid != '') {
        if (typeof obj === undefined) {
@@ -16,5 +16,4 @@ function xga(method, id, obj, trackerid) {
        }
     }
 }
-
-module.exports = xga
+;
