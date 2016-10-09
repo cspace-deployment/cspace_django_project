@@ -497,6 +497,7 @@ def doSearch(context, prmz, request):
             if p in ['csrfmiddlewaretoken', 'displayType', 'resultsOnly', 'maxresults', 'url', 'querystring', 'pane',
                      'pixonly', 'locsonly', 'acceptterms', 'submit', 'start', 'sortkey', 'count', 'summarizeon',
                      'summarize', 'summaryfields', 'lastpage']: continue
+            if p == '_': continue
             if '_qualifier' in p: continue
             if 'select-' in p: continue  # skip select control for map markers
             if 'include-' in p: continue  # skip form values used in statistics
