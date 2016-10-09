@@ -2,12 +2,6 @@
 {% load i18n admin_static %}
 {% load staticfiles %}
 
-{% block extrascript %}
-    <!-- uses jQuery masonry http://masonry.desandro.com/-->
-    <script src="{% static 'cspace_django_site/js/masonry.pkgd.min.js' %}"></script>
-    <script src="{% static 'cspace_django_site/js/imagesloaded.pkgd.min.js' %}"></script>
-{% endblock %}
-
 {% block content %}
     {% include "toggled.html" %}
     {% if error %}
