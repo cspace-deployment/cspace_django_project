@@ -3,7 +3,7 @@
       {% if count > 0 %}
         <div style="flex: 1 1 auto; padding-right: 10px;">
           <h2 style="display: inline">{{ count }} item{{ count|pluralize }} found.</h2>
-          {# {% if recordlimit %} #}<!-- <span style="color: red;">{{ recordlimit }}</span> -->{# {% endif %} #}<!-- <br/> -->
+          {% if recordlimit %}<span style="color: red;">{{ recordlimit }}</span>{% endif %}<br/>
           {% if pagesummary %}{{ pagesummary }}{% endif %}
         </div>
       {% else %}
