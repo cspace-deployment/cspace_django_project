@@ -18,6 +18,10 @@
             {% endfor %}
             <span class="expandInfo">||</span>
         {% endif %}
+        {% if extra_nav %}
+          <a href="{{ extra_nav.href }}" id="{{ extra_nav.id }}" class="expandInfo">{{ extra_nav.name }}</a>
+          <span class="expandInfo">||</span>
+        {% endif %}
         {% include "cspace_django_site/loginBtn.html" with loginBtnNext="search/" %}
     </div>
 {% endblock %}
