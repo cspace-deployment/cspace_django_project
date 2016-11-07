@@ -5,6 +5,6 @@ var imagesLoaded = require('../../node_modules/imagesloaded/imagesloaded');
 imagesLoaded.makeJQueryPlugin( $ );
 var d3 = require('d3');
 var Masonry = require('masonry-layout');
-var Clipboard = require('clipboard');
-var xga = require('./ua.js');
+require('expose?xga!./ua.js');
+require("expose?$!jquery");
 require('./PublicSearch.js');

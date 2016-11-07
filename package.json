@@ -15,6 +15,7 @@
     "babel-loader": "^6.2.5",
     "clipboard": "^1.5.12",
     "d3": "^4.2.6",
+    "expose-loader": "^0.7.1",
     "imagesloaded": "^4.1.1",
     "jquery": "^3.1.1",
     "jquery-ui": "^1.12.1",

@@ -1,3 +1,5 @@
+var Clipboard = require('clipboard');
+
 function getFormData(formId) {
     //create requestObj from search form
     var searchForm = $(formId).find(':input').not($('button'));
@@ -96,6 +98,7 @@ $(document).ready(function () {
     //     chooseSlideDirection('#searchfieldsTarget');
     // });
 
+    new Clipboard('.cbbtn');
 
     $('#next').click(function() {
         var $n = $("#start");
