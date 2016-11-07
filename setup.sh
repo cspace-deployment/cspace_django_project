@@ -29,8 +29,8 @@ CURRDIR=`pwd`
 CONFIGDIR=~/django_example_config
 
 if [ "${COMMAND}" = "disable" ]; then
-    perl -i -pe "s/('$WEBAPP')/#\1/" cspace_django_site/installed_apps.py
-    perl -i -pe "s/(url)/#\1/ if /$WEBAPP/" cspace_django_site/urls.py
+    perl -i -pe "s/('$WEBAPP')/#* *\1/" cspace_django_site/installed_apps.py
+    perl -i -pe "s/(url)/#* *\1/ if /$WEBAPP/" cspace_django_site/urls.py
     echo "disabled $WEBAPP"
 elif [ "${COMMAND}" = "enable" ]; then
     perl -i -pe "s/#* *('$WEBAPP')/\1/" cspace_django_site/installed_apps.py
@@ -43,6 +43,11 @@ elif [ "${COMMAND}" = "show" ]; then
     echo -e "from cspace_django_site.installed_apps import INSTALLED_APPS\nfor i in INSTALLED_APPS: print i" | python
     echo
 elif [ "${COMMAND}" = "configure" ]; then
+    if [ ! -d "cspace_django_site/extra_$2.py" ]; then
+        echo "can't configure '$2': use 'pycharm', 'dev', or 'prod'"
+        echo
+        exit
+    fi
     cp cspace_django_site/extra_$2.py cspace_django_site/extra_settings.py
     # install and build the javascript framework
     npm install
