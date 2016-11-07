@@ -11,7 +11,8 @@ try:
     from extra_settings import *
 except ImportError, exp:
     print 'you must configure one of the extra_*.py settings files as extra_settings.py!'
-    exit(0)
+
+from installed_apps import INSTALLED_APPS
 
 # DEBUG, TEMPLATE_DEBUG, and ALLOWED_HOSTS and now set based on configuration type in extra_*.py
 # set them here only if you want to override settings there...

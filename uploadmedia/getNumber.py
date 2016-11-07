@@ -1,4 +1,4 @@
-from re import compile
+from re import compile, sub
 
 def getNumber(filename,institution):
     objectnumberpattern = compile('([a-z]+)\.([a-zA-Z0-9]+)')
@@ -34,5 +34,5 @@ def getNumber(filename,institution):
         objectnumber = filename
         objectnumber = objectnumber.split('_')[0]
     # the following is a last ditch attempt to get an object number from a filename...
-    objectnumber = objectnumber.replace('.JPG', '').replace('.jpg', '').replace('.TIF', '').replace('.tif', '')
+    objectnumber = sub(r'(?i).(jpe?g|tiff?|png)$','',objectnumber)
     return filename, objectnumber, imagenumber

@@ -29,22 +29,25 @@ CURRDIR=`pwd`
 CONFIGDIR=~/django_example_config
 
 if [ "${COMMAND}" = "disable" ]; then
-    perl -i -pe "s/('$WEBAPP')/#\1/" cspace_django_site/extra_settings.py
+    perl -i -pe "s/('$WEBAPP')/#\1/" cspace_django_site/installed_apps.py
     perl -i -pe "s/(url)/#\1/ if /$WEBAPP/" cspace_django_site/urls.py
     echo "disabled $WEBAPP"
 elif [ "${COMMAND}" = "enable" ]; then
-    perl -i -pe "s/#* *('$WEBAPP')/\1/" cspace_django_site/extra_settings.py
+    perl -i -pe "s/#* *('$WEBAPP')/\1/" cspace_django_site/installed_apps.py
     perl -i -pe "s/#* *(url)/\1/ if /$WEBAPP/" cspace_django_site/urls.py
     echo "enabled $WEBAPP"
 elif [ "${COMMAND}" = "show" ]; then
     echo
     echo "Installed apps:"
     echo
-    echo -e "from cspace_django_site.extra_settings import INSTALLED_APPS\nfor i in INSTALLED_APPS: print i" | python
+    echo -e "from cspace_django_site.installed_apps import INSTALLED_APPS\nfor i in INSTALLED_APPS: print i" | python
     echo
 elif [ "${COMMAND}" = "configure" ]; then
     cp cspace_django_site/extra_$2.py cspace_django_site/extra_settings.py
-    cp cspace_django_site/all_urls.py cspace_django_site/urls.py
+    # install and build the javascript framework
+    npm install
+    npm build
+    ./node_modules/.bin/eslint client_modules/js/app.js
     echo
     echo "*************************************************************************************************"
     echo "OK, \"$2\" is configured. Now run ./setup.sh deploy <tenant> to set up a particular tenant,"
@@ -60,12 +63,17 @@ elif [ "${COMMAND}" = "deploy" ]; then
         echo
         exit
     fi
+    # clean out the config directory of these four types of files.
     rm config/*.cfg
     rm config/*.csv
     rm config/*.xml
     rm fixtures/*.json
     if [ "$2" = "default" ]; then
-        cp config.examples/* config
+        cp config.examples/*.cfg config
+        cp config.examples/*.csv config
+        cp config.examples/*.json fixtures
+        cp config.examples/project_urls.py cspace_django_site/urls.py
+        cp config.examples/project_apps.py cspace_django_site/installed_apps.py
         cp client_modules/static_assets/cspace_django_site/images/CollectionToolzSmall.png client_modules/static_assets/cspace_django_site/images/header-logo.png
     else
         if [ ! -d "${CONFIGDIR}/$2" ]; then
@@ -76,18 +84,22 @@ elif [ "${COMMAND}" = "deploy" ]; then
         cd ${CONFIGDIR}
         git pull -v
         cd ${CURRDIR}
-        cp ${CONFIGDIR}/$2/* config
+        cp ${CONFIGDIR}/$2/config/* config
+        cp ${CONFIGDIR}/$2/fixtures/* fixtures
+        cp -r ${CONFIGDIR}/$2/apps/* .
+        cp ${CONFIGDIR}/$2/project_urls.py cspace_django_site/urls.py
+        cp ${CONFIGDIR}/$2/project_apps.py cspace_django_site/installed_apps.py
         cp client_modules/static_assets/cspace_django_site/images/header-logo-$2.png client_modules/static_assets/cspace_django_site/images/header-logo.png
 
     fi
     mv config/main.cfg cspace_django_site
-    rm fixtures/*.json
-    mv config/*.json fixtures
     # just to be sure, we start over with this...
     rm db.sqlite3
     python manage.py syncdb --noinput
     # python manage.py migrate
     python manage.py loaddata fixtures/*.json
+    # do this just in case the javascript has been tweaked
+    ./node_modules/.bin/webpack
     python manage.py collectstatic --noinput
     echo
     echo "*************************************************************************************************"
@@ -96,9 +108,6 @@ elif [ "${COMMAND}" = "deploy" ]; then
     echo "*************************************************************************************************"
     echo
 elif [ "${COMMAND}" = "redeploy" ]; then
-    cd ${CONFIGDIR}
-    git pull -v
-    cd ${CURRDIR}
     git checkout master
     git pull -v
     TAG=`git tag | sort -k2 -t"-" -rn | head -1`
@@ -106,10 +115,12 @@ elif [ "${COMMAND}" = "redeploy" ]; then
     echo ">>>> deploying $TAG"
     echo "*************************************************************************************************"
     git checkout ${TAG}
+    # do this just in case the javascript has been tweaked
+    ./node_modules/.bin/webpack
     python manage.py collectstatic --noinput
     echo
     echo "*************************************************************************************************"
-    echo "restart apache to pick up changes"
+    echo "please restart apache to pick up changes"
     echo "*************************************************************************************************"
     echo
 else

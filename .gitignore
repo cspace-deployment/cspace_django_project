@@ -11,7 +11,10 @@ config/*.xml
 fixtures/*.json
 *.DS_Store
 .idea
+cspace_django_site/project_urls.py
 cspace_django_site/urls.py
+cspace_django_site/project_apps.py
+cspace_django_site/installed_apps.py
 cspace_django_site/secret_key.py
 cspace_django_site/extra_settings.py
 cspace_django_site/main.cfg
