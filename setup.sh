@@ -43,7 +43,7 @@ elif [ "${COMMAND}" = "show" ]; then
     echo -e "from cspace_django_site.installed_apps import INSTALLED_APPS\nfor i in INSTALLED_APPS: print i" | python
     echo
 elif [ "${COMMAND}" = "configure" ]; then
-    if [ ! -d "cspace_django_site/extra_$2.py" ]; then
+    if [ ! -f "cspace_django_site/extra_$2.py" ]; then
         echo "can't configure '$2': use 'pycharm', 'dev', or 'prod'"
         echo
         exit
