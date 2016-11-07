@@ -1,7 +1,7 @@
 ## cspace-django-project
 
 This Django project supports easy access to various CollectionSpace services. To preview
-several deployments of this project, visit: https://webapps.cspace.berkeley.edu.
+several deployments of this project at UC Berkeley, visit: https://webapps.cspace.berkeley.edu.
 
 The following components are provided with this project:
 
@@ -18,8 +18,8 @@ The following components are provided with this project:
 #### Helper Applications (needed by other apps, e.g. search)
 
 * suggest - provides term suggestions (GET request, returns JSON)
-* suggestpostgres - provides term suggestions from via Postgres queries
-* suggestsolr- provides term suggestions via Solr facet queries
+* suggestpostgres - provides term suggestions from database via Postgres queries
+* suggestsolr - provides term suggestions from Solr core via Solr facet queries
 * landing - a "landing page" to ease navigation between apps
 * mobileesp - mobile device support; only slightly used so far
 
@@ -55,6 +55,7 @@ cd cspace_django_project
 # other code managers such as homebrew can help with this too.
 pip install -r pycharm_requirements.txt
 # configure Django for your environment. 'pycharm' is the least demanding.
+# note that you'll need npm and node installed on your system.
 ./setup.sh configure pycharm
 # deploy a tenant. 'default' points to 'nightly.collectionspace.org'. otherwise, roll your own.
 ./setup.sh deploy default
@@ -69,22 +70,21 @@ http://localhost:8000
 
 ##### Caveats and General Observations
 
-* As illustrated in the Quick Start Guide, the process to deploy this Django project is pretty conventional: get code, resolve system dependencies, configure, and start 'er up. At the moment, the project does not use any of the popular deployment systems out there, e.g. Kubernetes or Docker. Instead, you have to do it by hand, but there are helpers!
+* As illustrated in the Quick Start Guide, the process to deploy this Django project is pretty conventional: get code, resolve system dependencies, configure, and start 'er up. At the moment, the project does not use any of the popular deployment systems out there, e.g. Kubernetes or Docker. Instead, you have to do it "by hand", but there are helpers!
 
 * For starters, you'll need to set up Django and install some Python modules (see the various `*_requirements.txt` files)
 
-* The project does run in a variety of different environments.
+* The project does run in a variety of different environments: we've got it working with RedHat (RHEL6, Ubuntu, and MacOS). There are some version sensitivities, mostly but probably not completely captured in the various `*_requirements.txt` files.
 
-* Next you'll need to `configure` your project for a particular target environment: `prod`, `dev`, or `pycharm`.  The first two option are of course intended to support running the webapps in either of two server environments; currently, they are suitable for OSX, RedHat, and Ubuntu deployments.  As a developer, you'll probably want to use the `pycharm` target, which is only a little different from the other two: it does not deploy the image caching option, and it turns off Universal Analytics.
+* Next you'll need to `configure` your project for a particular target environment: `prod`, `dev`, or `pycharm`.  The first two options are of course intended to support running the webapps in either of two server environments.  As a developer, you'll probably want to use the `pycharm` target, which is only a little different from the other two: it does not deploy the image caching option, and it turns off Universal Analytics.
 
 * You need to have a CollectionSpace server to point to. Even before you start playing with your own, you should consider deploying the *Sample Deployment*, which points to the development server at `nightly.collectionspace.org`.  This setup is quite easy to get working -- few dependencies, and all the assumptions about configuration are made for you.
 
 * So -- `configuration` is used here to talk about the setup required for different environments, and `deployment` is used to refer setting up the project for the particular CollectSpace tenant (server) you will be using. Got it?
 
-* A helper script called `setup.sh` is provided to help with all this. It is described in some detail below. You should use it, though it is not required. `setup.sh` remembers to perform all the little Django details required when setting up and maintaining the project, but note there may be times when you'll need to go around it, at least in development.
+* A helper script called `setup.sh` is provided to help with all this. It is described in some detail below. You should use it -- there are lots of details in the setup process! Strictly speaking, thought, it is not required -- you can putter around with the files yourself if you know what you're doing. `setup.sh` remembers to perform all the little Django details required when setting up and maintaining the project, but note there may be times when you'll need to go around it, at least in development.
 
-* This project comes with **sample** configuration files that point to the development server at `nightly.collectionspace.org`. These are
-located in `config.examples/` and you will need to copy them to the working directory `config/` in order to make the apps work. The files in `config/` are 'git-ignored'. When you start working with a real deployment, you'll need to modify these files to point to your real CollectSpace server, and you'll need to take care of the files yourself. 
+* This project comes with **sample** configuration files that point to the development server at `nightly.collectionspace.org`. These are located in `config.examples/`, and you can deploy them by typing './setup.sh deploy default' on the command line when in the `cspace_django_project` directory. NB: the files in `config/` are 'git-ignored'. For your deployment, you'll need to modify these files for your deployment: to point to your real CollectSpace server, your logo, etc. And you'll need to keep track of your versions. We suggest making your own GitHub or other repo for your files; if you model the structure of the UCB configuration repo (e.g. https://github.com/cspace-deployment/django_example_config), you'll be able to use the `deploy` option in `setup.sh` to manage deployment of your own webapps.
 
 * So. To summarize. Almost all webapps require a config file, some require two. Therefore, the `config` will be quite full of config files for the varioius apps. An example configuration file for each webapp is included, but you *will* eventually need to make your own. If the webapp is called `webapp`, the corresponding configuration file should be called `webapp.cfg` unless there is a good reason not to.
 
@@ -126,9 +126,9 @@ You are now ready to configure your environment and deploy your tenant-specific 
 
 ##### Using setup.sh
 
-There is no `make` or `mvn` build process for Django webapps, and the deployment process consists of placing the code where it can be executed and customizing the parameters used for your particular case (which means editing configuration files by hand).
+There is no `make` or `mvn` build process for Django webapps, and the deployment process consists of placing the code where it can be executed and customizing the parameters used for your particular case, which means editing configuration files by hand, or using ones provided for you (if you are working with an existing CSpace deployment, e.g. at UCB).
 
-Instead there is a shell script called `setup.sh` which does the few steps required to make your webapps go.
+Instead there is a shell script called `setup.sh` which does the steps required to make your webapps go.
 
 ```bash
 $ ./setup.sh 
@@ -164,19 +164,21 @@ to run them.
 # OPTION 2: deploy one of the UCB configurations
 # to deploy a specific tetant, you'll want to clone the repo with all the
 # example config files out side of this repo, i.e. in ~/django_example_config
-cd .. ; git clone https://github.com/cspace-deployment/django_example_project.git
+cd ; git clone https://github.com/cspace-deployment/django_example_project.git
 cd ~/PycharmProjects/my_test_project
 ./setup.sh deploy ucjeps
 # this will blow away whatever tenant was deployed previously and setup the UCJEPS tenant.
 # now do the initial Django magic to initialize the project (configure options are: prod, dev, pycharm)
 ```
 
-**NB: `setup.sh` expect this repo, with this name, to be in your home directory!**
+**NB: `setup.sh` expects this repo, with this exact name, to be in your home directory!**
 
-**NB: While most of the parameters for tenants are set up for Production, not all are. At any rate, you will need to make sure that the configuration files in `config` are correct.**
+If your configuration directory is somewhere else or has a different name, edit the `CONFIGDIR` variable in `setup.sh` to point to yours.
+
+**NB: While most of the parameters for tenants are set up for Production, not all are. At any rate, you will need to make sure that the configuration files in `config` are indeed correct.**
 
 As noted above you can disable any apps that you are not interested in. For example, if your collection does not have images
-you will not be interested in any of the webapps named image*. It is a simple matter to disable these, and you can
+you will not be interested in any of the webapps named image\*. It is a simple matter to disable these, and you can
 (re-)enable any time if you like. The process is illustrated below. If you don't, they will appear in the landing page
 and you will need to configure them even if they won't really do anything.
 
@@ -201,15 +203,14 @@ To see which apps are enabled:
 
 NB: this will show *all* apps, including the various helper apps, Django admin apps, etc.
 
-(all the enable/disable functionality does is to comment out these webapps in urls.py and settings.py; you could just
-do it yourself by hand.)
+(all the enable/disable functionality does is to comment out these webapps in `urls.py` and `installed_apps.py`; you *could* just do it yourself by hand.)
 
 ##### Configuration files
 
 Most webapps have an associated configuration file (with extension .cfg). The `search` apps also require a "field
 definitions file" which describes all the fields used in search and display and this file is a carefully constructed
 .csv file (tabs, no encapsulation).  All of these files need to be placed in the config/ directory and edited to point
-to the target CSpace server. Lots of other defaults are set in these files as well. The files are in a (YAML-like) format that is consumed by the Python `ConfigParser' module.
+to the target CSpace server. Lots of other defaults are set in these files as well. The files are in a (YAML-like) format that is consumed by the Python `ConfigParser` module.
 
 E.g.
 
@@ -224,11 +225,9 @@ MAXRESULTS          = 100
 TITLE               = Imaginator
 ```
 
-You should make a version of each of the config files that you'll need, with values appropriate to your specif deployment and tenant.
+You should make a version of each of the config files that you'll need, with values appropriate to your specific deployment and tenant.
 
-The sample config files point to `nightly.collectionspace.org. These provide some
-limited functionality: `simplesearch` works, as does the single brain-damaged `iReport`. The `service` webapp works, but note it has
-no config file: it accesses the server defined in the project's configuration for authentication in `main.cfg`.
+The sample config files included with the project in `config.examples` point to `nightly.collectionspace.org`. These provide some limited functionality: `simplesearch` works, as does the single brain-damaged `iReport` that comes with CollectionSpace proper. The `service` webapp works, but note it has no config file: it accesses the server defined in the project's  authentication configuration in `main.cfg`.
 
 ### Starting and Stopping Servers
 
@@ -312,7 +311,7 @@ Visit the base URL (locahost:8000 in both PyCharm and default dev server, who kn
 
 You will be rewarded with a landing page. Or more likely, you will have failed to meet all the setup conditions:
 
-* The BMU and imageserver need to have directories created and accessible to work.
+* The BMU and imageserver need to have directories created and accessible to work. If these are not there, the system will try to put files in `/tmp`.
 * The needed config files better exist and have all the parms specified that are needed for the app.
 * The additional module requirements (e.g. psycopg2 for Postgres) need to be met.
 
