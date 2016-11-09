@@ -67,6 +67,25 @@ def retrieveResults(request):
             loginfo(logger, 'results.%s' % context['displayType'], context, request)
             return render(request, 'searchResults.html', context)
 
+def facetJSON(request):
+    if request.method == 'GET' and request.GET != {}:
+        requestObject = dict(request.GET.iteritems())
+        form = forms.Form(requestObject)
+
+        if form.is_valid():
+            context = {'searchValues': requestObject}
+            context = doSearch(context, prmz, request)
+
+            loginfo(logger, 'results.%s' % context['displayType'], context, request)
+            #del context['FIELDS']
+            #del context['facets']
+            if not 'items' in context:
+                return HttpResponse(json.dumps('error'))
+            else:
+                return HttpResponse(json.dumps({'facets': context['facets'],'fields': context['fields']}))
+    else:
+        return HttpResponse(json.dumps('no data seen'))
+
 def retrieveJSON(request):
     if request.method == 'GET' and request.GET != {}:
         requestObject = dict(request.GET.iteritems())
