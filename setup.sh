@@ -128,6 +128,21 @@ elif [ "${COMMAND}" = "redeploy" ]; then
     echo "please restart apache to pick up changes"
     echo "*************************************************************************************************"
     echo
+elif [ "${COMMAND}" = "refresh" ]; then
+    cd ${CONFIGDIR}
+    git pull -v
+    cd ${CURRDIR}
+    cp -r ${CONFIGDIR}/$2/apps/* .
+    # do this just in case the javascript has been tweaked
+    git pull -v
+    ./node_modules/.bin/webpack
+    python manage.py collectstatic --noinput
+    echo
+    echo "*************************************************************************************************"
+    echo "code refreshed from GitHub; no changes to configuration or fixtures though"
+    echo "please restart apache to pick up changes"
+    echo "*************************************************************************************************"
+    echo
 else
     echo "${COMMAND} is not a recognized command."
 fi
