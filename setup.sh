@@ -110,6 +110,7 @@ elif [ "${COMMAND}" = "deploy" ]; then
     echo "*************************************************************************************************"
     echo "Don't forget to check cspace_django_site/main.cfg if necessary and the rest of the"
     echo "configuration files in config/ (these are .cfg and .csv files)"
+    echo "please restart apache to pick up changes"
     echo "*************************************************************************************************"
     echo
 elif [ "${COMMAND}" = "redeploy" ]; then
@@ -133,14 +134,17 @@ elif [ "${COMMAND}" = "refresh" ]; then
     git pull -v
     cd ${CURRDIR}
     cp -r ${CONFIGDIR}/$2/apps/* .
-    # do this just in case the javascript has been tweaked
+    # get rid of any README that might have come over with the cp of the apps.
+    rm -f README
+    # the underlying cspace_django_project code should be up to date as well...
     git pull -v
+    # do this just in case the javascript has been tweaked
     ./node_modules/.bin/webpack
     python manage.py collectstatic --noinput
     echo
     echo "*************************************************************************************************"
-    echo "code refreshed from GitHub; no changes to configuration or fixtures though"
-    echo "please restart apache to pick up changes"
+    echo "code (only) refreshed from GitHub; no changes to configuration or fixtures though"
+    echo "please restart apache to pick up changes!"
     echo "*************************************************************************************************"
     echo
 else
