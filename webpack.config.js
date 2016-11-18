@@ -8,10 +8,13 @@ const library = 'webappstuff';
 const isProduction = true;
 
 const config = {
-    entry: './client_modules/js/app.js',
+    entry: {
+      app: './client_modules/js/app.js',
+      toolbox: './client_modules/js/toolbox.jsx'
+    },
     output: {
         path: './webpack_dist',
-        filename: 'app.bundle.js',
+        filename: '[name].bundle.js',
         library: library,
         libraryTarget: 'umd'
     },
