@@ -10,7 +10,7 @@ const isProduction = true;
 const config = {
     entry: {
       app: './client_modules/js/app.js',
-      toolbox: './client_modules/js/toolbox.jsx'
+      toolbox: './client_modules/js/toolbox-index.js'
     },
     output: {
         path: './webpack_dist',

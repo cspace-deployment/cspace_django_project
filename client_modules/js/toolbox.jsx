@@ -5,6 +5,10 @@
 // class ResultsList extends React.Component {}
 // class ResultsForm extends React.Component {}
 
+var React = require('react');
+var ReactDOM = require('react-dom');
+var $ = require("expose?$!jquery");
+
 class TextInput extends React.Component {
   constructor(props) {
     super(props);
@@ -313,18 +317,32 @@ class ResultsForm extends React.Component {
       row.cells = itemValues;
       items.push(row);
     }
-    console.log(items);
+
+    var submission = {
+      items: items,
+      state: 'update',
+      appname: this.props.appName,
+      csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+    };
+
+    $.post({
+      url: "/toolbox/json/",
+      data: submission,
+      dataType: 'json',
+      cache: false,
+      success: function(data) {
+        console.log(data);
+        // this.setState({resultlayout: data});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+
     // console.log($(event.target).serializeArray());
   }
   render() {
     var data = this.props.data;
-    // var data = {
-    //       "items": [["5-13875", "Mask", "1", "Nigeria; Igbo", ["5.3 Objects relating to the Secular and Quasi-religious Rites, Pageants, and Drama"], ["Igbo", "Igbo Too"]], ["2-4599", "Mask", "1", "Alaska", ["5.3 Objects relating to the Secular and Quasi-religious Rites, Pageants, and Drama"], ["Alaskan Eskimo"]], ["3-15571", "Mask", "1", "Coban, Guatemala", "", ""], ["3-28558", "Mask", "1", "", ["5.3 Objects relating to the Secular and Quasi-religious Rites, Pageants, and Drama"], ""], ["5-15547", "Mask", "1", "Tanzania; Bantu, Makonde", ["5.0 Use not specified (Ritual, Pageantry, and Recreation)"], ["Bantu"]], ["3-29175", "mask", "1", "", "", ""], ["2-21406", "Mask", "1", "Alaska; Seward Peninsula; Lopp Lagoon", "", ""], ["18-1652", "mask", "1", "", "", ""], ["16-18199", "Mask", "1", "", "", ""], ["2-66926", "Mask", "1", "Canada; British Columbia", "", ["Kwakwaka'wakw"]], ["5-10200", "mask", "1", "Africa; Nigeria; Igana; Yoruba", ["5.3 Objects relating to the Secular and Quasi-religious Rites, Pageants, and Drama"], ["Yoruba"]], ["5-16206", "mask", "1", "Africa; Congo (Ba Lega) Wa Rega  ", "", ["Ba Lega"]], ["9-10924", "mask", "1", "India, Rajasthan, Udaipur district", ["5.3 Objects relating to the Secular and Quasi-religious Rites, Pageants, and Drama"], ["Indian"]], ["2-2863", "Mask", "1", "Alaska; Lower Yukon", "", ["Alaskan Eskimo"]], ["3-30481", "mask", "1", "", "", ""], ["5-16020", "Mask", "1", "Nigeria; Udi; Ibo", ["5.3 Objects relating to the Secular and Quasi-religious Rites, Pageants, and Drama"], ["Ibo"]], ["9-18265", "mask", "1", "", ["5.1 Religion and Divination: Objects and garb associated with practices reflecting submission, devotion, obedience, and service to supernatural agencies"], ""], ["11-37310", "mask", "1", "", "", ["Abelam"]], ["2-10044", "Mask", "1", "; Northwest Coast", "", ["Nootka"]], ["5-15579", "mask", "1", "Tanzania; Bantu, Makonde", ["5.0 Use not specified (Ritual, Pageantry, and Recreation)"], ["Bantu"]], ["5-3298", "Mask", "1", "Africa; Mali; Senufo Tribe", "", ["Senufo"]], ["2-40812", "Mask", "1", "Alaska; Brooks Range; Anaktuvuk Pass", "", ["Nunamiut Eskimo"]], ["2-30963", "Mask", "1", "Alaska; Point Hope", "", ["Alaskan Eskimo"]], ["5-3319", "Mask", "1", "Africa; Ivory Coast; Guro tribe", "", ["Guro"]], ["5-16170a", "mask", "1", "", "", ["Yoruba"]], ["11-37699", "mask", "1", "", ["5.1 Religion and Divination: Objects and garb associated with practices reflecting submission, devotion, obedience, and service to supernatural agencies"], ["@New Guinea (Papua Island)"]], ["5-15789", "mask", "1", "West Africa; Ivory Coast; Guro", ["5.7 Gifts, Novelties, Models, \"Fakes,\" and Reproductions (excluding currency) and Commemorative Medals"], ["Guro"]], ["5-13480", "Mask", "1", "West Africa, Mali/ Ivory Coast/ Upper Volta, Senufo;  Collected at Abidian", ["5.3 Objects relating to the Secular and Quasi-religious Rites, Pageants, and Drama"], ["Senufo"]], ["9-2030", "mask", "2", "", ["5.7 Gifts, Novelties, Models, \"Fakes,\" and Reproductions (excluding currency) and Commemorative Medals"], ""], ["5-16176", "mask", "1", "West Africa; Nigeria; Ibo", "", ["Ibo", "Igbo"]], ["11-42491", "mask", "1", "", ["5.1 Religion and Divination: Objects and garb associated with practices reflecting submission, devotion, obedience, and service to supernatural agencies"], ["@New Guinea (Papua Island)"]], ["5-13864", "Mask", "1", "West Africa, Liberia, Bassa;  Purchased from E.M. Buchholz", ["5.3 Objects relating to the Secular and Quasi-religious Rites, Pageants, and Drama"], ["Bassa"]], ["5-16220", "mask", "1", "West Africa; Nigeria; Yoruba", "", ["Yoruba"]], ["2-6476", "Mask", "1", "Alaska; St. Michael", ["5.3 Objects relating to the Secular and Quasi-religious Rites, Pageants, and Drama"], ["Alaskan Eskimo"]], ["2-6473", "Mask", "1", "Alaska; Pastolik", ["5.3 Objects relating to the Secular and Quasi-religious Rites, Pageants, and Drama"], ["Alaskan Eskimo"]], ["5-13574", "Mask", "1", "Liberia/Ivory Coast; Dan (Gio) attr. (WRB 1978)", ["5.1 Religion and Divination: Objects and garb associated with practices reflecting submission, devotion, obedience, and service to supernatural agencies"], ["Dan"]], ["2-59112", "Mask", "1", "Alaska; Brooks Range; Anaktuvuk Pass", "", ["Nunamiut Eskimo"]], ["5-3373", "Mask", "1", "Africa; Ivory Coast; Nuclear Mande; Mau.", "", ["Nuclear Mande"]], ["18-1516", "mask", "1", "", ["5.7 Gifts, Novelties, Models, \"Fakes,\" and Reproductions (excluding currency) and Commemorative Medals"], ["Malaysian"]], ["5-8651", "Mask", "1", "Faiyum", "", ""]], "applayout": [{"name": "review", "type": "button", "label": "Update Key Info", "parameter": "update", "id": 58}, {"name": "ob.museumnumber", "column": "", "type": "string", "label": "Museum #", "parameter": 100, "id": 135, "row": ""}, {"name": "ob.objectname", "column": "", "type": "text", "label": "Object name", "parameter": 140, "id": 136, "row": ""}, {"name": "count", "column": "", "type": "text", "label": "Count", "parameter": 40, "id": 137, "row": ""}, {"name": "fc.fieldcollectionplace", "column": "", "type": "text", "label": "Field Collection Place", "parameter": 150, "id": 138, "row": ""}, {"name": "culturalgroup", "column": "", "type": "text", "label": "Cultural Group", "parameter": 150, "id": 139, "row": ""}, {"name": "ethnographicfilecode", "column": "", "type": "text", "label": "Ethnographic File Code", "parameter": 150, "id": 140, "row": ""}], "numberofitems": 40, "appname": "keyinfo"
-    // };
-
-    // data.items = data.items.map((item, index) => {
-    //   return {"csid": index, "cells": item};
-    // });
     
     // everything above this line gets replaced once API is established
     // -----------------------------------------------------------------
@@ -374,10 +392,14 @@ class ResultsForm extends React.Component {
   }
 }
 
-ReactDOM.render(
-  <SearchForm url="toolbox/json/" appState='start' appName='objinfo'/>,
-  document.getElementById('searchForm')
-);
+var displayApp = function(appName) {
+  ReactDOM.render(
+    <SearchForm url="/toolbox/json/" appState='start' appName={appName}/>,
+    document.getElementById('searchForm')
+  ); 
+}
+
+export {displayApp};
 
 // ReactDOM.render(
 //   <ResultsForm />, document.getElementById('resultsForm')
