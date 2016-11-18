@@ -375,7 +375,7 @@ class ResultsForm extends React.Component {
 }
 
 ReactDOM.render(
-  <SearchForm url="/toolbox/json/" appState='start' appName='objinfo'/>,
+  <SearchForm url="toolbox/json/" appState='start' appName='objinfo'/>,
   document.getElementById('searchForm')
 );
 
