@@ -1,7 +1,9 @@
+// Remaining field types not yet implemented: 
 // class RadioButton extends React.Component {}
-// class TextInput extends React.Component {}
 // class Anchor extends React.Component {}
 // class Checkbox extends React.Component {}
+
+// TODO: Discuss with Ray how this might work with/conflict with the CSpace UI rewrite. 
 
 var React = require('react');
 var ReactDOM = require('react-dom');
