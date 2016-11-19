@@ -100,8 +100,8 @@ class SubmitButton extends React.Component {
   render() {
     return (
       <td>
-      <button className="submitBtn" type="submit" value={this.props.data.parameter} name="state"
-        className="prettyBtn" style={{color: "darkred"}}>{this.props.data.label}</button>
+      <button type="submit" value={this.props.data.parameter} name="state"
+        className="submitBtn prettyBtn" style={{color: "darkred"}}>{this.props.data.label}</button>
       </td>
     );
   }
@@ -353,8 +353,6 @@ class ResultsForm extends React.Component {
   render() {
     var data = this.state.data;
     
-    // everything above this line gets replaced once API is established
-    // -----------------------------------------------------------------
     //exclude all buttons in applayout from the row layout
     var rowlayout = data.applayout.filter((cellLayout) => {
       return cellLayout.type !== 'button';
@@ -366,8 +364,14 @@ class ResultsForm extends React.Component {
     
     var rows = data.items.map((item) => {
       var cells = [];
-      for (var i=0; i<rowlayout.length; i++) {
-        cells.push(<FormField key={item.csid + '_' + rowlayout[i].id} data={rowlayout[i]} defaultValue={item.cells[i]}/>);
+      if (rowlayout.length > 0) {
+        for (var i=0; i<rowlayout.length; i++) {
+          cells.push(<FormField key={item.csid + '_' + rowlayout[i].id} data={rowlayout[i]} defaultValue={item.cells[i]}/>);
+        }
+      } else {
+        for (var i=0; i<item.cells.length; i++) {
+          cells.push(<FormField key={item.csid + '_' + item.cells[i]} data={{type: 'string'}} defaultValue={item.cells[i]}/>);
+        }
       }
       return (<tr data-csid={item.csid} key={item.csid}>{cells}</tr>);
     });
