@@ -104,6 +104,7 @@ elif [ "${COMMAND}" = "deploy" ]; then
     # python manage.py migrate
     python manage.py loaddata fixtures/*.json
     # do this just in case the javascript has been tweaked
+    npm install
     ./node_modules/.bin/webpack
     python manage.py collectstatic --noinput
     echo
