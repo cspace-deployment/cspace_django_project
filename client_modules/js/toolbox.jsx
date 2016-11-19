@@ -2,8 +2,6 @@
 // class TextInput extends React.Component {}
 // class Anchor extends React.Component {}
 // class Checkbox extends React.Component {}
-// class ResultsList extends React.Component {}
-// class ResultsForm extends React.Component {}
 
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -35,7 +33,7 @@ class TextInput extends React.Component {
       var formInput = [];
       for (var i=0; i<this.state.value.length; i++) {
         if (i !== 0) {
-          formInput.push(<br/>);
+          formInput.push(<br key={i + "_br"}/>);
         }
         formInput.push(<input type="text" key={i} data-index={i}
           name={this.props.data.name} maxLength={this.props.data.parameter}
@@ -102,7 +100,7 @@ class SubmitButton extends React.Component {
   render() {
     return (
       <td>
-      <button id="submitBtn" type="submit" value={this.props.data.parameter} name="state"
+      <button className="submitBtn" type="submit" value={this.props.data.parameter} name="state"
         className="prettyBtn" style={{color: "darkred"}}>{this.props.data.label}</button>
       </td>
     );
@@ -169,7 +167,7 @@ class SearchForm extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     var submission = $(event.target).serializeArray();
-    submission.push({name: 'state', value: $('#submitBtn').val()});
+    submission.push({name: 'state', value: $(event.target).find('button[name=state]').val()});
     submission.push({name: 'appname', value: this.props.appName});
     
     $.ajax({
@@ -178,7 +176,7 @@ class SearchForm extends React.Component {
       dataType: 'json',
       cache: false,
       success: function(data) {
-        console.log(data);
+        // console.log(data);
         this.setState({resultlayout: data});
       }.bind(this),
       error: function(xhr, status, err) {
@@ -257,7 +255,7 @@ class SearchForm extends React.Component {
     
     var results = '';
     if (!$.isEmptyObject(this.state.resultlayout)) {
-      results = (<ResultsForm data={this.state.resultlayout}/>);
+      results = (<ResultsForm data={this.state.resultlayout} url={this.props.url}/>);
     }
     
     return (
@@ -276,7 +274,19 @@ class SearchForm extends React.Component {
 class ResultsForm extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {data: this.props.data};
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  //https://facebook.github.io/react/docs/react-component.html
+  //when a component sets it's internal state based upon props it receives from the parent
+  //the component NO LONGER re-renders whenever the props are changed by the parent,
+  //instead only re-rendering whenever the internal state is changed. here we override that 
+  //behavior by manually resetting state whenever the props are changed by the SearchForm
+  componentWillReceiveProps(nextProps) {
+    if (JSON.stringify(this.state.data.items) !== JSON.stringify(nextProps.data.items) || 
+        JSON.stringify(this.state.data.applayout) !== JSON.stringify(nextProps.data.applayout)) {
+      this.setState({data: nextProps.data});
+    }
   }
   handleSubmit(event) {
     event.preventDefault();
@@ -320,29 +330,28 @@ class ResultsForm extends React.Component {
 
     var submission = {
       items: items,
-      state: 'update',
-      appname: this.props.appName,
+      state: $(event.target).find('button[name=state]').val(),
+      appname: this.state.data.appname,
       csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
     };
+    // console.log(submission);
 
     $.post({
-      url: "/toolbox/json/",
+      url: this.props.url,
       data: submission,
       dataType: 'json',
       cache: false,
       success: function(data) {
-        console.log(data);
-        // this.setState({resultlayout: data});
+        // console.log(data);
+        this.setState({data: data});
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
-
-    // console.log($(event.target).serializeArray());
   }
   render() {
-    var data = this.props.data;
+    var data = this.state.data;
     
     // everything above this line gets replaced once API is established
     // -----------------------------------------------------------------
@@ -364,8 +373,8 @@ class ResultsForm extends React.Component {
     });
     
     var submitButtons = [];
-    var submit = this.props.data.applayout.find((formItem) => { return formItem.name === 'review'; });
-    var reset = this.props.data.applayout.find((formItem) => { return formItem.name === 'reset'; });
+    var submit = this.state.data.applayout.find((formItem) => { return formItem.name === 'review'; });
+    var reset = this.state.data.applayout.find((formItem) => { return formItem.name === 'reset'; });
     if (submit) {
       submitButtons.push(<SubmitButton key={submit.id + '_button'} data={submit}/>);
     } else if(data.length > 0) {
