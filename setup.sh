@@ -69,10 +69,10 @@ elif [ "${COMMAND}" = "deploy" ]; then
         exit
     fi
     # clean out the config directory of these four types of files.
-    rm config/*.cfg
-    rm config/*.csv
-    rm config/*.xml
-    rm fixtures/*.json
+    rm -f config/*.cfg
+    rm -f config/*.csv
+    rm -f config/*.xml
+    rm -f fixtures/*.json
     if [ "$2" = "default" ]; then
         cp config.examples/*.cfg config
         cp config.examples/*.csv config
@@ -92,14 +92,15 @@ elif [ "${COMMAND}" = "deploy" ]; then
         cp ${CONFIGDIR}/$2/config/* config
         cp ${CONFIGDIR}/$2/fixtures/* fixtures
         cp -r ${CONFIGDIR}/$2/apps/* .
+        rm -f README
         cp ${CONFIGDIR}/$2/project_urls.py cspace_django_site/urls.py
         cp ${CONFIGDIR}/$2/project_apps.py cspace_django_site/installed_apps.py
         cp client_modules/static_assets/cspace_django_site/images/header-logo-$2.png client_modules/static_assets/cspace_django_site/images/header-logo.png
 
     fi
     mv config/main.cfg cspace_django_site
-    # just to be sure, we start over with this...
-    rm db.sqlite3
+    # just to be sure, we start over with the database...
+    rm -f db.sqlite3
     python manage.py syncdb --noinput
     # python manage.py migrate
     python manage.py loaddata fixtures/*.json
@@ -111,6 +112,7 @@ elif [ "${COMMAND}" = "deploy" ]; then
     echo "*************************************************************************************************"
     echo "Don't forget to check cspace_django_site/main.cfg if necessary and the rest of the"
     echo "configuration files in config/ (these are .cfg and .csv files)"
+    echo
     echo "please restart apache to pick up changes"
     echo "*************************************************************************************************"
     echo
@@ -145,6 +147,7 @@ elif [ "${COMMAND}" = "refresh" ]; then
     echo
     echo "*************************************************************************************************"
     echo "code (only) refreshed from GitHub; no changes to configuration or fixtures though"
+    echo
     echo "please restart apache to pick up changes!"
     echo "*************************************************************************************************"
     echo
