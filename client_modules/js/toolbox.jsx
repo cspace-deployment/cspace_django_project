@@ -355,54 +355,67 @@ class ResultsForm extends React.Component {
   render() {
     var data = this.state.data;
     
-    //exclude all buttons in applayout from the row layout
-    var rowlayout = data.applayout.filter((cellLayout) => {
-      return cellLayout.type !== 'button';
-    });
-    
-    var header = rowlayout.map((cell) => {
-      return (<th key={cell.id}>{cell.label}</th>);
-    });
-    
-    var rows = data.items.map((item) => {
-      var cells = [];
-      if (rowlayout.length > 0) {
-        for (var i=0; i<rowlayout.length; i++) {
-          cells.push(<FormField key={item.csid + '_' + rowlayout[i].id} data={rowlayout[i]} defaultValue={item.cells[i]}/>);
-        }
-      } else {
-        for (var i=0; i<item.cells.length; i++) {
-          cells.push(<FormField key={item.csid + '_' + item.cells[i]} data={{type: 'string'}} defaultValue={item.cells[i]}/>);
-        }
+    var header, rows, resultsText, submitButtons, error;
+    if ('applayout' in data) {
+      //exclude all buttons in applayout from the row layout
+      var rowlayout = data.applayout.filter((cellLayout) => {
+        return cellLayout.type !== 'button';
+      });
+
+      header = rowlayout.map((cell) => {
+        return (<th key={cell.id}>{cell.label}</th>);
+      });
+
+      if ('items' in data) {
+        rows = data.items.map((item) => {
+          var cells = [];
+          if (rowlayout.length > 0) {
+            for (var i=0; i<rowlayout.length; i++) {
+              cells.push(<FormField key={item.csid + '_' + rowlayout[i].id} data={rowlayout[i]} defaultValue={item.cells[i]}/>);
+            }
+          } else {
+            for (var i=0; i<item.cells.length; i++) {
+              cells.push(<FormField key={item.csid + '_' + item.cells[i]} data={{type: 'string'}} defaultValue={item.cells[i]}/>);
+            }
+          }
+          return (<tr data-csid={item.csid} key={item.csid}>{cells}</tr>);
+        });
+        resultsText = (<p>{data.numberofitems} items listed.</p>);
       }
-      return (<tr data-csid={item.csid} key={item.csid}>{cells}</tr>);
-    });
-    
-    var submitButtons = [];
-    var submit = this.state.data.applayout.find((formItem) => { return formItem.name === 'review'; });
-    var reset = this.state.data.applayout.find((formItem) => { return formItem.name === 'reset'; });
-    if (submit) {
-      submitButtons.push(<SubmitButton key={submit.id + '_button'} data={submit}/>);
-    } else if(data.length > 0) {
-      console.log('error - no submit button specified, next state unknown');
+
+      submitButtons = [];
+      var submit = this.state.data.applayout.find((formItem) => { return formItem.name === 'review'; });
+      var reset = this.state.data.applayout.find((formItem) => { return formItem.name === 'reset'; });
+      if (submit) {
+        submitButtons.push(<SubmitButton key={submit.id + '_button'} data={submit}/>);
+      } else if(data.length > 0) {
+        console.log('error - no submit button specified, next state unknown');
+      }
+      if (reset) {
+        submitButtons.push(<Button key={reset.id + '_button'} data={reset}/>);
+      } else {
+        submitButtons.push(<ResetButton key='reset'/>);
+      }
+      submitButtons = (<table><tbody><tr>{submitButtons}</tr></tbody></table>);
     }
-    if (reset) {
-      submitButtons.push(<Button key={reset.id + '_button'} data={reset}/>);
-    } else {
-      submitButtons.push(<ResetButton key='reset'/>);
+
+    if ('error' in data) {
+      error = (<div className="error"><hr/>{data.error}</div>);
     }
-    submitButtons = (<table><tbody><tr>{submitButtons}</tr></tbody></table>);
-    
+
     return (
-      <form className="resultsForm" onSubmit={this.handleSubmit}>
-      <table>
-        <thead><tr>{header}</tr></thead>
-        <tbody>{rows}</tbody>
-      </table>
-      <hr/>
-      {data.numberofitems} items listed.
-      {submitButtons}
-      </form>
+      <div>
+        {error}
+        <form className="resultsForm" onSubmit={this.handleSubmit}>
+        <table>
+          <thead><tr>{header}</tr></thead>
+          <tbody>{rows}</tbody>
+        </table>
+        <hr/>
+        {resultsText}
+        {submitButtons}
+        </form>
+      </div>
     )
   }
 }
