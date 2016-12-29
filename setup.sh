@@ -8,8 +8,8 @@
 # individual webapps can be enabled and disabled
 #
 
-if [ $# -ne 2 -a "$1" != 'show' ]; then
-    echo "Usage: $0 <enable|disable|deploy|redeploy|configure|show> <TENANT|CONFIGURATION|WEBAPP>"
+if [ $# -ne 2 -a "$1" != 'show' -a "$1" != 'updatejs' ]; then
+    echo "Usage: $0 <enable|disable|deploy|redeploy|updatejs|configure|show> <TENANT|CONFIGURATION|WEBAPP>"
     echo
     echo "where: TENANT = 'default' or the name of a deployable tenant"
     echo "       CONFIGURATION = <pycharm|dev|prod>"
@@ -125,6 +125,7 @@ elif [ "${COMMAND}" = "redeploy" ]; then
     echo "*************************************************************************************************"
     git checkout ${TAG}
     # do this just in case the javascript has been tweaked
+    npm install
     ./node_modules/.bin/webpack
     python manage.py collectstatic --noinput
     echo
@@ -142,11 +143,26 @@ elif [ "${COMMAND}" = "refresh" ]; then
     # the underlying cspace_django_project code should be up to date as well...
     git pull -v
     # do this just in case the javascript has been tweaked
+    npm install
     ./node_modules/.bin/webpack
     python manage.py collectstatic --noinput
     echo
     echo "*************************************************************************************************"
     echo "code (only) refreshed from GitHub; no changes to configuration or fixtures though"
+    echo
+    echo "please restart apache to pick up changes!"
+    echo "*************************************************************************************************"
+    echo
+elif [ "${COMMAND}" = "updatejs" ]; then
+    # the underlying cspace_django_project code should be up to date...
+    git pull -v
+    # do this just in case the javascript has been tweaked
+    npm install
+    ./node_modules/.bin/webpack
+    python manage.py collectstatic --noinput
+    echo
+    echo "*************************************************************************************************"
+    echo "base code updated; no changes to configuration or deployment though"
     echo
     echo "please restart apache to pick up changes!"
     echo "*************************************************************************************************"
