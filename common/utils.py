@@ -313,17 +313,14 @@ def setupCSV(request, requestObject, context, prmz):
     return format, fieldset, csvitems
 
 
-def setDisplayType(requestObject):
+def setDisplayType(requestObject, prmz):
+    displayType = prmz.DEFAULTDISPLAY
     if 'displayType' in requestObject:
         displayType = requestObject['displayType']
-    elif 'search-list' in requestObject:
-        displayType = 'list'
-    elif 'search-full' in requestObject:
-        displayType = 'full'
-    elif 'search-grid' in requestObject:
-        displayType = 'grid'
-    else:
-        displayType = 'list'
+    for value, label in prmz.BUTTONOPTIONS:
+        if ('search-%s' % value) in requestObject:
+            displayType = value
+            break
 
     return displayType
 
@@ -368,8 +365,11 @@ def setConstants(context, prmz, request):
     context['resultlimit'] = prmz.MAXRESULTS
     context['timestamp'] = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
     context['qualifiers'] = [{'val': s, 'dis': s} for s in prmz.SEARCH_QUALIFIERS]
-    context['resultoptions'] = [100, 500, 1000, 2000, 10000]
+    context['resultoptions'] = [50, 100, 500, 1000, 2000, 10000]
     context['csrecordtype'] = prmz.CSRECORDTYPE
+    context['buttonoptions'] = prmz.BUTTONOPTIONS
+    context['defaultdisplay'] = prmz.DEFAULTDISPLAY
+
 
     context['searchrows'] = range(prmz.SEARCHROWS + 1)[1:]
     context['searchcolumns'] = range(prmz.SEARCHCOLUMNS + 1)[1:]
@@ -387,12 +387,6 @@ def setConstants(context, prmz, request):
                 emptyCells[row][col] = 'X'
     context['emptycells'] = emptyCells
 
-    context['displayTypes'] = (
-        ('list', 'List'),
-        ('full', 'Full'),
-        ('grid', 'Grid'),
-    )
-
     # copy over form values to context if they exist
     try:
         requestObject = context['searchValues']
@@ -405,7 +399,7 @@ def setConstants(context, prmz, request):
 
         context['qualfiersInUse'] = qualfiersInUse
 
-        context['displayType'] = setDisplayType(requestObject)
+        context['displayType'] = setDisplayType(requestObject, prmz)
         if 'url' in requestObject: context['url'] = requestObject['url']
         if 'querystring' in requestObject: context['querystring'] = requestObject['querystring']
         if 'core' in requestObject: context['core'] = requestObject['core']
@@ -416,7 +410,7 @@ def setConstants(context, prmz, request):
         context['sortkey'] = requestObject['sortkey'] if 'sortkey' in requestObject else prmz.DEFAULTSORTKEY
     except:
         print "no searchValues set"
-        context['displayType'] = setDisplayType({})
+        context['displayType'] = setDisplayType({}, prmz)
         context['url'] = ''
         context['querystring'] = ''
         context['core'] = prmz.SOLRCORE

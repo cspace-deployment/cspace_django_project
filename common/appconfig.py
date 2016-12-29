@@ -3,8 +3,9 @@
 import csv
 import solr
 from os import path, popen
-from copy import deepcopy
+import json
 
+from django.core.urlresolvers import reverse
 from cspace_django_site import settings
 from common import cspace  # we use the config file reading function
 from json import loads
@@ -173,12 +174,16 @@ def loadConfiguration(configFileName):
         # prmz.TITLE = config.get('search', 'TITLE')
         prmz.SUGGESTIONS = config.get('search', 'SUGGESTIONS')
         #LAYOUT = config.get('search', 'LAYOUT')
+        buttonoptions = config.get('search', 'BUTTONOPTIONS')
+        prmz.BUTTONOPTIONS = json.loads(buttonoptions.replace('\n', ''))
+        prmz.DEFAULTDISPLAY = config.get('search', 'DEFAULTDISPLAY')
 
         prmz.VERSION = getversion()
 
     except:
-        print 'error in configuration file %s' % path.join(settings.BASE_PARENT_DIR, 'config/' + configFileName)
+        print 'ERROR in configuration file %s' % path.join(settings.BASE_PARENT_DIR, 'config/' + configFileName + '.cfg')
         print 'this webapp will probably not work.'
+        raise
 
     return prmz
 

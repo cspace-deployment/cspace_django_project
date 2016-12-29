@@ -140,7 +140,7 @@ $(document).ready(function () {
 
     $('#search input[type=text]').keypress(function(event) {
         if (event.which == 13) {
-            submitForm('search-list');
+            submitForm('search-default');
         }
     });
 
@@ -185,7 +185,6 @@ $(document).ready(function () {
 
     var submitForm = function(displaytype) {
         var formData = getFormData('#search');
-        formData[displaytype] = '';
 
         if (!formData['acceptterms']) {
             $("#acceptterms")
@@ -299,8 +298,7 @@ $(document).ready(function () {
             }
         }
         var formData = getFormData('#search');
-        // TODO: CURRENTLY DEFAULT TO SEARCH-LIST BUT SHOULD HAVE A PERSISTENT DISPLAY TYPE? CURRENTLY DOESN'T ON DEV
-        formData['search-list'] = '';
+        formData['search-default'] = '';
 
         $.post("../results/", formData).done(function (data) {
             $('#resultsPanel').html(data);

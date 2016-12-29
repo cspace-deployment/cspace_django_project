@@ -15,10 +15,9 @@
         <div style="flex: 0 1 auto; padding-right: 10px; margin-bottom: 1px;">
             <div>
                 <!-- Target -->
-                <input style="padding: 7px 8px;" id="foo" value="{{ emailableurl }}?{{ url }}">
-
+                <input style="padding: 7px 8px; width: 300px" id="emailableurl" value="{{ request.build_absolute_uri }}{% url request.resolver_match.view_name %}?{{ url }}">
                 <!-- Trigger -->
-                <button class="cbbtn" data-clipboard-target="#foo">
+                <button class="cbbtn" data-clipboard-target="#emailableurl">
                     <img width="13" src="{% static "cspace_django_site/images/clippy.svg" %}" alt="Copy to clipboard">
                 </button>
             </div>
