@@ -3,6 +3,8 @@ __author__ = 'jblowe'
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 import json
+import sys
+import traceback
 #from common.cspace import logged_in_or_basicauth
 from django.shortcuts import render, HttpResponse, redirect
 from django.core.servers.basehttp import FileWrapper
@@ -92,9 +94,13 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
             # raise
             if not validateonly:
                 # we still upload the file, anyway...
-                handle_uploaded_file(afile)
+                try:
+                    handle_uploaded_file(afile)
+                except:
+                    sys.stderr.write("error! file=%s %s" % (afile.name, traceback.format_exc()))
+
             images.append({'name': afile.name, 'size': afile.size,
-                           'error': 'problem extracting image metadata, not processed'})
+                           'error': 'problem uploading file or extracting image metadata, not processed'})
 
     if len(images) > 0:
         jobinfo['jobnumber'] = jobnumber
@@ -208,11 +214,29 @@ def checkfilename(request):
 
 
 @login_required()
-def showresults(request, filename):
+def downloadresults(request, filename):
     f = open(getJobfile(filename), "rb")
     response = HttpResponse(FileWrapper(f), content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="%s"' % filename
     return response
+
+
+@login_required()
+def showresults(request):
+    filename = request.GET['filename']
+    jobstatus = request.GET['status']
+    f = open(getJobfile(filename), "rb")
+    filecontent = f.read()
+    elapsedtime = 0.0
+    timestamp = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
+    status = 'up'
+    timestamp = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
+
+    return render(request, 'uploadmedia.html',
+                  {'dropdowns': im.BMUoptions, 'override_options': override_options, 'timestamp': timestamp,
+                   'elapsedtime': '%8.2f' % elapsedtime, 'version': prmz.VERSION,
+                   'status': status, 'apptitle': TITLE, 'serverinfo': SERVERINFO, 'jobs': None,
+                   'filecontent': filecontent, 'filename': filename, 'status': jobstatus})
 
 
 @login_required()

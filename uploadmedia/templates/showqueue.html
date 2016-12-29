@@ -13,6 +13,8 @@
             <th>Job Errors</th>
             <th>Job Flag</th>
             <th>Download Job Files</th>
+            <th/>
+            <th>View Job Files</th>
             <th></th>
         </tr>
         </thead>
@@ -38,11 +40,17 @@
                 {% endif %}
                 <td>
                 {% for j in jobinfo %}
-                    <a href="showresults/{{ j.0 }}">{{ j.1 }}</a>
+                    <a href="downloadresults/{{ j.0 }}">{{ j.1 }}</a>
                     {% if j.1 == 'pending' %}
                         <a class="button" href="{% url 'uploadmedia:deletejob' %}{{ j.0 }}"><span style="color: orange"> (delete this job)</span></a>
                         <!-- button type="submit" value="deletejob/{{ j.0 }}">Delete</button -->
                     {% endif %}
+                {% endfor %}
+                </td>
+                <td/>
+                <td>
+                {% for j in jobinfo %}
+                    <a href="showresults/?filename={{ j.0 }}&status={{ j.1 }}">{{ j.1 }}</a>
                 {% endfor %}
                 </td>
             </tr>
