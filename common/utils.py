@@ -316,7 +316,10 @@ def setupCSV(request, requestObject, context, prmz):
 def setDisplayType(requestObject, prmz):
     displayType = prmz.DEFAULTDISPLAY
     if 'displayType' in requestObject:
-        displayType = requestObject['displayType']
+        if requestObject['displayType'] == 'search-default':
+            displayType = prmz.DEFAULTDISPLAY
+        else:
+            displayType = requestObject['displayType']
     for value, label in prmz.BUTTONOPTIONS:
         if ('search-%s' % value) in requestObject:
             displayType = value

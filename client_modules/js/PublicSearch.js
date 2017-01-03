@@ -20,7 +20,9 @@ function getFormData(formId) {
                     break;
 
                 default:
-                    formData[$(inputItem).attr('name')] = $(inputItem).val();
+                    if ($(inputItem).val()) {
+                        formData[$(inputItem).attr('name')] = $(inputItem).val();
+                    }
             }
         }
     }(formData));
@@ -185,6 +187,7 @@ $(document).ready(function () {
 
     var submitForm = function(displaytype) {
         var formData = getFormData('#search');
+        formData[displaytype] = '';
 
         if (!formData['acceptterms']) {
             $("#acceptterms")
