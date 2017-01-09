@@ -11,7 +11,7 @@ whatever is checked in to GitHub.
 
 Below is a conversation that shows how to preserve changes to the nav items:
 
-```bash
+"""
 # login to target server
 jblowe:pahma_project jblowe$ ssh cspace-prod.cspace.berkeley.edu
 Last login: Wed Jul 15 17:10:04 2015 from ucbvpn-208-65.vpn.berkeley.edu
@@ -44,4 +44,4 @@ Changes not staged for commit:
 # commit and push the changes
 fixtures $ git commit -a -m "PAHMA-1337: capture updates to Help tab for search webapp"
 fixtures $ git push -v
-```
+"""
