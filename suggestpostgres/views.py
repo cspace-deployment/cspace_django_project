@@ -58,16 +58,18 @@ def dbtransaction(q, elementID, connect_string):
         srchindex = 'place'
     elif srchindex in ['ta']:
         srchindex = 'taxon'
+    elif srchindex in ['ut']:
+        srchindex = 'ucgbtaxon'
     elif srchindex in ['cx']:
         srchindex = 'concept2'
     elif srchindex in ['fc']:
         srchindex = 'concept'
     elif srchindex in ['px']:
         srchindex = 'longplace2'
-    elif srchindex in ['pe']:
+    elif srchindex in ['pc']:
         srchindex = 'person'
-    elif srchindex in ['na']:
-        srchindex = 'name'
+    elif srchindex in ['or']:
+        srchindex = 'organization'
     else:
         srchindex = 'concept'
 
@@ -80,28 +82,56 @@ def dbtransaction(q, elementID, connect_string):
             INNER JOIN hierarchy h_tg ON h_tg.id=tg.id
             INNER JOIN hierarchy h_loc ON h_loc.id=h_tg.parentid
             INNER JOIN misc ON misc.id=h_loc.id and misc.lifecyclestate <> 'deleted'
-            WHERE termdisplayname like '%s%%' order by locationkey limit 30;"""
+            WHERE termdisplayname ilike '%s%%' order by locationkey limit 30;"""
         elif srchindex == 'object':
             # objectnumber is special: not an authority, no need for joins
-            template = "select distinct(objectnumber) FROM collectionobjects_common WHERE objectnumber like '%s%%' ORDER BY objectnumber LIMIT 30;"
+            template = """SELECT cc.objectnumber
+            FROM collectionobjects_common cc
+            JOIN collectionobjects_pahma cp ON (cc.id = cp.id)
+            JOIN misc ON misc.id = cc.id AND misc.lifecyclestate <> 'deleted'
+            WHERE cc.objectnumber like '%s%%'
+            ORDER BY cp.sortableobjectnumber LIMIT 30;"""
+        elif srchindex == 'ucgbtaxon':
+            template = """SELECT termdisplayname
+            -- , tc.refname, h_tg.*
+            FROM taxontermgroup tg
+            INNER JOIN hierarchy h_tg ON h_tg.id=tg.id
+            INNER JOIN hierarchy h_loc ON h_loc.id=h_tg.parentid
+            INNER JOIN misc ON misc.id=h_loc.id AND misc.lifecyclestate <> 'deleted'
+            INNER JOIN taxon_common tc on tc.id=h_tg.parentid
+            WHERE termdisplayname like '%s%%'
+            and h_tg.name='taxon_common:taxonTermGroupList'
+            and h_tg.pos=0
+            and tc.refname like '%%(taxon)%%'
+            ORDER BY termdisplayname LIMIT 30
+            """
         elif srchindex == 'group':
-            template = makeTemplate('grouptermgroup', 'termdisplayname',"like '%s%%'")
+            template = """SELECT title
+            FROM groups_common gc
+            JOIN misc ON misc.id=gc.id AND misc.lifecyclestate <> 'deleted'
+            WHERE title like '%s%%'
+            ORDER BY title LIMIT 30
+            """
+
         elif srchindex == 'place':
-            template = makeTemplate('placetermgroup', 'termname',"ilike '%%%s%%' and termtype='descriptor'")
+            template = makeTemplate('placetermgroup', 'termname', "ilike '%%%s%%' and termtype='descriptor'")
         elif srchindex == 'longplace':
-            template = makeTemplate('placetermgroup', 'termdisplayname',"like '%s%%' and termtype='descriptor'")
+            template = makeTemplate('placetermgroup', 'termdisplayname', "ilike '%s%%' and termtype='descriptor'")
         elif srchindex == 'concept':
-            template = makeTemplate('concepttermgroup', 'termname',"ilike '%%%s%%' and termtype='descriptor'")
+            template = makeTemplate('concepttermgroup', 'termname', "ilike '%%%s%%' and termtype='descriptor'")
         elif srchindex == 'concept2':
-            template = makeTemplate('concepttermgroup', 'termname',"ilike '%%%s%%'")
+            template = makeTemplate('concepttermgroup', 'termname', "ilike '%%%s%%'")
         elif srchindex == 'longplace2':
-            template = makeTemplate('placetermgroup', 'termdisplayname',"like '%s%%'")
-        elif srchindex == 'taxon':
-            template = makeTemplate('taxontermgroup', 'termdisplayname',"like '%s%%'")
+            template = makeTemplate('placetermgroup', 'termdisplayname', "like '%s%%'")
         elif srchindex == 'person':
-            template = makeTemplate('persontermgroup', 'termname',"ilike '%%%s%%'")
-        elif srchindex == 'name':
-            template = makeTemplate('objectnamegroup', 'objectname',"ilike '%%%s%%'")
+            template = makeTemplate('persontermgroup', 'termdisplayname', "like '%s%%'")
+        elif srchindex == 'organization':
+            template = makeTemplate('orgtermgroup', 'termdisplayname', "like '%s%%'")
+        elif srchindex == 'taxon':
+            template = makeTemplate('taxontermgroup', 'termdisplayname', "like '%s%%'")
+        else:
+            pass
+            # error!
 
         #sys.stderr.write('template %s' % template)
 
