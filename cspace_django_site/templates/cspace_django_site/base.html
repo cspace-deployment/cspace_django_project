@@ -1,10 +1,9 @@
 {% load staticfiles %}
-<!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<html lang="{{ LANGUAGE_CODE|default:'en-us' }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
     <title>{% block title %}{% endblock %}</title>
     {% block scripts %}
-        <script type="text/javascript" src="{% static "app.bundle.js" %}"></script>
+        <script type="text/javascript" src="{% static 'app.bundle.js' %}"></script>
         <script type="text/javascript">
             var trackingid = '{{ UA_TRACKING_ID }}';
             // if there is a tracker id, go ahead and create a tracking object...
@@ -16,18 +15,18 @@
     {% endblock %}
     {% block extrascript %}{% endblock %}
 
-    <link rel="stylesheet" type="text/css" href="{% static "cspace_django_site/css/reset.css" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "cspace_django_site/css/base.css" %}{% endblock %}"/>
-    <!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="{% block stylesheet_ie %}{% static "admin/css/ie.css" %}{% endblock %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'cspace_django_site/css/reset.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static 'cspace_django_site/css/base.css' %}{% endblock %}"/>
+    <!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="{% block stylesheet_ie %}{% static 'admin/css/ie.css' %}{% endblock %}" />
     <![endif]-->
     <!-- {% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="
-        {% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}" />{% endif %} -->
-    <link rel="stylesheet" type="text/css" href="{% static "common/css/theme.blue.css" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static "cspace_django_site/css/smoothness/jquery-ui-1.10.3.custom.min.css" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static "common/css/PublicSearch.css" %}"/>
+        {% block stylesheet_rtl %}{% static 'admin/css/rtl.css' %}{% endblock %}" />{% endif %} -->
+    <link rel="stylesheet" type="text/css" href="{% static 'common/css/theme.blue.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'cspace_django_site/css/smoothness/jquery-ui-1.10.3.custom.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'common/css/PublicSearch.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'cspace_django_site/css/' %}{{ device }}.css"/>
     {% block extrastyle %}{% endblock %}
-    <link rel="stylesheet" type="text/css" href="{% static "cspace_django_site/css/print.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'cspace_django_site/css/print.css' %}"/>
 
     {% block extrahead %}{% endblock %}
     {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
