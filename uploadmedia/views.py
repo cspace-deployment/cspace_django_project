@@ -22,6 +22,8 @@ prmz = loadConfiguration('common')
 import subprocess
 from .models import AdditionalInfo
 
+additionalInfo = AdditionalInfo.objects.filter(live=True)
+
 # Get an instance of a logger, log some startup info
 logger = logging.getLogger(__name__)
 logger.info('%s :: %s :: %s' % ('uploadmedia startup', '-', '-'))
@@ -186,7 +188,7 @@ def uploadfiles(request):
     logger.info('%s :: %s :: %s' % ('uploadmedia job ', constants['jobnumber'], '-'))
 
     return render(request, 'uploadmedia.html',
-                  {'apptitle': TITLE, 'serverinfo': SERVERINFO, 'images': images, 'count': len(images),
+                  {'apptitle': TITLE, 'serverinfo': SERVERINFO, 'images': images, 'count': len(images), 'additionalInfo': additionalInfo,
                    'constants': constants, 'jobinfo': jobinfo, 'validateonly': im.validateonly, 'version': prmz.VERSION,
                    'dropdowns': im.BMUoptions, 'override_options': override_options, 'status': status, 'timestamp': timestamp,
                    'elapsedtime': '%8.2f' % elapsedtime})
@@ -209,7 +211,7 @@ def checkfilename(request):
     return render(request, 'uploadmedia.html', {'filenames2check': listoffilenames, 'version': prmz.VERSION,
                                                 'objectnumbers': objectnumbers, 'dropdowns': im.BMUoptions,
                                                 'override_options': override_options, 'timestamp': timestamp,
-                                                'elapsedtime': '%8.2f' % elapsedtime,
+                                                'elapsedtime': '%8.2f' % elapsedtime, 'additionalInfo': additionalInfo,
                                                 'status': status, 'apptitle': TITLE, 'serverinfo': SERVERINFO})
 
 
@@ -234,7 +236,7 @@ def showresults(request):
 
     return render(request, 'uploadmedia.html',
                   {'dropdowns': im.BMUoptions, 'override_options': override_options, 'timestamp': timestamp,
-                   'elapsedtime': '%8.2f' % elapsedtime, 'version': prmz.VERSION,
+                   'elapsedtime': '%8.2f' % elapsedtime, 'version': prmz.VERSION, 'additionalInfo': additionalInfo,
                    'status': status, 'apptitle': TITLE, 'serverinfo': SERVERINFO, 'jobs': None,
                    'filecontent': filecontent, 'filename': filename, 'status': jobstatus})
 
@@ -267,6 +269,6 @@ def showqueue(request):
 
     return render(request, 'uploadmedia.html',
                   {'dropdowns': im.BMUoptions, 'override_options': override_options, 'timestamp': timestamp,
-                   'elapsedtime': '%8.2f' % elapsedtime, 'version': prmz.VERSION,
+                   'elapsedtime': '%8.2f' % elapsedtime, 'version': prmz.VERSION, 'additionalInfo': additionalInfo,
                    'status': status, 'apptitle': TITLE, 'serverinfo': SERVERINFO, 'jobs': jobs, 'jobcount': jobcount,
                    'errors': errors, 'errorcount': errorcount})
