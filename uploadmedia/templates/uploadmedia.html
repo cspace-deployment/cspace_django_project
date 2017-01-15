@@ -122,7 +122,7 @@
         {% if filecontent %}
             <hr/>
             <h2>{{ filename }} (status: {{ status }})</h2>
-            <pre>{{ filecontent }}</pre>
+            <pre>{{ filecontent|safe }}</pre>
         {% endif %}
         <!-- form action="{% url 'uploadmedia:checkfilename' %}" method="post">
             <h2>Check filename syntax</h2>

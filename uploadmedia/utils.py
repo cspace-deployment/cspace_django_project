@@ -273,26 +273,10 @@ def assignValue(defaultValue, override, imageData, exifvalue, refnameList):
 
 
 # this function not currently in use. Copied from another script, it's not Django-compatible
-def viewFile(logfilename, numtodisplay):
-    print '<table width="100%">\n'
-    print ('<tr>' + (4 * '<th class="ncell">%s</td>') + '</tr>\n') % (
-        'locationDate,objectNumber,objectStatus,handler'.split(','))
-    try:
-        file_handle = open(logfilename)
-        file_size = file_handle.tell()
-        file_handle.seek(max(file_size - 9 * 1024, 0))
-
-        lastn = file_handle.read().splitlines()[-numtodisplay:]
-        for i in lastn:
-            i = i.replace('urn:cspace:bampfa.cspace.berkeley.edu:personauthorities:name(person):item:name', '')
-            line = ''
-            if i[0] == '#': pass
-        for l in [i.split('\t')[x] for x in [0, 1, 2, 5]]:
-            line += ('<td>%s</td>' % l)
-            # for l in i.split('\t') : line += ('<td>%s</td>' % l)
-            print '<tr>' + line + '</tr>'
-
-    except:
-        print '<tr><td colspan="4">failed. sorry.</td></tr>'
-
-    print '</table>'
+def reformat(filecontent):
+    result = filecontent
+    result = result.replace('\n','<tr><td>')
+    result = result.replace('\t','<td>')
+    result = result.replace('|','<td>')
+    result += '</table>'
+    return '<table width="100%"><tr><td>\n' + result

@@ -13,7 +13,9 @@ import logging
 import time, datetime
 from getNumber import getNumber
 from utils import SERVERINFO, POSTBLOBPATH, INSTITUTION, BATCHPARAMETERS, FIELDS2WRITE
-from utils import getBMUoptions, handle_uploaded_file, assignValue, get_exif, writeCsv, getJobfile, getJoblist, loginfo
+from utils import getBMUoptions, handle_uploaded_file, assignValue, get_exif, writeCsv
+from utils import getJobfile, getJoblist, loginfo, reformat
+from specialhandling import specialhandling
 
 # read common config file, just for the version info
 from common.appconfig import loadConfiguration
@@ -51,13 +53,14 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
         try:
             print "%s %s: %s %s (%s %s)" % ('id', lineno + 1, 'name', afile.name, 'size', afile.size)
             image = get_exif(afile)
-            filename, objectnumber, imagenumber = getNumber(afile.name, INSTITUTION)
+            filename, objectnumber, imagenumber, extra = getNumber(afile.name, INSTITUTION)
             datetimedigitized, dummy = assignValue('', 'ifblank', image, 'DateTimeDigitized', {})
             imageinfo = {'id': lineno, 'name': afile.name, 'size': afile.size,
                          'objectnumber': objectnumber,
                          'imagenumber': imagenumber,
                          # 'objectCSID': objectCSID,
-                         'date': datetimedigitized}
+                         'date': datetimedigitized,
+                         'extra': extra}
             for override in BMUoptions['overrides']:
                 dname,refname = assignValue(constants[override[2]][0], constants[override[2]][1], image, override[3], override[4])
                 imageinfo[override[2]] = refname
@@ -90,6 +93,8 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
                     mhnumber = jobnumber + ("-%0.4d" % (lineno + 1))
                     #mhnumber = hex(int(mhnumber.replace('-','')))[2:]
                     imageinfo['objectnumber'] = 'DP-' + mhnumber
+
+            specialhandling(imageinfo, constants, BMUoptions, INSTITUTION)
             images.append(imageinfo)
 
         except:
@@ -229,6 +234,7 @@ def showresults(request):
     jobstatus = request.GET['status']
     f = open(getJobfile(filename), "rb")
     filecontent = f.read()
+    filecontent = reformat(filecontent)
     elapsedtime = 0.0
     timestamp = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
     status = 'up'

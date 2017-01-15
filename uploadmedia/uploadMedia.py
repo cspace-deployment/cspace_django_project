@@ -62,6 +62,8 @@ def mediaPayload(mh, institution):
             payload = payload.replace('#IMAGENUMBERELEMENT#', '<imageNumber>%s</imageNumber>' % mh['imagenumber'])
 
     elif institution == 'botgarden':
+        #if 'imagenumber' in mh:
+        #    payload = payload.replace('#IMAGENUMBERELEMENT#', '<imageNumber>%s</imageNumber>' % mh['imagenumber'])
         payload = payload.replace('<primaryDisplay>false</primaryDisplay>', '')
         payload = payload.replace('<approvedForWeb>true</approvedForWeb>','<postToPublic>yes</postToPublic>')
         payload = payload.replace('<approvedForWeb>false</approvedForWeb>','<postToPublic>no</postToPublic>')
