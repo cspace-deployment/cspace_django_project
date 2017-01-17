@@ -86,12 +86,16 @@ elif [ "${COMMAND}" = "deploy" ]; then
             echo
             exit
         fi
+        # update base code
+        git pull -v
         cd ${CONFIGDIR}
+        # update tenant custom code
         git pull -v
         cd ${CURRDIR}
         cp ${CONFIGDIR}/$2/config/* config
         cp ${CONFIGDIR}/$2/fixtures/* fixtures
         cp -r ${CONFIGDIR}/$2/apps/* .
+        # this file is not needed here
         rm -f README
         cp ${CONFIGDIR}/$2/project_urls.py cspace_django_site/urls.py
         cp ${CONFIGDIR}/$2/project_apps.py cspace_django_site/installed_apps.py
@@ -107,6 +111,7 @@ elif [ "${COMMAND}" = "deploy" ]; then
     # do this just in case the javascript has been tweaked
     npm install
     ./node_modules/.bin/webpack
+    # update the static files
     python manage.py collectstatic --noinput
     echo
     echo "*************************************************************************************************"
@@ -134,6 +139,7 @@ elif [ "${COMMAND}" = "redeploy" ]; then
     echo "*************************************************************************************************"
     echo
 elif [ "${COMMAND}" = "refresh" ]; then
+    git pull -v
     cd ${CONFIGDIR}
     git pull -v
     cd ${CURRDIR}
