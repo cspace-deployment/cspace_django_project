@@ -1,30 +1,51 @@
-Very terse deployment instructions for this webapp.
+## Deploying and Configuring the Bulk Media Uploader (BMU)
 
-BMU has two components:
+The BMU uses the "standard" multi-file upload capability provided by most
+HTTP client framework to allow users to upload batches of images and
+provide associated metadata. 
+
+BMU has two components, one online, one "offline":
 
 * A django webapp that allows users to upload media (via the
-  "standard" Django file upload compents) and metadata (via a
+  "standard" Django file upload components) and metadata (via a
   combination of form input and metadata in the EXIF data in the
-  image)
+  image.)
 
-* A batch component consisting of shell and python scripts, which take
-  the images and metadata and "ingest" them into CSpace.
+* A batch component consisting of shell and python scripts, which takes
+  the uploaded images and metadata and "ingests" them into CSpace.
 
 To deploy it on an IS&T Unix Team-managed server, (A RHEL6 VM, e.g. cspace-prod.cspace.berkeley.edu):
 
-WEBAPP COMPONENT:
+### WEBAPP COMPONENT:
 
 * Clone this repo and install and configure the Django
-  webapp(s), including this one, "as usual".  In particular, create the temporary cache,
-  with appropriate permissions, and record the full path in the deployed
-  config file, uploadmedia.cfg
+  webapp(s), including this one, "as usual" (see the README.md for the Django project, one level up).
+
+  In particular, edit ```uploadmedia.cfg``` to point to the temporary cache,
+  which you will need to create and perhaps set permissions and SELinux tags for
+  (this directory needs to be writable by the Apache server, and at UCB, the WSGI
+  process which the webapps run under is owned by the application owner "app_webapps"). 
+ 
+  `/tmp` is usually a good place to put this cache. At UCB, the caches are all
+  of the form `/tmp/image_upload_cache_<name of tenant>`
+ 
+  Record the full path in `[files]` section of `uploadmedia.cfg`
 
   e.g.
-
+```
   [files]
   directory         = /tmp/image_upload_cache_pahma
+```
 
-BATCH COMPONENT:
+   `uploadmedia.cfg` is also where you will configure tenant specific media handling
+   options. These can get pretty complicated, so study the existing UCB
+   configurations and associated JIRAs to understand how they work. 
+   
+   Alas, the ability to configure dropdowns with specific attributes and values 
+   is limited, and the BMU code itself contains a number of tenant-specific
+   code blocks that you may need to modify to get the effect you want.
+
+### BATCH COMPONENT:
 
 * Follow the following steps to configure the batch component to run in
   the environment you are using: the batch component relies on cron or
@@ -32,27 +53,31 @@ BATCH COMPONENT:
   about where things are located and what they are named.
   Sorry it is so complicated, someday we'll make it more robust.
 
-* Copy or create the appropriate .cfg file (from e.g. django_example_config) to a new config file in this directory
-  (i.e. uploadmedia/) and edit the configuration for use by the the batch script postblob.sh,
+* Copy (from e.g. `django_example_config`) the appropriate `.cfg` file to a new config file in this directory
+  (i.e. uploadmedia/) or create a new one. Edit the configuration for use by the the batch script `postblob.sh`,
   below.
 
   e.g.
 
+```
   cp ~/django_example_config/pahma/pahma_Uploadmedia_Dev.cfg pahma_Uploadmedia_Dev.cfg
   vi pahma_Uploadmedia_Dev.cfg
+```
 
-* Copy postblobRevised.sh to postblob.sh in this directory. (NB postblobviaHttp.sh and postblobviaFile.sh are
-  legacy version of this script, but they might be useful as they illustrate other ways to upload Blobs)
+* Copy `postblobRevised.sh` to `postblob.sh` in this directory. (NB `postblobviaHttp.sh` and `postblobviaFile.sh` are
+  legacy versions of this script, but they might be useful as they illustrate other ways to upload Blobs)
 
+```
   cp postblobRevised.sh postblob.sh
-
-* (NB: use postblobviaFile.sh if this webapp is running on the same server
-  as the CSpace deployment it address -- and therefore can use the
-  somewhat more efficient "direct file move" CSpace blob upload
-  facility). Use postblobviaHttp.sh if the blob must be POSTed over HTTP to a
-  remote CSpace server.
+```
 
 * This batch script does not require editing any more: all parameters are passed on the command line.
+
+* (NB: `postblobviaFile.sh` can be used if this webapp is running on the same server
+  as the CSpace deployment it address -- and therefore can use the
+  somewhat more efficient "direct file move" CSpace blob upload
+  facility). `postblobviaHttp.sh` must be used if the blob is to be POSTed over HTTP to a
+  CSpace server.
 
 * Ensure that the temporary cache for images and intermediate files is
   present and properly configured with appropriate permissions. For the
@@ -120,8 +145,8 @@ of images load, in case something needs to be recovered or rerun. The various
 Finally, there are a few other (very speculative!) scripts that are
 used for reporting and maintenance:
 
-* bulkmediaupload.sh - this runs a single *.step1.csv file; it is used
-by the webapp to do "online uploads"
+* bulkmediaupload.sh - this runs a single *.step1.csv file; it can be used 
+to run a specific upload "by hand" from the command line.
 
 * checkObj.pl - this script checks Blobs uploaded vs. Media created; it
 is used by the very rickety "runHelpers.sh" script below to report on
@@ -142,13 +167,19 @@ intermediate files.
 * verifyObjectsAndMedia.sh - somewhat scary script to make a list of
 imagefile names and object numbers...
 
-RUNNING THE BMU FROM THE COMMAND LINE
+### RUNNING THE BMU FROM THE COMMAND LINE
 
-Once it is installed, the BMU can be invoked on the command line as:
+Once it is installed, the BMU can be invoked on the command line on one of the manage servers as follows:
 
-$ bulkmediaupload.sh xxxxxx
+```
+$ ssh cspace-dev.cspace.berkeley.edu
+(venv)[app_webapps@cspace-dev-01 ~]$ sudo su - app_webapps
+(venv)[app_webapps@cspace-dev-01 ~]$ /var/www/bampfa/uploadmedia/postblob.sh /tmp/image_upload_cache_bampfa/xxxxxx
+```
 
-Provided you have a metadata file named "xxxxxx.step1.csv" in the pwd with the following fields (the header is required):
+Provided you have a metadata file named "xxxxxx.step1.csv" in the pwd with an appropriate header, you should get some results.
+
+Here is an example header (for PAHMA), with some sample data:
 
 name (i.e. field name)
 size (can be null)
