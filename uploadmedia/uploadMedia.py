@@ -107,14 +107,11 @@ def uploadblob(mediaElements, config, http_parms):
     files = {'file': (filename, open(fullpath, 'rb'))}
 
     response = requests.post(url, data=payload, files=files, auth=HTTPBasicAuth(http_parms.username, http_parms.password))
-    if response.status_code != 201:
-        print "blob creation failed!"
-        print "response: %s" % response.status_code
-        print response.content
-    else:
-        blobURL = response.headers['location']
-        blobCSID = blobURL.split('/')[-1:][0]
-        mediaElements['blobCSID'] = blobCSID
+    response.raise_for_status()
+
+    blobURL = response.headers['location']
+    blobCSID = blobURL.split('/')[-1:][0]
+    mediaElements['blobCSID'] = blobCSID
     return mediaElements
 
 
@@ -139,7 +136,6 @@ def uploadmedia(mediaElements, config, http_parms):
         messages.append('got mediacsid %s elapsedtime %s ' % (mediaCSID, elapsedtime))
         mediaElements['mediaCSID'] = mediaCSID
         messages.append("media REST API post succeeded...")
-
         # for PAHMA, each uploaded image becomes the primary
         if http_parms.institution == 'pahma':
             primary_payload = """<?xml version="1.0" encoding="utf-8" standalone="yes"?>
@@ -308,6 +304,6 @@ if __name__ == "__main__":
             outputfh.writerow(r)
         except:
             print "%s" % traceback.format_exc()
-            print "MEDIA: create failed for objectnumber %s, %8.2f" % (
+            print "MEDIA: create failed for blob or media. objectnumber %s, %8.2f" % (
                 mediaElements['objectnumber'], (time.time() - elapsedtimetotal))
 
