@@ -6,6 +6,7 @@ from requests.auth import HTTPBasicAuth
 import time
 from os import path
 from xml.sax.saxutils import escape
+import traceback
 
 from cswaExtras import postxml, relationsPayload, getConfig, getCSID
 
@@ -94,6 +95,7 @@ def mediaPayload(mh, institution):
 def uploadblob(mediaElements, config, http_parms):
     server = http_parms.protocol + "://" + http_parms.hostname
     try:
+        int(http_parms.port)
         server = server + ':' + http_parms.port
     except:
         pass
@@ -128,6 +130,7 @@ def uploadmedia(mediaElements, config, http_parms):
         messages.append(payload)
         server = http_parms.protocol + "://" + http_parms.hostname
         try:
+            int(http_parms.port)
             server = server + ':' + http_parms.port
         except:
             pass
@@ -304,6 +307,7 @@ if __name__ == "__main__":
             r.append(mediaElements['objectCSID'])
             outputfh.writerow(r)
         except:
+            print "%s" % traceback.format_exc()
             print "MEDIA: create failed for objectnumber %s, %8.2f" % (
                 mediaElements['objectnumber'], (time.time() - elapsedtimetotal))
 
