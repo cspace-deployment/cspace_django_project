@@ -107,6 +107,10 @@ def uploadblob(mediaElements, config, http_parms):
     files = {'file': (filename, open(fullpath, 'rb'))}
 
     response = requests.post(url, data=payload, files=files, auth=HTTPBasicAuth(http_parms.username, http_parms.password))
+    if response.status_code != 201:
+        print "blob creation failed!"
+        print "response: %s" % response.status_code
+        print response.content
     response.raise_for_status()
 
     blobURL = response.headers['location']
