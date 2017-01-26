@@ -32,11 +32,11 @@ def getNumber(filename,institution):
         objectnumber = filename
         objectnumber = objectnumber.split('_')[0]
     elif institution == 'botgarden':
-        # 12.1234_1_20170110_CL.jpg
-        # i.e. accession number_image order_date(YYYYMMDD)_Initials of creator
+        # 12.1234_1_CL.jpg
+        # i.e. accession number_image order_Initials of creator
         objectnumber = sub(r'(?i).(jpe?g|tiff?|png)$','',filename)
         try:
-            objectnumber, imagenumber, yyymmdd, extra = objectnumber.split('_')
+            objectnumber, imagenumber, extra = objectnumber.split('_')
         except:
             imagenumber = '1'
             objectnumber = objectnumber.split('_')[0]
