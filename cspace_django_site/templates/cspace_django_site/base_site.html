@@ -32,7 +32,14 @@
     <table width="100%">
         <tbody>
         <tr>
-            <td style="vertical-align: middle">Current time: {{ timestamp }}. This is version {{ version }}</td>
+            <td style="vertical-align: middle">
+                {% if timestamp %}Current time: {{ timestamp }}. {% endif %}
+                {% if elapsedtime %} Elapsed time: {{ elapsedtime }}. {% endif %}
+                {% if version %} This is
+                    {% if serverlabel %}
+                        the <span style="color: {{ serverlabelcolor }}">{{ serverlabel }}</span> deployment of
+                    {% endif %}
+                    version {{ version }}{% endif %}</td>
             <td style="vertical-align: middle;width: 70px;">powered by</td>
             <td style="text-align: right; width: 160px;"><img src="{% static "cspace_django_site/images/header-logo-cspace.png" %}" height="30px"></td>
         </tr>
