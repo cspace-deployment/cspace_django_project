@@ -12,7 +12,7 @@
                 <h2 style="display: inline">no items found.</h2>
             </div>
         {% endif %}
-        <div style="flex: 0 1 auto; padding-right: 10px; margin-bottom: 1px;">
+        <div id="emailableurl" style="flex: 0 1 auto; padding-right: 10px; margin-bottom: 1px;">
             <div>
                 <!-- Target -->
                 <input style="padding: 7px 8px; width: 300px" id="emailableurl" value="{{ request.environ.HTTP_REFERER }}?{{ url }}">
@@ -22,7 +22,7 @@
                 </button>
             </div>
         </div>
-        <div style="flex: 0 1 auto; margin-bottom: 1px;">
+        <div id="permalink" style="flex: 0 1 auto; margin-bottom: 1px;">
             <div>
                 <a target= "_new" href="?{{ url }}">Permalink</a> to this query<br/>
                 {% if querystring %}
