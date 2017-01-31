@@ -632,7 +632,7 @@ def doSearch(context, prmz, request):
 
     context['items'] = []
     summaryrows = {}
-    imageCount = 0
+    imageCount = {'cards': 0, 'blobs': 0}
     for i, rowDict in enumerate(results):
         item = {}
         item['counter'] = i
@@ -665,16 +665,15 @@ def doSearch(context, prmz, request):
                 item['accessionfield'] = prmz.PARMS[p][4]
             if 'csid' in prmz.PARMS[p][1]:
                 item['csid'] = extractValue(rowDict, prmz.PARMS[p][3])
-            # uh oh ... need to fix the blob v. blobs naming someday...
-            if 'blob' in prmz.PARMS[p][1]:
-                # there may not be any blobs for this record...
-                try:
-                    item['blobs'] = rowDict[prmz.PARMS[p][3]]
-                except:
-                    item['blobs'] = []
-                imageCount += len(item['blobs'])
-            if 'card' in prmz.PARMS[p][1]:
-                item['card'] = extractValue(rowDict, prmz.PARMS[p][3])
+            # uh oh ... need to fix the blob v. blobs and card vs. cards naming someday...
+            for image in ['card', 'blob']:
+                if image in prmz.PARMS[p][1]:
+                    # there may not be any blobs for this record...
+                    try:
+                        item['%ss' % image] = rowDict[prmz.PARMS[p][3]]
+                    except:
+                        item['%ss' % image] = []
+                    imageCount['%ss' % image] += len(item['%ss' % image])
 
         if prmz.LOCATION in rowDict.keys():
             item['marker'] = makeMarker(rowDict[prmz.LOCATION])
@@ -734,7 +733,8 @@ def doSearch(context, prmz, request):
     except:
         pass
 
-    context['imagecount'] = imageCount
+    context['imagecount'] = imageCount['blobs']
+    context['cardcount'] = imageCount['cards']
     context['url'] = url
     context['querystring'] = querystring
     context['core'] = solr_core
