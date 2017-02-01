@@ -10,6 +10,7 @@ from os.path import isfile, isdir, join
 from xml.sax.saxutils import escape
 
 from common import cspace  # we use the config file reading function
+from common.utils import deURN
 from cspace_django_site import settings
 
 config = cspace.getConfig(path.join(settings.BASE_PARENT_DIR, 'config'), 'uploadmedia')
@@ -274,7 +275,7 @@ def assignValue(defaultValue, override, imageData, exifvalue, refnameList):
 
 # this function not currently in use. Copied from another script, it's not Django-compatible
 def reformat(filecontent):
-    result = filecontent
+    result = deURN(filecontent)
     result = result.replace('\n','<tr><td>')
     result = result.replace('\t','<td>')
     result = result.replace('|','<td>')

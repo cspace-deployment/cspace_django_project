@@ -43,12 +43,9 @@ def getfromXML(element, xpath):
     return result
 
 
-def deURN(urn):
-    # find identifier in URN
-    m = re.search("\'(.*)\'$", urn)
-    if m is not None:
-        # strip out single quotes
-        return m.group(0)[1:len(m.group(0)) - 1]
+def deURN(string):
+    # replace all occurrences of refnames in string with displayName chunk
+    return re.sub(r"urn:.*?'(.*?)'", r'\1', string)
 
 
 def getfields(fieldset, pickField, prmz):
