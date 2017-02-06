@@ -13,6 +13,7 @@ from cswaExtras import postxml, relationsPayload, getConfig, getCSID
 # NB: this is set in utils, but we can import that Django module in this ordinary script due to dependencies
 FIELDS2WRITE = 'name size objectnumber date creator contributor rightsholder imagenumber handling approvedforweb'.split(' ')
 
+
 def mediaPayload(mh, institution):
     payload = """<?xml version="1.0" encoding="UTF-8"?>
 <document name="media">
@@ -93,13 +94,7 @@ def mediaPayload(mh, institution):
     return payload
 
 def uploadblob(mediaElements, config, http_parms):
-    server = http_parms.protocol + "://" + http_parms.hostname
-    try:
-        int(http_parms.port)
-        server = server + ':' + http_parms.port
-    except:
-        pass
-    url = "%s/cspace-services/%s" % (server, 'blobs')
+    url = "%s/cspace-services/%s" % (http_parms.server, 'blobs')
     filename = mediaElements['name']
     fullpath = path.join(http_parms.cache_path, filename)
     payload = {'submit': 'OK'}
@@ -128,14 +123,7 @@ def uploadmedia(mediaElements, config, http_parms):
         messages = []
         messages.append("posting to media REST API...")
         payload = mediaPayload(mediaElements, http_parms.institution)
-        messages.append(payload)
-        server = http_parms.protocol + "://" + http_parms.hostname
-        try:
-            int(http_parms.port)
-            server = server + ':' + http_parms.port
-        except:
-            pass
-        (url, data, mediaCSID, elapsedtime) = postxml('POST', uri, http_parms.realm, server, http_parms.username, http_parms.password, payload)
+        (url, data, mediaCSID, elapsedtime) = postxml('POST', uri, http_parms.realm, http_parms.server, http_parms.username, http_parms.password, payload)
         # elapsedtimetotal += elapsedtime
         messages.append('got mediacsid %s elapsedtime %s ' % (mediaCSID, elapsedtime))
         mediaElements['mediaCSID'] = mediaCSID
@@ -151,7 +139,7 @@ def uploadmedia(mediaElements, config, http_parms):
             """
 
             try:
-                postxml('POST', 'batch/563d0999-d29e-4888-b58d', http_parms.realm, server, http_parms.username, http_parms.password, primary_payload)
+                postxml('POST', 'batch/563d0999-d29e-4888-b58d', http_parms.realm, http_parms.server, http_parms.username, http_parms.password, primary_payload)
             except:
                 print "batch job to set primary image failed."
 
@@ -184,7 +172,7 @@ def uploadmedia(mediaElements, config, http_parms):
             mediaElements['subjectDocumentType'] = 'Media'
 
             payload = relationsPayload(mediaElements)
-            (url, data, csid, elapsedtime) = postxml('POST', uri, http_parms.realm, server, http_parms.username, http_parms.password, payload)
+            (url, data, csid, elapsedtime) = postxml('POST', uri, http_parms.realm, http_parms.server, http_parms.username, http_parms.password, payload)
             # elapsedtimetotal += elapsedtime
             messages.append('got relation csid %s elapsedtime %s ' % (csid, elapsedtime))
             mediaElements['media2objCSID'] = csid
@@ -198,7 +186,7 @@ def uploadmedia(mediaElements, config, http_parms):
             mediaElements['objectDocumentType'] = 'Media'
             mediaElements['subjectDocumentType'] = 'CollectionObject'
             payload = relationsPayload(mediaElements)
-            (url, data, csid, elapsedtime) = postxml('POST', uri, http_parms.realm, server, http_parms.username, http_parms.password, payload)
+            (url, data, csid, elapsedtime) = postxml('POST', uri, http_parms.realm, http_parms.server, http_parms.username, http_parms.password, payload)
             #elapsedtimetotal += elapsedtime
             messages.append('got relation csid %s elapsedtime %s ' % (csid, elapsedtime))
             mediaElements['obj2mediaCSID'] = csid
@@ -238,15 +226,24 @@ def getRecords(rawFile):
 
 if __name__ == "__main__":
 
-    print "MEDIA: input  file (fully qualified path): %s" % sys.argv[1]
-    print "MEDIA: config file (fully qualified path): %s" % sys.argv[2]
+    if len(sys.argv) == 3:
+        print "MEDIA: input  file (fully qualified path): %s" % sys.argv[1]
+        print "MEDIA: config file (fully qualified path): %s" % sys.argv[2]
+    else:
+        print
+        print "usage: %s <jobname> <config file>" % sys.argv[0]
+        print "e.g.   %s 2017-02-05 pahma_Uploadmedia_dev.cfg" % sys.argv[0]
+        print
+        sys.exit(1)
 
     try:
         form = {'webapp': sys.argv[2]}
         config = getConfig(form)
+        if not config:
+            raise
     except:
-        print "MEDIA: could not get configuration"
-        sys.exit()
+        print "MEDIA: could not get configuration from %s" % sys.argv[2]
+        sys.exit(1)
 
     class http_parms:
         pass
@@ -262,12 +259,19 @@ if __name__ == "__main__":
         http_parms.alwayscreatemedia = config.get('info', 'alwayscreatemedia')
         http_parms.alwayscreatemedia = True if http_parms.alwayscreatemedia.lower() == 'true' else False
 
+        http_parms.server = http_parms.protocol + "://" + http_parms.hostname
+        try:
+            int(http_parms.port)
+            http_parms.server = http_parms.server  + ':' + http_parms.port
+        except:
+            pass
+
         http_parms.cache_path = config.get('files', 'directory')
 
     except:
         print "could not get at least one of alwayscreatemedia, realm, hostname, port, protocol, username, password or institution from config file."
         # print "can't continue, exiting..."
-        raise
+        sys.exit(1)
 
     # print 'config',config
     records, columns = getRecords(sys.argv[1])
@@ -310,4 +314,7 @@ if __name__ == "__main__":
             print "%s" % traceback.format_exc()
             print "MEDIA: create failed for blob or media. objectnumber %s, %8.2f" % (
                 mediaElements['objectnumber'], (time.time() - elapsedtimetotal))
-
+            # delete the blob if we did not manage to make a media record for it...
+            (url, data, deletedCSID, elapsedtime) = postxml('DELETE', 'blobs/%s' % mediaElements['blobCSID'], http_parms.realm, http_parms.server, http_parms.username,
+                                                          http_parms.password, '')
+            print "MEDIA: deleted blob %s" % mediaElements['blobCSID']
