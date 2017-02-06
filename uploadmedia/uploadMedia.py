@@ -61,6 +61,8 @@ def mediaPayload(mh, institution):
     # institution specific hacks! figure out the right way to handle this someday!
     if institution == 'bampfa':
         if 'imagenumber' in mh:
+            # non-integer image numbers are an error for this tenant
+            int(mh['imagenumber'])
             payload = payload.replace('#IMAGENUMBERELEMENT#', '<imageNumber>%s</imageNumber>' % mh['imagenumber'])
 
     elif institution == 'botgarden':
