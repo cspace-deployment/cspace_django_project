@@ -11,7 +11,7 @@ import traceback
 from cswaExtras import postxml, relationsPayload, getConfig, getCSID
 
 # NB: this is set in utils, but we can import that Django module in this ordinary script due to dependencies
-FIELDS2WRITE = 'name size objectnumber date creator contributor rightsholder imagenumber handling approvedforweb'.split(' ')
+FIELDS2WRITE = 'filename size objectnumber date creator contributor rightsholder imagenumber handling approvedforweb'.split(' ')
 
 
 def mediaPayload(mh, institution):
@@ -26,7 +26,7 @@ def mediaPayload(mh, institution):
 </dateGroupList>
 <rightsHolder>{rightsholder}</rightsHolder>
 <creator>{creator}</creator>
-<title>{name}</title>
+<title>{filename}</title>
 <description>{description}</description>
 <contributor>{contributor}</contributor>
 <languageList>
@@ -61,12 +61,12 @@ def mediaPayload(mh, institution):
     # institution specific hacks! figure out the right way to handle this someday!
     if institution == 'bampfa':
         if 'imagenumber' in mh:
-            # non-integer image numbers are an error for this tenant
-            int(mh['imagenumber'])
             payload = payload.replace('#IMAGENUMBERELEMENT#', '<imageNumber>%s</imageNumber>' % mh['imagenumber'])
 
     elif institution == 'botgarden':
         if 'imagenumber' in mh:
+            # non-integer image numbers are an error for this tenant
+            int(mh['imagenumber'])
             payload = payload.replace('#IMAGENUMBERELEMENT#', '<imageNumber>%s</imageNumber>' % mh['imagenumber'])
         payload = payload.replace('<primaryDisplay>false</primaryDisplay>', '')
         payload = payload.replace('<approvedForWeb>true</approvedForWeb>','<postToPublic>yes</postToPublic>')
@@ -97,7 +97,7 @@ def mediaPayload(mh, institution):
 
 def uploadblob(mediaElements, config, http_parms):
     url = "%s/cspace-services/%s" % (http_parms.server, 'blobs')
-    filename = mediaElements['name']
+    filename = mediaElements['filename']
     fullpath = path.join(http_parms.cache_path, filename)
     payload = {'submit': 'OK'}
     #files = {'file': (filename, open(fullpath, 'rb'), 'image/jpeg')}
@@ -302,7 +302,7 @@ if __name__ == "__main__":
         for v1, v2 in enumerate(columns):
             mediaElements[v2] = r[v1]
         mediaElements['approvedforweb'] = 'true' if mediaElements['approvedforweb'] == 'on' else 'false'
-        print 'MEDIA: uploading media for objectnumber %s' % mediaElements['objectnumber']
+        print 'MEDIA: uploading media for filename %s, objectnumber: %s' % (mediaElements['filename'], mediaElements['objectnumber'])
         try:
             mediaElements = uploadblob(mediaElements, config, http_parms)
             mediaElements = uploadmedia(mediaElements, config, http_parms)
