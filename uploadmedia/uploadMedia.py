@@ -10,8 +10,8 @@ import traceback
 
 from cswaExtras import postxml, relationsPayload, getConfig, getCSID
 
-# NB: this is set in utils, but we can import that Django module in this ordinary script due to dependencies
-FIELDS2WRITE = 'filename size objectnumber date creator contributor rightsholder imagenumber handling approvedforweb'.split(' ')
+# NB: this is set in utils, but we cannot import that Django module in this ordinary script due to dependencies
+FIELDS2WRITE = 'name size objectnumber date creator contributor rightsholder imagenumber handling approvedforweb'.split(' ')
 
 
 def mediaPayload(mh, institution):
@@ -97,7 +97,7 @@ def mediaPayload(mh, institution):
 
 def uploadblob(mediaElements, config, http_parms):
     url = "%s/cspace-services/%s" % (http_parms.server, 'blobs')
-    filename = mediaElements['filename']
+    filename = mediaElements['name']
     fullpath = path.join(http_parms.cache_path, filename)
     payload = {'submit': 'OK'}
     #files = {'file': (filename, open(fullpath, 'rb'), 'image/jpeg')}
@@ -302,7 +302,7 @@ if __name__ == "__main__":
         for v1, v2 in enumerate(columns):
             mediaElements[v2] = r[v1]
         mediaElements['approvedforweb'] = 'true' if mediaElements['approvedforweb'] == 'on' else 'false'
-        print 'MEDIA: uploading media for filename %s, objectnumber: %s' % (mediaElements['filename'], mediaElements['objectnumber'])
+        print 'MEDIA: uploading media for filename %s, objectnumber: %s' % (mediaElements['name'], mediaElements['objectnumber'])
         try:
             mediaElements = uploadblob(mediaElements, config, http_parms)
             mediaElements = uploadmedia(mediaElements, config, http_parms)
