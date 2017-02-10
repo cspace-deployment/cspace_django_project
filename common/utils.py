@@ -424,6 +424,12 @@ def setConstants(context, prmz, request):
     if not 'FIELDS' in context:
         context['FIELDS'] = prmz.FIELDS
 
+    # set defaults first time through
+    for searchfield in prmz.FIELDS['Search']:
+        if 'default' in searchfield['fieldtype']:
+            searchfield['value'] = searchfield['fieldtype'][2]
+            searchfield['fieldtype'] = searchfield['fieldtype'][0]
+
     context['device'] = devicetype(request)
 
     return context

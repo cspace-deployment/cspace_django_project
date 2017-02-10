@@ -10,8 +10,14 @@ from cspace_django_site import settings
 from common import cspace  # we use the config file reading function
 from json import loads
 
-def get_special(label,labels, row):
+def get_special(label, labels, row):
     # handle some special cases
+    if label == 'default' and 'default' in row[labels['Role']]:
+        x = row[labels['Role']].split(',')
+        role= x[0]
+        default = x[1].split('=')[1]
+        row[labels['Role']] = [role, label, default]
+        return
     value = row[labels['Role']]
     if label in value:
         parsed_valued = value.replace('%s=' % label,'')
@@ -91,6 +97,7 @@ def parseRows(rows, prmz):
             # nb: this function may modify the value of the 2nd parameter!
             get_special('colors', labels, row)
             get_special('radio', labels, row)
+            get_special('default', labels, row)
 
             needed = [row[labels[i]] for i in 'Label Role Suggestions SolrField Name Search SearchTarget'.split(' ')]
             if row[labels['Suggestions']] != '':
@@ -206,7 +213,7 @@ def loadFields(fieldFile, prmz):
     if prmz.LOCATION == '':
         print "LOCATION not set, please specify a variable as 'location'"
 
-    facetfields = [f['solrfield'] for f in prmz.FIELDS['Search'] if f['fieldtype'] == 'dropdown']
+    facetfields = [f['solrfield'] for f in prmz.FIELDS['Search'] if 'dropdown' in f['fieldtype']]
 
     # facetNames = [f['name'] for f in FIELDS['Facet']]
     #facetfields = []
