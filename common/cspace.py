@@ -111,6 +111,7 @@ def postxml(realm, uri, hostname, protocol, port, username, password, payload, r
     request = urllib2.Request(url, payload, {'Content-Type': 'application/xml'})
     # default method for urllib2 with payload is POST
     if requestType == 'PUT': request.get_method = lambda: 'PUT'
+    if requestType == 'DELETE': request.get_method = lambda: 'DELETE'
 
     try:
         f = urllib2.urlopen(request)
