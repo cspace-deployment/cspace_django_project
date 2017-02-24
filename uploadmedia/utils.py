@@ -18,10 +18,8 @@ TEMPIMAGEDIR = config.get('files', 'directory')
 POSTBLOBPATH = config.get('info', 'postblobpath')
 BATCHPARAMETERS = config.get('info', 'batchparameters')
 BATCHPARAMETERS = BATCHPARAMETERS.replace('.cfg', '')
-SERVERINFO = {
-    'serverlabelcolor': config.get('info', 'serverlabelcolor'),
-    'serverlabel': config.get('info', 'serverlabel')
-}
+SERVERLABEL = config.get('info', 'serverlabel')
+SERVERLABELCOLOR = config.get('info', 'serverlabelcolor')
 INSTITUTION = config.get('info', 'institution')
 FIELDS2WRITE = 'name size objectnumber date creator contributor rightsholder imagenumber handling approvedforweb'.split(' ')
 
@@ -60,7 +58,13 @@ def jobsummary(jobstats):
     return result
 
 
-def getJoblist():
+def getJoblist(request):
+
+    if 'num2display' in request.POST:
+        num2display = int(request.POST['num2display'])
+    else:
+        num2display = 500
+
     jobpath = JOBDIR % ''
     filelist = [f for f in listdir(jobpath) if isfile(join(jobpath, f)) and ('.csv' in f or 'trace.log' in f)]
     jobdict = {}
@@ -96,7 +100,7 @@ def getJoblist():
             errors.append([ajob[0], image])
         for state in ajob[2]:
             if state[1] in ['ingested', 'pending', 'job started']: ajob[1] = False
-    return joblist[0:500], errors, len(joblist), len(errors)
+    return joblist[0:num2display], errors, len(joblist), len(errors)
 
 
 def checkFile(filename):
@@ -273,7 +277,7 @@ def assignValue(defaultValue, override, imageData, exifvalue, refnameList):
         return defaultValue, refName
 
 
-# this function not currently in use. Copied from another script, it's not Django-compatible
+# this somewhat desperate function makes an html table from a tab- and newline- delimited string
 def reformat(filecontent):
     result = deURN(filecontent)
     result = result.replace('\n','<tr><td>')
@@ -281,3 +285,36 @@ def reformat(filecontent):
     result = result.replace('|','<td>')
     result += '</table>'
     return '<table width="100%"><tr><td>\n' + result
+
+# this somewhat desperate function makes an grid display from 'processed' files
+def rendermedia(filecontent):
+    FIELDS = 'name size objectnumber date creator contributor rightsholder imagenumber handling approvedforweb description mediaCSID objectCSID blobCSID'.split(' ')
+    result = deURN(filecontent)
+    rows = result.split('\n')
+    header = rows[0]
+    rows = rows[1:]
+    result = []
+    for counter, row in enumerate(rows):
+        row = row.strip() # seems there may be a stray \r still at the end of the string.
+        if row == '' or row[0] == '#': continue
+        row = row.split('\t')
+        media = {'otherfields': []}
+        media['counter'] = counter
+        for i,r in enumerate(row):
+            if FIELDS[i] == 'objectnumber':
+                media['accession'] = row[i]
+            elif FIELDS[i] == 'name':
+                media['mainentry'] = row[i]
+                # media['otherfields'].append({'label': 'File', 'value': row[i]})
+            elif FIELDS[i] == 'objectCSID':
+                media['csid'] = row[i]
+            elif FIELDS[i] == 'blobCSID':
+                media['blobs'] = [ row[i] ]
+            elif FIELDS[i] == 'creator':
+                media['otherfields'].append({'label': 'Creator', 'value': row[i]})
+            elif FIELDS[i] == 'description':
+                media['otherfields'].append({'label': 'Description', 'value': row[i]})
+            elif FIELDS[i] == 'date':
+                media['otherfields'].append({'label': 'Image Date', 'value': row[i]})
+        result.append(media)
+    return result

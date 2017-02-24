@@ -15,6 +15,7 @@
             <th>Download Job Files</th>
             <th/>
             <th>View Job Files</th>
+            <th>Show Media</th>
             <th></th>
         </tr>
         </thead>
@@ -52,6 +53,14 @@
                 {% for j in jobinfo %}
                     <a href="showresults/?filename={{ j.0 }}&status={{ j.1 }}">{{ j.1 }}</a>
                 {% endfor %}
+                </td>
+                <td>
+                    {% for j in jobinfo %}
+                        {%  if j.1 == 'ingested' %}
+                            <!-- a href="showresults/?filename={{ j.0 }}&status=showinportal">In Portal</a -->
+                            <a href="showresults/?filename={{ j.0 }}&status=showmedia">Media Only</a>
+                        {% endif %}
+                    {% endfor %}
                 </td>
             </tr>
         {% endfor %}

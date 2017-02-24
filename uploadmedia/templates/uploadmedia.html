@@ -98,7 +98,7 @@
                     {% if jobinfo %}
                         <hr/>
                         {% if jobinfo.status == 'uploadmedia' %}
-                            <h2>Job {{ jobinfo.jobnumber }} enqueued; {{ count }} images.</h2>
+                            <h2>Job {{ jobinfo.jobnumber }} enqueued; {{ count }} image{{ count|pluralize }}.</h2>
                             <!-- h2>Job {{ jobinfo.jobnumber }} enqueued. Estimated time to
                             run: {{ jobinfo.estimatedtime }} minutes.</h2 -->
                         {% endif %}
@@ -115,10 +115,19 @@
             <form action="{% url 'uploadmedia:showqueue' %}" method="post">
                 {% csrf_token %}
                 <input type="submit" name="checkjobs" value="View the Job Queue">
+                (display the most recent <select id="num2display" name="num2display">
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="500">500</option>
+                </select> jobs.)
                 <input type="submit" name="showerrors" value="List Images That Failed to Load">
                 {% include "showerrors.html" %}
                 {% include "showqueue.html" %}
             </form>
+        {% if items %}
+            <h2>{{ filename }}</h2>
+            {% include "grid.html" %}
+        {% endif %}
         {% if filecontent %}
             <hr/>
             <h2>{{ filename }} (status: {{ status }})</h2>
@@ -148,19 +157,4 @@
         </form -->
         <hr/>
     </div>
-{% endblock %}
-
-{% block footer %}
-    <table width="100%">
-        <tbody>
-        <tr>
-            <td style="vertical-align: middle">Current time: {{ timestamp }}. This is the <span
-                    style="color:{{ serverinfo.serverlabelcolor }}">{{ serverinfo.serverlabel }}</span> deployment of version <i>{{ version }}</i>.
-            </td>
-            <td style="vertical-align: middle;width: 70px;">powered by</td>
-            <td style="text-align: right; width: 160px;"><img
-                    src="{% static "cspace_django_site/images/header-logo-cspace.png" %}" height="30px"></td>
-        </tr>
-        </tbody>
-    </table>
 {% endblock %}
