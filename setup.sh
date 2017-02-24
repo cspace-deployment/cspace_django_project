@@ -144,7 +144,6 @@ elif [ "${COMMAND}" = "refresh" ]; then
     cd ${CONFIGDIR}
     git pull -v
     cd ${CURRDIR}
-    git clean -xfd
     cp -r ${CONFIGDIR}/$2/apps/* .
     # get rid of any README that might have come over with the cp of the apps.
     rm -f README
