@@ -9,7 +9,7 @@
 #
 
 if [ $# -ne 2 -a "$1" != 'show' -a "$1" != 'updatejs' ]; then
-    echo "Usage: $0 <enable|disable|deploy|redeploy|updatejs|configure|show> <TENANT|CONFIGURATION|WEBAPP>"
+    echo "Usage: $0 <enable|disable|deploy|redeploy|refresh|updatejs|configure|show> <TENANT|CONFIGURATION|WEBAPP>"
     echo
     echo "where: TENANT = 'default' or the name of a deployable tenant"
     echo "       CONFIGURATION = <pycharm|dev|prod>"
@@ -73,6 +73,7 @@ elif [ "${COMMAND}" = "deploy" ]; then
     rm -f config/*.csv
     rm -f config/*.xml
     rm -f fixtures/*.json
+    git clean -xfd
     if [ "$2" = "default" ]; then
         cp config.examples/*.cfg config
         cp config.examples/*.csv config
@@ -100,7 +101,6 @@ elif [ "${COMMAND}" = "deploy" ]; then
         cp ${CONFIGDIR}/$2/project_urls.py cspace_django_site/urls.py
         cp ${CONFIGDIR}/$2/project_apps.py cspace_django_site/installed_apps.py
         cp client_modules/static_assets/cspace_django_site/images/header-logo-$2.png client_modules/static_assets/cspace_django_site/images/header-logo.png
-
     fi
     mv config/main.cfg cspace_django_site
     # just to be sure, we start over with the database...
@@ -135,26 +135,32 @@ elif [ "${COMMAND}" = "redeploy" ]; then
     python manage.py collectstatic --noinput
     echo
     echo "*************************************************************************************************"
-    echo "please restart apache to pick up changes"
+    echo "base code (only) refreshed from GitHub; no changes to configuration, or custom apps though"
+    echo
+    echo "please restart apache to pick up changes!"
     echo "*************************************************************************************************"
     echo
 elif [ "${COMMAND}" = "refresh" ]; then
-    git pull -v
     cd ${CONFIGDIR}
     git pull -v
     cd ${CURRDIR}
+    git clean -xfd
     cp -r ${CONFIGDIR}/$2/apps/* .
     # get rid of any README that might have come over with the cp of the apps.
     rm -f README
+    cp ${CONFIGDIR}/$2/project_urls.py cspace_django_site/urls.py
+    cp ${CONFIGDIR}/$2/project_apps.py cspace_django_site/installed_apps.py
     # the underlying cspace_django_project code should be up to date as well...
     git pull -v
+    python manage.py syncdb --noinput
     # do this just in case the javascript has been tweaked
     npm install
     ./node_modules/.bin/webpack
     python manage.py collectstatic --noinput
     echo
     echo "*************************************************************************************************"
-    echo "code (only) refreshed from GitHub; no changes to configuration or fixtures though"
+    echo "code, including custom apps refreshed from GitHub; no changes to configuration or fixtures though"
+    echo "you may need to create or edit .cfg files in config for any new or changed webapps."
     echo
     echo "please restart apache to pick up changes!"
     echo "*************************************************************************************************"
