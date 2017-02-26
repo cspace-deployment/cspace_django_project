@@ -20,7 +20,13 @@ if [ $# -ne 2 -a "$1" != 'show' -a "$1" != 'updatejs' ]; then
     echo "     $0 deploy botgarden"
     echo "     $0 show"
     echo
-    exit
+    exit 0
+fi
+
+if [ ! -e manage.py ]; then
+    echo "no manage.py found. this script must be run in the django project directory"
+    echo
+    exit 1
 fi
 
 COMMAND=$1
@@ -49,10 +55,6 @@ elif [ "${COMMAND}" = "configure" ]; then
         exit
     fi
     cp cspace_django_site/extra_$2.py cspace_django_site/extra_settings.py
-    # install and build the javascript framework
-    npm install
-    npm build
-    ./node_modules/.bin/eslint client_modules/js/app.js
     echo
     echo "*************************************************************************************************"
     echo "OK, \"$2\" is configured. Now run ./setup.sh deploy <tenant> to set up a particular tenant,"
@@ -73,7 +75,6 @@ elif [ "${COMMAND}" = "deploy" ]; then
     rm -f config/*.csv
     rm -f config/*.xml
     rm -f fixtures/*.json
-    git clean -xfd
     if [ "$2" = "default" ]; then
         cp config.examples/*.cfg config
         cp config.examples/*.csv config
@@ -110,7 +111,9 @@ elif [ "${COMMAND}" = "deploy" ]; then
     python manage.py loaddata fixtures/*.json
     # do this just in case the javascript has been tweaked
     npm install
+    npm build
     ./node_modules/.bin/webpack
+    ./node_modules/.bin/eslint client_modules/js/app.js
     # update the static files
     python manage.py collectstatic --noinput
     echo
@@ -131,7 +134,9 @@ elif [ "${COMMAND}" = "redeploy" ]; then
     git checkout ${TAG}
     # do this just in case the javascript has been tweaked
     npm install
+    npm build
     ./node_modules/.bin/webpack
+    ./node_modules/.bin/eslint client_modules/js/app.js
     python manage.py collectstatic --noinput
     echo
     echo "*************************************************************************************************"
@@ -154,7 +159,9 @@ elif [ "${COMMAND}" = "refresh" ]; then
     python manage.py syncdb --noinput
     # do this just in case the javascript has been tweaked
     npm install
+    npm build
     ./node_modules/.bin/webpack
+    ./node_modules/.bin/eslint client_modules/js/app.js
     python manage.py collectstatic --noinput
     echo
     echo "*************************************************************************************************"
@@ -169,7 +176,9 @@ elif [ "${COMMAND}" = "updatejs" ]; then
     git pull -v
     # do this just in case the javascript has been tweaked
     npm install
+    npm build
     ./node_modules/.bin/webpack
+    ./node_modules/.bin/eslint client_modules/js/app.js
     python manage.py collectstatic --noinput
     echo
     echo "*************************************************************************************************"
