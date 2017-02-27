@@ -259,6 +259,7 @@ def showresults(request):
     if status == 'showmedia':
         context['derivativegrid'] = 'Medium'
         context['sizegrid'] = '240px'
+        context['imageserver'] = prmz.IMAGESERVER
         context['items'] = rendermedia(filecontent)
     elif status == 'showinportal':
         pass
