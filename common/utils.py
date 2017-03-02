@@ -435,6 +435,40 @@ def setConstants(context, prmz, request):
     return context
 
 
+def generate_query_term(t, p, prmz, requestObject, context):
+    # print 'qualifier:',requestObject[p+'_qualifier']
+    index = prmz.PARMS[p][3]
+    # if this is a "switcharoo field", use the specified shadow
+    if prmz.PARMS[p][6] != '':
+        index = prmz.PARMS[p][6]
+    qualifier = requestObject[p + '_qualifier']
+    if qualifier == 'exact':
+        # for exact searches, reset the index to the original in case the switcharoo changed it
+        index = prmz.PARMS[p][3]
+        index = index.replace('_txt', '_s')
+        # only our own double quotes are unescaped
+        t = t.replace('"', '\\"')
+        t = '"' + t + '"'
+    elif qualifier == 'phrase':
+        index = index.replace('_ss', '_txt').replace('_s', '_txt')
+        # only our own double quotes are unescaped
+        t = t.replace('"', '\\"')
+        t = '"' + t + '"'
+    elif qualifier == 'keyword':
+        # eliminate some characters that might confuse solr's query parser
+        t = re.sub(r'[\[\]\:\(\)\" ]', ' ', t).strip()
+        # hyphen is allowed, but only as a negation operator
+        t = re.sub(r'([^ ])-', r'\1 ', ' ' + t).strip()
+        # get rid of muliple spaces in a row
+        t = re.sub(r' +', ' ', t)
+        t = t.split(' ')
+        t = ' +'.join(t)
+        t = '(+' + t + ')'
+        t = t.replace('+-', '-')  # remove the plus if user entered a minus
+        index = index.replace('_ss', '_txt').replace('_s', '_txt')
+    return t, index
+
+
 def devicetype(request):
     # http://blog.mobileesp.com/
     # the middleware must be installed for the following to work...
@@ -509,7 +543,23 @@ def doSearch(context, prmz, request):
             querypattern = '%s:%s'  # default search expression pattern (dates are different)
             for t in terms:
                 t = t.strip()
-                if t == 'Null':
+                # handle range search
+                if ' TO ' in t:
+                    try:
+                        qualifier = requestObject[p + '_qualifier']
+                    except:
+                        qualifier = 'exact'
+                    # range searching on keywords is ... kinda meaningless in our context, at least
+                    if qualifier == 'keyword':
+                        qualifier = 'phrase'
+                    to_terms = t.split(' TO ')
+                    to_terms = [generate_query_term(x, p, prmz, {p + '_qualifier': qualifier}, context)[0] for x in to_terms]
+                    dummy, index = generate_query_term(t, p, prmz, {p + '_qualifier': qualifier}, context)
+                    try:
+                        t = '[%s TO %s]' % tuple(to_terms)
+                    except:
+                        t = '[%s]' % t
+                elif t == 'Null':
                     t = '[* TO *]'
                     index = '-' + prmz.PARMS[p][3]
                 # if we are testing for 'presence' or 'absence', this is handled elsewhere
@@ -530,36 +580,7 @@ def doSearch(context, prmz, request):
                         t = '"' + t + '"'
                         index = prmz.PARMS[p][3].replace('_txt', '_s')
                     elif p + '_qualifier' in requestObject:
-                        # print 'qualifier:',requestObject[p+'_qualifier']
-                        index = prmz.PARMS[p][3]
-                        # if this is a "switcharoo field", use the specified shadow
-                        if prmz.PARMS[p][6] != '':
-                            index = prmz.PARMS[p][6]
-                        qualifier = requestObject[p + '_qualifier']
-                        if qualifier == 'exact':
-                            # for exact searches, reset the index to the original in case the switcharoo changed it
-                            index = prmz.PARMS[p][3]
-                            index = index.replace('_txt', '_s')
-                            # only our own double quotes are unescaped
-                            t = t.replace('"', '\\"')
-                            t = '"' + t + '"'
-                        elif qualifier == 'phrase':
-                            index = index.replace('_ss', '_txt').replace('_s', '_txt')
-                            # only our own double quotes are unescaped
-                            t = t.replace('"', '\\"')
-                            t = '"' + t + '"'
-                        elif qualifier == 'keyword':
-                            # eliminate some characters that might confuse solr's query parser
-                            t = re.sub(r'[\[\]\:\(\)\" ]', ' ', t).strip()
-                            # hyphen is allowed, but only as a negation operator
-                            t = re.sub(r'([^ ])-', r'\1 ', ' ' + t).strip()
-                            # get rid of muliple spaces in a row
-                            t = re.sub(r' +', ' ', t)
-                            t = t.split(' ')
-                            t = ' +'.join(t)
-                            t = '(+' + t + ')'
-                            t = t.replace('+-', '-')  # remove the plus if user entered a minus
-                            index = index.replace('_ss', '_txt').replace('_s', '_txt')
+                        t, index = generate_query_term(t, p, prmz, requestObject, context)
                     elif '_dt' in prmz.PARMS[p][3]:
                         querypattern = '%s: "%sZ"'
                         index = prmz.PARMS[p][3]
@@ -576,7 +597,6 @@ def doSearch(context, prmz, request):
                 ORs.append(querypattern % (index, t))
             searchTerm = ' OR '.join(ORs)
             if ' ' in searchTerm and not ' TO ' in searchTerm: searchTerm = ' (' + searchTerm + ') '
-            # if ' ' in searchTerm and not '[* TO *]' in searchTerm: searchTerm = ' (' + searchTerm + ') '
             # print searchTerm
             queryterms.append(searchTerm)
             urlterms.append('%s=%s' % (p, cgi.escape(requestObject[p])))
@@ -725,8 +745,8 @@ def doSearch(context, prmz, request):
     context['summaryrows'] = [[r, summaryrows[r][0], summaryrows[r][1]] for r in sorted(summaryrows.keys())]
     context['itemlisted'] = len(context['summaryrows'])
     context['range'] = range(len(facetfields))
-    context['pixonly'] = pixonly
-    context['locsonly'] = locsonly
+    # context['pixonly'] = pixonly
+    # context['locsonly'] = locsonly
     try:
         context['pane'] = requestObject['pane']
     except:
