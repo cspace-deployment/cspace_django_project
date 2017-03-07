@@ -9,7 +9,7 @@
 #
 
 if [ $# -ne 2 -a "$1" != 'show' -a "$1" != 'updatejs' ]; then
-    echo "Usage: $0 <enable|disable|deploy|redeploy|updatejs|configure|show> <TENANT|CONFIGURATION|WEBAPP>"
+    echo "Usage: $0 <enable|disable|deploy|redeploy|refresh|updatejs|configure|show> <TENANT|CONFIGURATION|WEBAPP>"
     echo
     echo "where: TENANT = 'default' or the name of a deployable tenant"
     echo "       CONFIGURATION = <pycharm|dev|prod>"
@@ -20,7 +20,13 @@ if [ $# -ne 2 -a "$1" != 'show' -a "$1" != 'updatejs' ]; then
     echo "     $0 deploy botgarden"
     echo "     $0 show"
     echo
-    exit
+    exit 0
+fi
+
+if [ ! -e manage.py ]; then
+    echo "no manage.py found. this script must be run in the django project directory"
+    echo
+    exit 1
 fi
 
 COMMAND=$1
@@ -49,10 +55,6 @@ elif [ "${COMMAND}" = "configure" ]; then
         exit
     fi
     cp cspace_django_site/extra_$2.py cspace_django_site/extra_settings.py
-    # install and build the javascript framework
-    npm install
-    npm build
-    ./node_modules/.bin/eslint client_modules/js/app.js
     echo
     echo "*************************************************************************************************"
     echo "OK, \"$2\" is configured. Now run ./setup.sh deploy <tenant> to set up a particular tenant,"
@@ -100,7 +102,6 @@ elif [ "${COMMAND}" = "deploy" ]; then
         cp ${CONFIGDIR}/$2/project_urls.py cspace_django_site/urls.py
         cp ${CONFIGDIR}/$2/project_apps.py cspace_django_site/installed_apps.py
         cp client_modules/static_assets/cspace_django_site/images/header-logo-$2.png client_modules/static_assets/cspace_django_site/images/header-logo.png
-
     fi
     mv config/main.cfg cspace_django_site
     # just to be sure, we start over with the database...
@@ -110,7 +111,9 @@ elif [ "${COMMAND}" = "deploy" ]; then
     python manage.py loaddata fixtures/*.json
     # do this just in case the javascript has been tweaked
     npm install
+    npm build
     ./node_modules/.bin/webpack
+    ./node_modules/.bin/eslint client_modules/js/app.js
     # update the static files
     python manage.py collectstatic --noinput
     echo
@@ -131,30 +134,39 @@ elif [ "${COMMAND}" = "redeploy" ]; then
     git checkout ${TAG}
     # do this just in case the javascript has been tweaked
     npm install
+    npm build
     ./node_modules/.bin/webpack
+    ./node_modules/.bin/eslint client_modules/js/app.js
     python manage.py collectstatic --noinput
     echo
     echo "*************************************************************************************************"
-    echo "please restart apache to pick up changes"
+    echo "base code (only) refreshed from GitHub; no changes to configuration, or custom apps though"
+    echo
+    echo "please restart apache to pick up changes!"
     echo "*************************************************************************************************"
     echo
 elif [ "${COMMAND}" = "refresh" ]; then
-    git pull -v
     cd ${CONFIGDIR}
     git pull -v
     cd ${CURRDIR}
     cp -r ${CONFIGDIR}/$2/apps/* .
     # get rid of any README that might have come over with the cp of the apps.
     rm -f README
+    cp ${CONFIGDIR}/$2/project_urls.py cspace_django_site/urls.py
+    cp ${CONFIGDIR}/$2/project_apps.py cspace_django_site/installed_apps.py
     # the underlying cspace_django_project code should be up to date as well...
     git pull -v
+    python manage.py syncdb --noinput
     # do this just in case the javascript has been tweaked
     npm install
+    npm build
     ./node_modules/.bin/webpack
+    ./node_modules/.bin/eslint client_modules/js/app.js
     python manage.py collectstatic --noinput
     echo
     echo "*************************************************************************************************"
-    echo "code (only) refreshed from GitHub; no changes to configuration or fixtures though"
+    echo "code, including custom apps refreshed from GitHub; no changes to configuration or fixtures though"
+    echo "you may need to create or edit .cfg files in config for any new or changed webapps."
     echo
     echo "please restart apache to pick up changes!"
     echo "*************************************************************************************************"
@@ -164,7 +176,9 @@ elif [ "${COMMAND}" = "updatejs" ]; then
     git pull -v
     # do this just in case the javascript has been tweaked
     npm install
+    npm build
     ./node_modules/.bin/webpack
+    ./node_modules/.bin/eslint client_modules/js/app.js
     python manage.py collectstatic --noinput
     echo
     echo "*************************************************************************************************"

@@ -156,43 +156,43 @@ def uploadmedia(mediaElements, config, http_parms):
             objectCSID = getCSID('objectnumber', mediaElements['objectnumber'], config)
             if objectCSID == [] or objectCSID is None:
                 print "could not get (i.e. find) objectnumber's csid: %s." % mediaElements['objectnumber']
-                mediaElements['objectCSID'] = ''
+                mediaElements['objectCSID'] = 'not found'
                 # raise Exception("<span style='color:red'>Object Number not found: %s!</span>" % mediaElements['objectnumber'])
             else:
                 objectCSID = objectCSID[0]
                 mediaElements['objectCSID'] = objectCSID
 
-            uri = 'relations'
+                uri = 'relations'
 
-            messages.append("posting media2obj to relations REST API...")
+                messages.append("posting media2obj to relations REST API...")
 
-            mediaElements['objectCsid'] = objectCSID
-            mediaElements['subjectCsid'] = mediaCSID
-            # "urn:cspace:institution.cspace.berkeley.edu:media:id(%s)" % mediaCSID
+                mediaElements['objectCsid'] = objectCSID
+                mediaElements['subjectCsid'] = mediaCSID
+                # "urn:cspace:institution.cspace.berkeley.edu:media:id(%s)" % mediaCSID
 
-            mediaElements['objectDocumentType'] = 'CollectionObject'
-            mediaElements['subjectDocumentType'] = 'Media'
+                mediaElements['objectDocumentType'] = 'CollectionObject'
+                mediaElements['subjectDocumentType'] = 'Media'
 
-            payload = relationsPayload(mediaElements)
-            (url, data, csid, elapsedtime) = postxml('POST', uri, http_parms.realm, http_parms.server, http_parms.username, http_parms.password, payload)
-            # elapsedtimetotal += elapsedtime
-            messages.append('got relation csid %s elapsedtime %s ' % (csid, elapsedtime))
-            mediaElements['media2objCSID'] = csid
-            messages.append("relations REST API post succeeded...")
+                payload = relationsPayload(mediaElements)
+                (url, data, csid, elapsedtime) = postxml('POST', uri, http_parms.realm, http_parms.server, http_parms.username, http_parms.password, payload)
+                # elapsedtimetotal += elapsedtime
+                messages.append('got relation csid %s elapsedtime %s ' % (csid, elapsedtime))
+                mediaElements['media2objCSID'] = csid
+                messages.append("relations REST API post succeeded...")
 
-            # reverse the roles
-            messages.append("posting obj2media to relations REST API...")
-            temp = mediaElements['objectCsid']
-            mediaElements['objectCsid'] = mediaElements['subjectCsid']
-            mediaElements['subjectCsid'] = temp
-            mediaElements['objectDocumentType'] = 'Media'
-            mediaElements['subjectDocumentType'] = 'CollectionObject'
-            payload = relationsPayload(mediaElements)
-            (url, data, csid, elapsedtime) = postxml('POST', uri, http_parms.realm, http_parms.server, http_parms.username, http_parms.password, payload)
-            #elapsedtimetotal += elapsedtime
-            messages.append('got relation csid %s elapsedtime %s ' % (csid, elapsedtime))
-            mediaElements['obj2mediaCSID'] = csid
-            messages.append("relations REST API post succeeded...")
+                # reverse the roles
+                messages.append("posting obj2media to relations REST API...")
+                temp = mediaElements['objectCsid']
+                mediaElements['objectCsid'] = mediaElements['subjectCsid']
+                mediaElements['subjectCsid'] = temp
+                mediaElements['objectDocumentType'] = 'Media'
+                mediaElements['subjectDocumentType'] = 'CollectionObject'
+                payload = relationsPayload(mediaElements)
+                (url, data, csid, elapsedtime) = postxml('POST', uri, http_parms.realm, http_parms.server, http_parms.username, http_parms.password, payload)
+                #elapsedtimetotal += elapsedtime
+                messages.append('got relation csid %s elapsedtime %s ' % (csid, elapsedtime))
+                mediaElements['obj2mediaCSID'] = csid
+                messages.append("relations REST API post succeeded...")
 
     return mediaElements
 
@@ -289,7 +289,7 @@ if __name__ == "__main__":
     # the first row of the file is a header
     columns = records[0]
     del records[0]
-    outputfh.writerow(columns + ['mediaCSID', 'objectCSID'])
+    outputfh.writerow(columns + ['mediaCSID', 'objectCSID', 'blobCSID'])
 
     for i, r in enumerate(records):
 
@@ -311,12 +311,16 @@ if __name__ == "__main__":
                 (time.time() - elapsedtimetotal))
             r.append(mediaElements['mediaCSID'])
             r.append(mediaElements['objectCSID'])
+            r.append(mediaElements['blobCSID'])
             outputfh.writerow(r)
         except:
             print "%s" % traceback.format_exc()
             print "MEDIA: create failed for blob or media. objectnumber %s, %8.2f" % (
                 mediaElements['objectnumber'], (time.time() - elapsedtimetotal))
             # delete the blob if we did not manage to make a media record for it...
-            (url, data, deletedCSID, elapsedtime) = postxml('DELETE', 'blobs/%s' % mediaElements['blobCSID'], http_parms.realm, http_parms.server, http_parms.username,
+            try:
+                (url, data, deletedCSID, elapsedtime) = postxml('DELETE', 'blobs/%s' % mediaElements['blobCSID'], http_parms.realm, http_parms.server, http_parms.username,
                                                           http_parms.password, '')
-            print "MEDIA: deleted blob %s" % mediaElements['blobCSID']
+                print "MEDIA: deleted blob %s" % mediaElements['blobCSID']
+            except:
+                print "MEDIA: failed to delete blob %s" % mediaElements['blobCSID']

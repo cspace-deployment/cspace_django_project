@@ -12,9 +12,9 @@ from os import path, remove
 import logging
 import time, datetime
 from getNumber import getNumber
-from utils import SERVERINFO, POSTBLOBPATH, INSTITUTION, BATCHPARAMETERS, FIELDS2WRITE
+from utils import SERVERLABEL, SERVERLABELCOLOR, POSTBLOBPATH, INSTITUTION, BATCHPARAMETERS, FIELDS2WRITE
 from utils import getBMUoptions, handle_uploaded_file, assignValue, get_exif, writeCsv
-from utils import getJobfile, getJoblist, loginfo, reformat
+from utils import getJobfile, getJoblist, loginfo, reformat, rendermedia
 from specialhandling import specialhandling
 
 # read common config file, just for the version info
@@ -44,8 +44,26 @@ class im:  # empty class for image metadata
 
 im.BMUoptions = getBMUoptions()
 
-def prepareFiles(request, validateonly, BMUoptions, constants):
-    jobnumber = constants['jobnumber']
+
+def setContext(context, elapsedtime):
+    # context['status'] = 'up'
+    context['additionalInfo'] = additionalInfo
+    context['apptitle'] = TITLE
+    context['version'] = prmz.VERSION
+    context['elapsedtime'] = '%8.2f' % elapsedtime
+    context['serverlabel'] = SERVERLABEL
+    context['serverlabelcolor'] = SERVERLABELCOLOR
+    context['dropdowns'] = im.BMUoptions
+    context['override_options'] = override_options
+    context['timestamp'] = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
+    return context
+
+
+def prepareFiles(request, BMUoptions, context):
+
+    validateonly = 'validateonly' in request.POST
+
+    jobnumber = context['jobnumber']
     jobinfo = {}
     images = []
     for lineno, afile in enumerate(request.FILES.getlist('imagefiles')):
@@ -62,7 +80,7 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
                          'date': datetimedigitized,
                          'extra': extra}
             for override in BMUoptions['overrides']:
-                dname,refname = assignValue(constants[override[2]][0], constants[override[2]][1], image, override[3], override[4])
+                dname,refname = assignValue(context[override[2]][0], context[override[2]][1], image, override[3], override[4])
                 imageinfo[override[2]] = refname
                 # add the Displayname just in case...
                 imageinfo['%sDisplayname' % override[2]] = dname
@@ -94,7 +112,7 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
                     #mhnumber = hex(int(mhnumber.replace('-','')))[2:]
                     imageinfo['objectnumber'] = 'DP-' + mhnumber
 
-            specialhandling(imageinfo, constants, BMUoptions, INSTITUTION)
+            specialhandling(imageinfo, context, BMUoptions, INSTITUTION)
             images.append(imageinfo)
 
         except:
@@ -139,17 +157,18 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
 
 
 def setConstants(request, im):
-    im.validateonly = 'validateonly' in request.POST
 
-    constants = {}
+    context = {}
+
+    context['validateonly'] = 'validateonly' in request.POST
 
     for override in im.BMUoptions['overrides']:
         if override[2] in request.POST:
-            constants[override[2]] = [request.POST[override[2]],request.POST['override%s' % override[2]]]
+            context[override[2]] = [request.POST[override[2]],request.POST['override%s' % override[2]]]
         else:
-            constants[override[2]] = ['', 'never']
+            context[override[2]] = ['', 'never']
 
-    return constants
+    return context
 
 
 @csrf_exempt
@@ -159,8 +178,8 @@ def rest(request, action):
     status = 'error' # assume murphy's law applies...
 
     if request.FILES:
-        constants = setConstants(request, im)
-        jobinfo, images = prepareFiles(request, im.validateonly, im.BMUoptions, constants)
+        context = setConstants(request, im)
+        jobinfo, images = prepareFiles(request, im.BMUoptions, context)
         status = 'ok' # OK, I guess it doesn't after all
     else:
         jobinfo = {}
@@ -178,30 +197,30 @@ def rest(request, action):
 @login_required()
 def uploadfiles(request):
     elapsedtime = time.time()
-    status = 'up'
-    constants = setConstants(request, im)
-    constants['jobnumber'] = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+    context = setConstants(request, im)
+    context['jobnumber'] = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
 
     if request.POST:
-        jobinfo, images = prepareFiles(request, im.validateonly, im.BMUoptions, constants)
+        jobinfo, images = prepareFiles(request, im.BMUoptions, context)
     else:
         jobinfo = {}
         images = []
 
-    timestamp = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
     elapsedtime = time.time() - elapsedtime
-    logger.info('%s :: %s :: %s' % ('uploadmedia job ', constants['jobnumber'], '-'))
+    logger.info('%s :: %s :: %s' % ('uploadmedia job ', context['jobnumber'], '-'))
+    context = setContext(context, elapsedtime)
 
-    return render(request, 'uploadmedia.html',
-                  {'apptitle': TITLE, 'serverinfo': SERVERINFO, 'images': images, 'count': len(images), 'additionalInfo': additionalInfo,
-                   'constants': constants, 'jobinfo': jobinfo, 'validateonly': im.validateonly, 'version': prmz.VERSION,
-                   'dropdowns': im.BMUoptions, 'override_options': override_options, 'status': status, 'timestamp': timestamp,
-                   'elapsedtime': '%8.2f' % elapsedtime})
+    context['jobinfo'] = jobinfo
+    context['images'] = images
+    context['count'] = len(images)
+
+    return render(request, 'uploadmedia.html', context)
 
 
 @login_required()
 def checkfilename(request):
     elapsedtime = time.time()
+    context = setConstants(request, im)
     if 'filenames2check' in request.POST and request.POST['filenames2check'] != '':
         listoffilenames = request.POST['filenames2check']
         filenames = listoffilenames.split(' ')
@@ -210,15 +229,11 @@ def checkfilename(request):
         objectnumbers = []
         listoffilenames = ''
     elapsedtime = time.time() - elapsedtime
-    status = 'up'
-    timestamp = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
+    context = setContext(context, elapsedtime)
+    context['filenames2check'] = listoffilenames
+    context['objectnumbers'] = objectnumbers
 
-    return render(request, 'uploadmedia.html', {'filenames2check': listoffilenames, 'version': prmz.VERSION,
-                                                'objectnumbers': objectnumbers, 'dropdowns': im.BMUoptions,
-                                                'override_options': override_options, 'timestamp': timestamp,
-                                                'elapsedtime': '%8.2f' % elapsedtime, 'additionalInfo': additionalInfo,
-                                                'status': status, 'apptitle': TITLE, 'serverinfo': SERVERINFO})
-
+    return render(request, 'uploadmedia.html', context)
 
 @login_required()
 def downloadresults(request, filename):
@@ -230,21 +245,30 @@ def downloadresults(request, filename):
 
 @login_required()
 def showresults(request):
+    elapsedtime = 0.0
+    context = setConstants(request, im)
+    try:
+        status = request.GET['status']
+    except:
+        status = 'showfile'
     filename = request.GET['filename']
-    jobstatus = request.GET['status']
+    context['filename'] = filename
+    context['jobstatus'] = request.GET['status']
     f = open(getJobfile(filename), "rb")
     filecontent = f.read()
-    filecontent = reformat(filecontent)
-    elapsedtime = 0.0
-    timestamp = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
-    status = 'up'
-    timestamp = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
+    if status == 'showmedia':
+        context['derivativegrid'] = 'Medium'
+        context['sizegrid'] = '240px'
+        context['imageserver'] = prmz.IMAGESERVER
+        context['items'] = rendermedia(filecontent)
+    elif status == 'showinportal':
+        pass
+    else:
+        context['filecontent'] = reformat(filecontent)
+    elapsedtime = time.time() - elapsedtime
+    context = setContext(context, elapsedtime)
 
-    return render(request, 'uploadmedia.html',
-                  {'dropdowns': im.BMUoptions, 'override_options': override_options, 'timestamp': timestamp,
-                   'elapsedtime': '%8.2f' % elapsedtime, 'version': prmz.VERSION, 'additionalInfo': additionalInfo,
-                   'status': status, 'apptitle': TITLE, 'serverinfo': SERVERINFO, 'jobs': None,
-                   'filecontent': filecontent, 'filename': filename, 'status': jobstatus})
+    return render(request, 'uploadmedia.html', context)
 
 
 @login_required()
@@ -262,19 +286,19 @@ def deletejob(request, filename):
 @login_required()
 def showqueue(request):
     elapsedtime = time.time()
-    jobs, errors, jobcount, errorcount = getJoblist()
+    context = setConstants(request, im)
+    jobs, errors, jobcount, errorcount = getJoblist(request)
     if 'checkjobs' in request.POST:
         errors = None
     elif 'showerrors' in request.POST:
         jobs = None
     else:
         errors = None
+    context['jobs'] = jobs
+    context['errors'] = errors
+    context['jobcount'] = jobcount
+    context['errorcount'] = errorcount
     elapsedtime = time.time() - elapsedtime
-    status = 'up'
-    timestamp = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
+    context = setContext(context, elapsedtime)
 
-    return render(request, 'uploadmedia.html',
-                  {'dropdowns': im.BMUoptions, 'override_options': override_options, 'timestamp': timestamp,
-                   'elapsedtime': '%8.2f' % elapsedtime, 'version': prmz.VERSION, 'additionalInfo': additionalInfo,
-                   'status': status, 'apptitle': TITLE, 'serverinfo': SERVERINFO, 'jobs': jobs, 'jobcount': jobcount,
-                   'errors': errors, 'errorcount': errorcount})
+    return render(request, 'uploadmedia.html', context)
