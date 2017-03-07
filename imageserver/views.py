@@ -77,7 +77,7 @@ def get_image(request, image):
 
     except:
         msg = 'image error'
-        data = open(path.join(settings.BASE_PARENT_DIR, 'cspace_django_site/static/cspace_django_site/images', imageunavailable), 'r').read()
+        data = open(path.join(settings.STATIC_ROOT, 'cspace_django_site/images', imageunavailable), 'r').read()
         content_type = 'image/jpeg'
 
     elapsedtime = time.time() - elapsedtime
