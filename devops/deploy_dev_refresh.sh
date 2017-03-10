@@ -25,4 +25,5 @@ perl -i -pe 's/.cspace.berkeley/-dev.cspace.berkeley/ unless /(\-dev|urn\:|\@)/'
 perl -i -pe 's/prod\-/dev-/ unless /\-dev/;s/port=53/port=51/;' config/*.cfg
 perl -i -pe 's/production/development/' config/*.cfg
 perl -i -pe 's/green/red/' config/*.cfg
+perl -i -pe 's/webapps\-dev/webapps/ if /IMAGESERVER/' config/common.cfg
 grep hostname cspace_django_site/main.cfg
