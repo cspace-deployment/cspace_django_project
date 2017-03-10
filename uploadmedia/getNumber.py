@@ -9,12 +9,18 @@ def getNumber(filename,institution):
     if institution == 'bampfa':
         objectnumber = filename.replace('bampfa_', '')
         try:
-            objectnumber, imagenumber, imagetype = objectnumber.split('_')
+            parts = objectnumber.split('_')
+            objectnumber = parts[0]
+            imagenumber = parts[1]
+            # the third element of BAMPFA filenames is the 'imagetype',
+            # but this is not currently used by the BMU
         except:
             imagenumber = '1'
-        # these legacy statement retained, just in case...
+        # these 2 legacy statement retained, just in case...
         # numHyphens = objectnumber.count("-") - 1
-        #objectnumber = objectnumber.replace('-', '.', numHyphens)
+        # objectnumber = objectnumber.replace('-', '.', numHyphens)
+        #
+        # need to 'deslugify' the objectnumber...
         objectnumber = objectnumber.replace('-', '.')
         objectnumber = objectnumberpattern.sub(r'\1-\2', objectnumber)
     elif institution == 'ucjeps':
@@ -36,7 +42,13 @@ def getNumber(filename,institution):
         # i.e. accession number_image order_Initials of creator
         objectnumber = sub(r'(?i).(jpe?g|tiff?|png)$','',filename)
         try:
-            objectnumber, imagenumber, extra = objectnumber.split('_')
+            # or even 53.1185_3_VH_Delosperma_tradescantioides_A.JPG
+            parts = objectnumber.split('_')
+            objectnumber = parts[0]
+            imagenumber = parts[1]
+            # the only "extra" part we care about are the initials.
+            # the other parts following initials, if any, are ignored
+            extra = parts[2]
         except:
             imagenumber = '1'
             objectnumber = objectnumber.split('_')[0]
