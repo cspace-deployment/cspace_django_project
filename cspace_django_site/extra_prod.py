@@ -6,7 +6,7 @@ try:
     # get the tracking id for Prod
     from trackingids import trackingids
     UA_TRACKING_ID = trackingids['webapps-prod'][0]
-except ImportError, exp:
+except:
     print 'UA tracking ID not found for Productioon. It should be "webapps-prod" in "trackingids.py"'
     exit(0)
 

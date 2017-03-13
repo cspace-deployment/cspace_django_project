@@ -4,7 +4,7 @@ try:
     # get the tracking id for Dev
     from trackingids import trackingids
     UA_TRACKING_ID = trackingids['webapps-dev'][0]
-except ImportError, exp:
+except:
     print 'UA tracking ID not found for Development. It should be "webapps-dev" in "trackingids.py"'
     exit(0)
 
