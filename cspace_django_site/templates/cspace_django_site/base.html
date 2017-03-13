@@ -8,8 +8,9 @@
             var trackingid = '{{ UA_TRACKING_ID }}';
             // if there is a tracker id, go ahead and create a tracking object...
             if (trackingid != '') {
-                xga('create', trackingid, 'auto', true);
-                xga('send', 'pageview', 'start', trackingid);
+                xga('create', trackingid, 'auto');
+                xga('set', 'page', '');
+                xga('send', 'pageview');
             }
         </script>
     {% endblock %}

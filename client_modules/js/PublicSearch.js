@@ -96,9 +96,6 @@ function checkPage(Page,increment) {
 
 $(document).ready(function () {
     var display;
-    // $('#searchfields').click(function() {
-    //     chooseSlideDirection('#searchfieldsTarget');
-    // });
 
     new Clipboard('.cbbtn');
 
@@ -201,9 +198,6 @@ $(document).ready(function () {
                 display: "block"
             });
 
-            // chooseSlideDirection('#searchfieldsTarget');
-            // chooseSlideDirection('#searchfields');
-
             $.post("../results/", formData).done(function (data) {
                 $('#resultsPanel').html(data);
 
@@ -223,7 +217,7 @@ $(document).ready(function () {
                 $('#waitingImage').css({
                     display: "none"
                 });
-                xga('send', 'pageview', { 'page': 'search' }, trackingid);
+                xga('send', 'pageview', undefined, trackingid);
             });
         }
     };
@@ -257,15 +251,15 @@ $(document).ready(function () {
                 $('#waitingImage').css({
                     display: "none"
                 });
-                xga('send', 'pageview', { 'page': 'summarize' }, trackingid);
+                xga('send', 'pageview', undefined, trackingid);
             });
 //        } else if ($(this).attr('id') == 'downloadstats') {
 //            $.post("../statistics/", formData).done(function (data) {
 //                alert( "success" );
 //            });
-//            xga('send', 'pageview', { 'page': 'summarize/download' }, trackingid);
+//            xga('send', 'pageview', undefined, trackingid);
         }
-//      xga('send', 'pageview', { 'page': 'statistics' }, trackingid);
+//      xga('send', 'pageview', undefined, trackingid);
     });
 
     $(document).on('click', '.map-item', function () {
@@ -275,7 +269,7 @@ $(document).ready(function () {
             console.log('img ' + marker);
             $(Elem).html('<iframe width="600" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q='+marker+'&key=AIzaSyBeDzud2rQvl70-TFgsdlMa9vsUl_vidZk&maptype=satellite" allowfullscreen></iframe>');
             Elem.slideDown();
-            xga('send', 'pageview', { 'page': 'map/inline' }, trackingid);
+            xga('send', 'pageview', undefined, trackingid);
         }
         else {
             Elem.slideUp();
@@ -318,7 +312,7 @@ $(document).ready(function () {
             });
 
             $('#tabs').tabs({ active: 1 });
-            xga('send', 'pageview', { 'page': 'search/refine' }, trackingid);
+            xga('send', 'pageview', undefined, trackingid);
         });
     });
 
@@ -330,18 +324,18 @@ $(document).ready(function () {
             $.post("../bmapper/", formData).done(function (data) {
                 window.open(data, '_blank');
             });
-            xga('send', 'pageview', { 'page': 'map/bmapper' }, trackingid);
+            xga('send', 'pageview', undefined, trackingid);
         } else if ($(this).attr('id') == 'map-google') {
             $.post("../gmapper/", formData).done(function (data) {
                 $('#maps').html(data);
             });
-            xga('send', 'pageview', { 'page': 'map/google' }, trackingid);
+            xga('send', 'pageview', undefined, trackingid);
         }
     });
 // we need to make sure this gets done in the event the page is created anew (e.g. via a pasted URL)
 $('#tabs').tabs({ active: 0 });
 // nb: this is a newish browser feature -- HTML5. what it does is to clear the GET parms from the URL in the addr bar.
-//window.history.pushState({},'foo','.')
+window.history.pushState({},'foo','.')
 // on the first load (or a reload) of the page, clear the form...
 //clearForm($('#search')[0]);
 });
