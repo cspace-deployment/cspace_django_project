@@ -1,12 +1,12 @@
 from re import compile, sub
 
 def getNumber(filename,institution):
-    objectnumberpattern = compile('([a-z]+)\.([a-zA-Z0-9]+)')
     imagenumber = ''
     extra = ''
     # the following is only for bampfa filenames...
     # input is something like: bampfa_1995-46-194-a-199.jpg, output should be: 1995.46.194.a-199
     if institution == 'bampfa':
+        objectnumberpattern = compile('([a-z]+)\.([a-zA-Z0-9]+)')
         objectnumber = filename.replace('bampfa_', '')
         try:
             parts = objectnumber.split('_')
@@ -50,7 +50,7 @@ def getNumber(filename,institution):
             # the other parts following initials, if any, are ignored
             extra = parts[2]
         except:
-            imagenumber = '1'
+            imagenumber = '0'
             objectnumber = objectnumber.split('_')[0]
     else:
         objectnumber = filename
