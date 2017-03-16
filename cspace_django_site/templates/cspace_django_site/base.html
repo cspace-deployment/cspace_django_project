@@ -9,7 +9,6 @@
             // if there is a tracking id, go ahead and create a tracking object...
             if (trackingid != '') {
                 xga('create', trackingid, 'auto', trackingid);
-                xga('set', 'page', '', trackingid);
                 xga('send', 'pageview', undefined, trackingid);
             }
         </script>
