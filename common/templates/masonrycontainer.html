@@ -13,16 +13,18 @@
 <script>
     $(document).ready(function () {
         // init Masonry
-        var masonrycontainer = $('.masonrycontainer').masonry({
-            itemSelector: ".item",
-            columWidth: 260,
-            isAnimated: true
+        var masonrycontainer = new Masonry($('.masonrycontainer')[0], {
+          itemSelector: ".item",
+          columnWidth: 260,
+          isAnimated: true
         });
-        // layout Isotope after each image loads
-        masonrycontainer.imagesLoaded().progress(function () {
-            masonrycontainer.masonry();
-        });
-
+        // layout Masonry after each image loads
+        var imgLoad = imagesLoaded($('.masonrycontainer'));
+        imgLoad.on('progress', function(masonryContainer) {
+          return function(instance, image) {
+            masonryContainer.layout();
+          }
+        }(masonrycontainer));
     });
 </script>
 <div class="masonrycontainer">

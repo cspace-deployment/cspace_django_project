@@ -26,11 +26,7 @@
     </table>
 </div>
 <script>
-    $('[id]').map(function () {
-        var elementID = $(this).attr('id');
-        var elementClass = $(this).attr('class');
-        if (elementClass == 'tablesorter') {
-            $(this).tablesorter();
-        }
-    });
+  $('[id^=Facet]').map(function () {
+     $(this).tablesorter({theme: 'blue'});
+  });
 </script>
