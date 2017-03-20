@@ -168,6 +168,21 @@ $(document).ready(function () {
             });
         }
     });
+    
+    if($('#resultsListing').length > 0) {
+      $('#resultsListing').tablesorter({
+          theme: 'blue',
+          headers: {
+              1: { sorter:'sortkey' }
+          }
+      });
+    }
+    
+    if ($('[id^=Facet]').length > 0) {
+      $('[id^=Facet]').map(function () {
+         $(this).tablesorter({theme: 'blue'});
+      });
+    }
 
     $.tablesorter.addParser({
         id: 'sortkey',
