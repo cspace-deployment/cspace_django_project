@@ -37,14 +37,16 @@ class TextInput extends React.Component {
         if (i !== 0) {
           formInput.push(<br key={i + "_br"}/>);
         }
+        var source = this.props.data.name[2] === '.' ? "postgres" : "";
         formInput.push(<input type="text" key={i} data-index={i}
           name={this.props.data.name} maxLength={this.props.data.parameter}
-          value={this.state.value[i]} onChange={this.handleChange}/>);
+          value={this.state.value[i]} onChange={this.handleChange} source={source && source}/>);
       }
     } else {
+      var source = this.props.data.name[2] === '.' ? "postgres" : "";
       var formInput = (<input type="text" 
         name={this.props.data.name} maxLength={this.props.data.parameter} 
-        value={this.state.value} onChange={this.handleChange}/>)
+        value={this.state.value} onChange={this.handleChange} source={source && source}/>)
     }
     return (
       <td>{formInput}</td>      
