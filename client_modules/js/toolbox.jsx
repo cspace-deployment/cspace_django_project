@@ -125,7 +125,7 @@ Dropdown.propTypes = {
     name: React.PropTypes.string.isRequried,
     parameter: React.PropTypes.arrayOf(
       React.PropTypes.tuple
-    )).isRequired
+    ).isRequired
   }).isRequired
 }
 
