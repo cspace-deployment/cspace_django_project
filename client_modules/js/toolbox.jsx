@@ -12,7 +12,7 @@ var $ = require("expose?$!jquery");
 class TextInput extends React.Component {
   constructor(props) {
     super(props);
-    if ('defaultValue' in this.props) {
+    if ('defaultValue' in this.props && this.props.defaultValue !== null) {
       this.state = {value: this.props.defaultValue};
     } else {
       this.state = {value: ''};      
@@ -40,13 +40,13 @@ class TextInput extends React.Component {
         var source = this.props.data.name[2] === '.' ? "postgres" : "";
         formInput.push(<input type="text" key={i} data-index={i}
           name={this.props.data.name} maxLength={this.props.data.parameter}
-          value={this.state.value[i]} onChange={this.handleChange} source={source && source}/>);
+          value={this.state.value[i]} onChange={this.handleChange} data-source={source && source}/>);
       }
     } else {
       var source = this.props.data.name[2] === '.' ? "postgres" : "";
       var formInput = (<input type="text" 
         name={this.props.data.name} maxLength={this.props.data.parameter} 
-        value={this.state.value} onChange={this.handleChange} source={source && source}/>)
+        value={this.state.value} onChange={this.handleChange} data-source={source && source}/>)
     }
     return (
       <td>{formInput}</td>      
@@ -274,6 +274,12 @@ class SearchForm extends React.Component {
     );
   }
 }
+SearchForm.propTypes = {
+  url: React.PropTypes.string.isRequired,
+  appState: React.PropTypes.oneOf(['start', 'review', 'update']).isRequired,
+  appName: React.PropTypes.string.isRequired
+}
+
 
 class ResultsForm extends React.Component {
   constructor(props) {
@@ -370,17 +376,22 @@ class ResultsForm extends React.Component {
 
       if ('items' in data) {
         rows = data.items.map((item) => {
+          if ('csid' in item) {
+            var unique = item.csid;
+          } else {
+            var unique = Math.random();
+          }
           var cells = [];
           if (rowlayout.length > 0) {
             for (var i=0; i<rowlayout.length; i++) {
-              cells.push(<FormField key={item.csid + '_' + rowlayout[i].id} data={rowlayout[i]} defaultValue={item.cells[i]}/>);
+              cells.push(<FormField key={unique + '_' + rowlayout[i].id} data={rowlayout[i]} defaultValue={item.cells[i]}/>);
             }
           } else {
             for (var i=0; i<item.cells.length; i++) {
-              cells.push(<FormField key={item.csid + '_' + item.cells[i]} data={{type: 'string'}} defaultValue={item.cells[i]}/>);
+              cells.push(<FormField key={unique + '_' + item.cells[i]} data={{type: 'string'}} defaultValue={item.cells[i]}/>);
             }
           }
-          return (<tr data-csid={item.csid} key={item.csid}>{cells}</tr>);
+          return (<tr data-csid={item.csid} key={unique}>{cells}</tr>);
         });
         resultsText = (<p>{data.numberofitems} items listed.</p>);
       }
@@ -420,6 +431,34 @@ class ResultsForm extends React.Component {
       </div>
     )
   }
+}
+ResultsForm.propTypes = {
+  data: React.PropTypes.shape({
+    applayout: React.PropTypes.arrayOf(React.PropTypes.shape({
+      id: React.PropTypes.number.isRequired,
+      label: React.PropTypes.string.isRequired,
+      name: React.PropTypes.string.isRequired,
+      type: React.PropTypes.string.isRequired,
+      column: React.PropTypes.string,
+      row: React.PropTypes.string
+    })).isRequired,
+    appname: React.PropTypes.string.isRequired,
+    //TODO: this is preferred - leave space for subheaders, but not yet implemented
+    // table: React.PropTypes.arrayOf(React.PropTypes.shape({
+    //   items: React.PropTypes.arrayOf(React.PropTypes.shape({
+    //     csid: React.PropTypes.string.isRequired,
+    //     cells: React.PropTypes.array.isRequired
+    //   })),
+    //   header: React.PropTypes.object,
+    //   footer: React.PropTypes.object
+    // })),
+    items: React.PropTypes.arrayOf(React.PropTypes.shape({
+      csid: React.PropTypes.string.isRequired,
+      cells: React.PropTypes.array.isRequired,
+    })),
+    numberOfItems: React.PropTypes.number
+  }).isRequired,
+  url: React.PropTypes.string.isRequired
 }
 
 var displayApp = function(appName) {

@@ -16,3 +16,4 @@ psycopg2
 requests
 six
 solrpy
+pymongo
