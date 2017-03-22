@@ -9,6 +9,42 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var $ = require("expose?$!jquery");
 
+// custom propType
+function tuple(props, propName, componentName) {
+  componentName = componentName || 'ANONYMOUS';
+  if (props[propName]) {
+    let value = props[propName];
+    if (Array.isArray(value)) {
+      return value.length == 2 ? null : new Error(propName + ' in ' + componentName + " is not a tuple.")
+    }
+  }
+  return null;
+}
+
+// https://www.ian-thomas.net/custom-proptype-validation-with-react/
+function createChainableTypeChecker(validate) {
+  function checkType(isRequired, props, propName, componentName, location) {
+    componentName = componentName || ANONYMOUS;
+    if (props[propName] == null) {
+      var locationName = ReactPropTypeLocationNames[location];
+      if (isRequired) {
+        return new Error(
+          ("Required " + locationName + " `" + propName + "` was not specified in ") +
+          ("`" + componentName + "`.")
+        );
+      }
+      return null;
+    } else {
+      return validate(props, propName, componentName, location);
+    }
+  }
+
+  let chainedCheckType = checkType.bind(null, false);
+  chainedCheckType.isRequired = checkType.bind(null, true);
+
+  return chainedCheckType;
+}
+
 class TextInput extends React.Component {
   constructor(props) {
     super(props);
@@ -31,19 +67,19 @@ class TextInput extends React.Component {
   }
   
   render() {
+    var source = this.props.data.name[2] === '.' ? "postgres" : "";
+
     if (Array.isArray(this.state.value)) {
       var formInput = [];
       for (var i=0; i<this.state.value.length; i++) {
         if (i !== 0) {
           formInput.push(<br key={i + "_br"}/>);
         }
-        var source = this.props.data.name[2] === '.' ? "postgres" : "";
         formInput.push(<input type="text" key={i} data-index={i}
           name={this.props.data.name} maxLength={this.props.data.parameter}
           value={this.state.value[i]} onChange={this.handleChange} data-source={source && source}/>);
       }
     } else {
-      var source = this.props.data.name[2] === '.' ? "postgres" : "";
       var formInput = (<input type="text" 
         name={this.props.data.name} maxLength={this.props.data.parameter} 
         value={this.state.value} onChange={this.handleChange} data-source={source && source}/>)
@@ -52,6 +88,13 @@ class TextInput extends React.Component {
       <td>{formInput}</td>      
     );
   }
+}
+TextInput.propTypes = {
+  data: React.PropTypes.shape({
+    name: React.PropTypes.string.isRequired,
+    parameter: React.PropTypes.string.isRequired,
+  }),
+  defaultValue: React.PropTypes.string
 }
 
 class Dropdown extends React.Component {
@@ -77,6 +120,14 @@ class Dropdown extends React.Component {
     );
   }
 }
+Dropdown.propTypes = {
+  data: React.PropTypes.shape({
+    name: React.PropTypes.string.isRequried,
+    parameter: React.PropTypes.arrayOf(
+      React.PropTypes.tuple
+    ).isRequired
+  }).isRequired
+}
 
 class DateField extends React.Component {
   render() {
@@ -87,6 +138,12 @@ class DateField extends React.Component {
       </td>
     );
   }
+}
+DateField.propTypes = {
+  data: React.PropTypes.shape({
+    name: React.PropTypes.string.isRequired,
+    value: React.PropTypes.string.isRequired
+  }).isRequired
 }
 
 class Button extends React.Component {
@@ -99,6 +156,13 @@ class Button extends React.Component {
     );
   }
 }
+Button.propTypes = {
+  data: React.propTypes.shape({
+    parameter: React.PropTypes.string.isRequired,
+    name: React.PropTypes.string.isRequired,
+    label: React.PropTypes.string.isRequired
+  }).isRequired
+}
 
 class SubmitButton extends React.Component {
   render() {
@@ -109,6 +173,12 @@ class SubmitButton extends React.Component {
       </td>
     );
   }
+}
+SubmitButton.propTypes = {
+  data: React.PropTypes.shape({
+    parameter: React.PropTypes.string.isRequired,
+    label: React.PropTypes.string.isRequired
+  }).isRequired
 }
 
 class ResetButton extends React.Component {
@@ -160,6 +230,13 @@ class FormField extends React.Component {
         return (<td></td>);
     }
   }
+}
+FormField.propTypes = {
+  data: React.PropTypes.shape({
+    type: React.PropTypes.oneOf(['dropdown', 'text', 'integer', 'string', 'hidden', 'date', 'button']).isRequired,
+    name: React.PropTypes.string,
+  }).isRequired,
+  defaultValue: React.PropTypes.string
 }
 
 class SearchForm extends React.Component {
@@ -279,7 +356,6 @@ SearchForm.propTypes = {
   appState: React.PropTypes.oneOf(['start', 'review', 'update']).isRequired,
   appName: React.PropTypes.string.isRequired
 }
-
 
 class ResultsForm extends React.Component {
   constructor(props) {
