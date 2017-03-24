@@ -493,6 +493,7 @@ class ResultsForm extends React.Component {
     //last row is submit buttons
     rows.splice((rows.length-1), 1);
     
+    //TODO: handle packaging up results
     var items=[];
     for (var i=0; i<rows.length; i++) {
       var row = {csid: $(rows[i]).data('csid'), cells: []};
@@ -521,8 +522,11 @@ class ResultsForm extends React.Component {
         }
       }
       
-      row.cells = itemValues;
-      items.push(row);
+      //don't add anything from subheader rows or rows without input elements
+      if (itemValues.length > 0) {
+        row.cells = itemValues;
+        items.push(row);        
+      }
     }
 
     var submission = {
@@ -586,6 +590,23 @@ class ResultsForm extends React.Component {
           return rows
         });
         resultsText = (<p>{data.numberofitems} items listed.</p>);
+      } 
+      else if ('items' in data) {
+        var sections = data.items.map((item) => {
+          var unique = Math.random();
+
+          var cells = [];
+          if (rowlayout.length > 0) {
+            for (var i=0; i<rowlayout.length; i++) {
+              cells.push(<FormField key={unique + '_' + rowlayout[i].id} data={rowlayout[i]} defaultValue={item.cells[i]}/>);
+            }
+          } else {
+            for (var i=0; i<item.cells.length; i++) {
+              cells.push(<FormField key={unique + '_' + item.cells[i]} data={{type: 'string'}} defaultValue={item.cells[i]}/>);
+            }
+          }
+          return (<tr data-csid={item.csid} key={unique}>{cells}</tr>);
+        });
       }
 
       submitButtons = [];
