@@ -50,7 +50,7 @@ def dbtransaction(q, elementID, connect_string):
         srchindex = 'location'
     elif srchindex in ['gr']:
         srchindex = 'group'
-    elif srchindex in ['cp']:
+    elif srchindex in ['cp', 'pp']:
         srchindex = 'longplace'
     elif srchindex in ['ob']:
         srchindex = 'object'
@@ -67,6 +67,8 @@ def dbtransaction(q, elementID, connect_string):
     elif srchindex in ['px']:
         srchindex = 'longplace2'
     elif srchindex in ['pc']:
+        srchindex = 'person'
+    elif srchindex in ['pe', 'cl']:
         srchindex = 'person'
     elif srchindex in ['or']:
         srchindex = 'organization'
