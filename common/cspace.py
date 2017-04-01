@@ -66,6 +66,7 @@ def make_get_request(realm, uri, hostname, protocol, port, username, password):
     :param password:
     """
 
+    elapsedtime = time.time()
     if port == '':
         server = protocol + "://" + hostname
     else:
@@ -90,8 +91,10 @@ def make_get_request(realm, uri, hostname, protocol, port, username, password):
         print 'We failed to reach the server (%s).' % server
         print 'Reason: ', e.reason
         result = (url, None, e.reason)
+    except:
+        raise
 
-    return result
+    return result + ((time.time() - elapsedtime),)
 
 
 def postxml(realm, uri, hostname, protocol, port, username, password, payload, requestType):

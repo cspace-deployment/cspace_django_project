@@ -166,7 +166,7 @@ class CSpaceAuthN(object):
         result = False
 
         self.setupForRequest()
-        (url, data, statusCode) = cspace.make_get_request(self.realm, self.uri, self.hostname, self.protocol, self.port,
+        (url, data, statusCode, elapsedtime) = cspace.make_get_request(self.realm, self.uri, self.hostname, self.protocol, self.port,
                                                           username, password)
         logger.info("Request to %s: %s" % (url, statusCode))
         if statusCode is 200:

@@ -11,19 +11,19 @@ from cspace_django_site.main import cspace_django_site
 def get_list(request, service):
     config = cspace_django_site.getConfig()
     connection = cspace.connection.create_connection(config, request.user)
-    (url, data, statusCode) = connection.make_get_request('cspace-services/%s' % service)
+    (url, data, statusCode,elapsedtime) = connection.make_get_request('cspace-services/%s' % service)
     return HttpResponse(data, content_type='application/xml')
 
 @login_required()
 def get_item(request, service, item_csid):
     config = cspace_django_site.getConfig()
     connection = cspace.connection.create_connection(config, request.user)
-    (url, data, statusCode) = connection.make_get_request('cspace-services/%s/%s' % (service,item_csid))
+    (url, data, statusCode,elapsedtime) = connection.make_get_request('cspace-services/%s/%s' % (service,item_csid))
     return HttpResponse(data, content_type='application/xml')
 
 @login_required()
 def post_item(request, service, item_csid):
     config = cspace_django_site.getConfig()
     connection = cspace.connection.create_connection(config, request.user)
-    (url, data, statusCode) = connection.make_get_request('cspace-services/%s/%s' % (service,item_csid))
+    (url, data, statusCode,elapsedtime) = connection.make_get_request('cspace-services/%s/%s' % (service,item_csid))
     return HttpResponse(data, content_type='application/xml')

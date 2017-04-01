@@ -44,7 +44,7 @@ def simplesearch(request):
         kw = request.GET['kw']
         # do search
         connection = cspace.connection.create_connection(config, request.user)
-        (url, data, statusCode) = connection.make_get_request(
+        (url, data, statusCode,elapsedtime) = connection.make_get_request(
             'cspace-services/%s?kw=%s&wf_deleted=false' % ('collectionobjects', kw))
         # ...collectionobjects?kw=%27orchid%27&wf_deleted=false
         cspaceXML = fromstring(data)

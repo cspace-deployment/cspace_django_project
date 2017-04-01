@@ -119,7 +119,7 @@ def fileNamereplace(param, param1):
 @login_required()
 def index(request):
     connection = cspace.connection.create_connection(mainConfig, request.user)
-    (url, data, statusCode) = connection.make_get_request('cspace-services/reports')
+    (url, data, statusCode, elapsedtime) = connection.make_get_request('cspace-services/reports')
     reportXML = fromstring(data)
     reportCsids = [csidElement.text for csidElement in reportXML.findall('.//csid')]
     reportNames = [csidElement.text for csidElement in reportXML.findall('.//name')]
@@ -127,7 +127,7 @@ def index(request):
     #print reportCsids
     for csid in reportCsids:
         try:
-            (url, data, statusCode) = connection.make_get_request('cspace-services/reports/%s' % csid)
+            (url, data, statusCode, elapsedtime) = connection.make_get_request('cspace-services/reports/%s' % csid)
             reportXML = fromstring(data)
             fileName = reportXML.find('.//filename')
             fileName = fileName.text
@@ -151,7 +151,7 @@ def ireport(request, report_csid):
 
     # get the report metadata for this report
     connection = cspace.connection.create_connection(mainConfig, request.user)
-    (url, data, statusCode) = connection.make_get_request('cspace-services/reports/%s' % report_csid)
+    (url, data, statusCode, elapsedtime) = connection.make_get_request('cspace-services/reports/%s' % report_csid)
     reportXML = fromstring(data)
     fileName = reportXML.find('.//filename')
     fileName = fileName.text
