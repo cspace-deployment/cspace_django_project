@@ -50,7 +50,7 @@ def dbtransaction(q, elementID, connect_string):
         srchindex = 'location'
     elif srchindex in ['gr']:
         srchindex = 'group'
-    elif srchindex in ['cp', 'pp']:
+    elif srchindex in ['cp', 'pp', 'pd']:
         srchindex = 'longplace'
     elif srchindex in ['ob']:
         srchindex = 'object'
