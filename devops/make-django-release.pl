@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 # make a django project release
-# e.g. ./makerelease.sh cdp cspace_django_project "latest BMU, other small improvements"
+# e.g. ./make-django-release.sh cdp cspace_django_project "latest BMU, other small improvements"
 
 use strict;
 
@@ -37,10 +37,15 @@ $tag_message .= ' ' . $MSG if $MSG;
 
 print "verifying code is current...\n";
 system "git pull -v";
-print "creating changelog.txt...\n";
-system "echo '$version_number $tag_message' > changelog.txt";
-system "date >> changelog.txt ; echo >> changelog.txt";
-system "git log --oneline --decorate >> changelog.txt";
+print "creating CHANGELOG.txt...\n";
+system "echo 'CHANGELOG for the cspace_django_webapps' > CHANGELOG.txt";
+system "echo  >> CHANGELOG.txt;
+system "echo 'OK, it is not a *real* change log, but a list of changes resulting from git log' >> CHANGELOG.txt";
+system "echo 'with some human annotation after the fact.' >> CHANGELOG.txt";
+system "echo  >> CHANGELOG.txt
+system "echo 'This is version $version_number' >> CHANGELOG.txt";
+system "date >> CHANGELOG.txt ; echo >> CHANGELOG.txt";
+system "git log --oneline --decorate >> CHANGELOG.txt";
 system "git commit -a -m 'revise change log for version $version_number'";
 print "git tag -a $version_number -m '$tag_message'\n";
 system "git tag -a $version_number -m '$tag_message'";
