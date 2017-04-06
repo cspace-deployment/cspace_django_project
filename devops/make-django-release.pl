@@ -39,10 +39,10 @@ print "verifying code is current...\n";
 system "git pull -v";
 print "creating CHANGELOG.txt...\n";
 system "echo 'CHANGELOG for the cspace_django_webapps' > CHANGELOG.txt";
-system "echo  >> CHANGELOG.txt;
+system "echo  >> CHANGELOG.txt";
 system "echo 'OK, it is not a *real* change log, but a list of changes resulting from git log' >> CHANGELOG.txt";
 system "echo 'with some human annotation after the fact.' >> CHANGELOG.txt";
-system "echo  >> CHANGELOG.txt
+system "echo  >> CHANGELOG.txt";
 system "echo 'This is version $version_number' >> CHANGELOG.txt";
 system "date >> CHANGELOG.txt ; echo >> CHANGELOG.txt";
 system "git log --oneline --decorate >> CHANGELOG.txt";
