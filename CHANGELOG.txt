@@ -1,12 +1,29 @@
 CHANGELOG for the cspace_django_webapps
 
-OK, it's not a *real* change log, but a list of changes resulting from 'git log'
+OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-cdp_4.1-36 Release tag for django project cdp_4.1-36.
-Fri Mar 17 18:02:37 PDT 2017
+This is version cdp_4.1-37
+Wed Apr  5 23:19:39 PDT 2017
 
-7a4aeac (HEAD -> master, origin/master, origin/HEAD) DJAN-51: we don't need to make this call to ga
+04c1045 (HEAD -> master, origin/master, origin/HEAD) NOJIRA: fix typo in release-making script
+c3ce314 NOJIRA: modify request header to provide authentication up front
+f673ad4 NOJIRA: start some resembling a real change log
+68d87cf NOJIRA: add elapsed time to cspace.make_get_request return
+b4cbfa3 PAHMA:1219: add 'place depicted' to autosuggest options
+105544c PAHMA-1558, PAHMA-1559, PAHMA-1560: changes to postgres autosuggest for new fields
+9d1211b Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+428f3df Update now working as expected
+b01f0dc Added more prop types, reformatted how ResultsForm renders to accomodate subheaders, installed a new AutoSuggest and got it setup properly
+3ff9c96 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+f4fdda4 NOJIRA: add a lil space between grid images. I wonder where it went...
+6ab3d4d Missed a syntax error
+3773cab Added more validation for form fields
+bde9666 Added proptypes to toolbox and got autocomplete working
+c547ce3 PAHMA-1219: insert source attribute for autocomplete
+5ca5bc0 Better fix for tablesorter initialization
+57a9c94 Exposed Masonry and ImagesLoaded, fixed issue where tablesorter was not getting initialized when a user landed at a search results set as opposed to performing a search
+7a4aeac (tag: cdp_4.1-36) DJAN-51: we don't need to make this call to ga
 35fa0f5 DJAN-51: clarify code that creates tracker
 a75e38f NOJIRA: revert this javascript trick: it fixes the emailable url but breaks the toolbox
 be789de UCBG-436: label images are numbered '0', and marked 'not approved for web'
