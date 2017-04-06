@@ -6,7 +6,7 @@ import urllib2
 import ConfigParser
 import time
 import re
-
+import base64
 
 CONFIG_SUFFIX = ".cfg"
 CONFIGSECTION_SERVICES_CONNECT = 'cspace_services_connect'
@@ -71,10 +71,17 @@ def make_get_request(realm, uri, hostname, protocol, port, username, password):
         server = protocol + "://" + hostname
     else:
         server = protocol + "://" + hostname + ":" + port
+
+    # this is a bit elaborate because otherwise
+    # the urllib2 approach to basicauth is to first try the request without the credentials, get a 401
+    # then retry the request with the credentials... who know why...
     passMgr = urllib2.HTTPPasswordMgr()
     passMgr.add_password(realm, server, username, password)
     authhandler = urllib2.HTTPBasicAuthHandler(passMgr)
     opener = urllib2.build_opener(authhandler)
+    unencoded_credentials = "%s:%s" % (username, password)
+    auth_value = 'Basic %s' % base64.b64encode(unencoded_credentials).strip()
+    opener.addheaders = [('Authorization', auth_value)]
     urllib2.install_opener(opener)
     url = "%s/%s" % (server, uri)
 
@@ -103,10 +110,17 @@ def postxml(realm, uri, hostname, protocol, port, username, password, payload, r
         server = protocol + "://" + hostname
     else:
         server = protocol + "://" + hostname + ":" + port
+
+    # this is a bit elaborate because otherwise
+    # the urllib2 approach to basicauth is to first try the request without the credentials, get a 401
+    # then retry the request with the credentials... who know why...
     passMgr = urllib2.HTTPPasswordMgr()
     passMgr.add_password(realm, server, username, password)
     authhandler = urllib2.HTTPBasicAuthHandler(passMgr)
     opener = urllib2.build_opener(authhandler)
+    unencoded_credentials = "%s:%s" % (username, password)
+    auth_value = 'Basic %s' % base64.b64encode(unencoded_credentials).strip()
+    opener.addheaders = [('Authorization', auth_value)]
     urllib2.install_opener(opener)
     url = "%s/%s" % (server, uri)
 
@@ -114,7 +128,7 @@ def postxml(realm, uri, hostname, protocol, port, username, password, payload, r
     request = urllib2.Request(url, payload, {'Content-Type': 'application/xml'})
     # default method for urllib2 with payload is POST
     if requestType == 'PUT': request.get_method = lambda: 'PUT'
-    if requestType == 'DELETE': request.get_method = lambda: 'DELETE'
+    elif requestType == 'DELETE': request.get_method = lambda: 'DELETE'
 
     try:
         f = urllib2.urlopen(request)
