@@ -35,12 +35,12 @@ CURRDIR=`pwd`
 CONFIGDIR=~/django_example_config
 
 if [ "${COMMAND}" = "disable" ]; then
-    perl -i -pe "s/('$WEBAPP')/#* *\1/" cspace_django_site/installed_apps.py
-    perl -i -pe "s/(url)/#* *\1/ if /$WEBAPP/" cspace_django_site/urls.py
+    perl -i -pe "s/('$WEBAPP')/# \1/" cspace_django_site/installed_apps.py
+    perl -i -pe "s/(url)/# \1/ if /$WEBAPP/" cspace_django_site/urls.py
     echo "disabled $WEBAPP"
 elif [ "${COMMAND}" = "enable" ]; then
-    perl -i -pe "s/#* *('$WEBAPP')/\1/" cspace_django_site/installed_apps.py
-    perl -i -pe "s/#* *(url)/\1/ if /$WEBAPP/" cspace_django_site/urls.py
+    perl -i -pe "s/# *('$WEBAPP')/\1/" cspace_django_site/installed_apps.py
+    perl -i -pe "s/# *(url)/\1/ if /$WEBAPP/" cspace_django_site/urls.py
     echo "enabled $WEBAPP"
 elif [ "${COMMAND}" = "show" ]; then
     echo
