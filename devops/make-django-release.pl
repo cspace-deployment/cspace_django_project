@@ -37,7 +37,8 @@ $tag_message .= ' ' . $MSG if $MSG;
 
 print "verifying code is current...\n";
 system "git pull -v";
-print "creating CHANGELOG.txt...\n";
+system "git checkout master";
+print "updating CHANGELOG.txt...\n";
 system "echo 'CHANGELOG for the cspace_django_webapps' > CHANGELOG.txt";
 system "echo  >> CHANGELOG.txt";
 system "echo 'OK, it is not a *real* change log, but a list of changes resulting from git log' >> CHANGELOG.txt";
@@ -47,7 +48,8 @@ system "echo 'This is version $version_number' >> CHANGELOG.txt";
 system "date >> CHANGELOG.txt ; echo >> CHANGELOG.txt";
 system "git log --oneline --decorate >> CHANGELOG.txt";
 system "git commit -a -m 'revise change log for version $version_number'";
-print "git tag -a $version_number -m '$tag_message'\n";
+system "git push -v" ;
+print  "git tag -a $version_number -m '$tag_message'\n";
 system "git tag -a $version_number -m '$tag_message'";
 system "git push --tags";
 
