@@ -115,6 +115,7 @@ if ($ARGV[1] =~ /^[\d\-]+$/) { #if we have a single job, just do stats for it..
 }
 
 
+my ($name,$size,$objectnumber,$date,$creator,$contributor,$rightsholder,$imagenumber,$handling,$approvedforweb,$description,$mediacsid,$objectcsid,$blobcsid);
 foreach my $filename ( <$DIR/$JOB*.csv>) { # nb: no slash between dir and file...
    open FH,"<$filename";
    $filename =~ s/$DIR\///;
@@ -126,13 +127,8 @@ foreach my $filename ( <$DIR/$JOB*.csv>) { # nb: no slash between dir and file..
      $i++;
      chomp;
      s/\r//g;
-     my ($name,$size,$objectnumber,$blobcsid,$date,$creator,$contributor,$rightsholder,$fullpath,$mediacsid,$objectcsid);
-     if ($step =~ /(step1|original)/) {
-       ($name,$size,$objectnumber,$date,$creator,$contributor,$rightsholder) = split /[\t\|]/;
-     }
-     else {
-       ($name,$size,$objectnumber,$blobcsid,$date,$creator,$contributor,$rightsholder,$fullpath,$mediacsid,$objectcsid) = split /[\t\|]/;
-     }
+     ($name,$size,$objectnumber,$date,$creator,$contributor,$rightsholder,$imagenumber,$handling,$approvedforweb,$description,$mediacsid,$objectcsid,$blobcsid) = split /[\t\|]/;
+     next if $objectcsid =~ /not found/i;
      #next if $objectcsid =~ /NoObjectFound/;
      #next if $step =~ /step1/;
      #print "  $run\t$step\t$i\t$name\n";
