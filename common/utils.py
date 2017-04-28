@@ -707,7 +707,7 @@ def doSearch(context, prmz, request):
             try:
                 multi = len(rowDict[p['solrfield']]) if '_ss' in p['solrfield'] else 0
                 value2use = rowDict[p['solrfield']]
-                if type(p['fieldtype']) == type([]):
+                if type(p['fieldtype']) == type([]) and p['fieldtype'][1] != 'default':
                     value2use = [p['fieldtype'][1][v] for v in value2use]
                     otherfields.append({'label': p['label'], 'name': p['name'], 'multi': multi, 'value': value2use, 'special': p['fieldtype'][0]})
                 else:
