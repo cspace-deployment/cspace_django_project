@@ -28,3 +28,17 @@ a { color: #5b80b2; text-decoration: none; }
     height: 30px;
     padding-top: 15px;
 }
+
+#statsform {
+  flex: 1 1 22%;
+  background-color: whitesmoke; 
+  margin-right: 10px;
+}
+
+#statsresults {
+  flex: 1 1 auto;
+}
+
+#statistics {
+  display: flex;
+}

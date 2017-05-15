@@ -1,8 +1,5 @@
 <div id="statistics">
-    <div id="statsresults" style="width: 77%; float: right">
-        {% include "statsResults.html" %}
-    </div>
-    <div style="width: 22%; background-color: whitesmoke">
+    <div id="statsform">
         <h3 style="padding: 10px 0px 10px 0px;">1. Select field to summarize on:</h3>
         <select id="summarizeon" name="summarizeon">
             <option value="">Please select</option>
@@ -22,5 +19,8 @@
         <br/>
         <button type="submit" name="downloadstats" id="downloadstats" class="prettyBtn">Download Summary as CSV</button>
         <p style="margin: 10px;">limit is {{ resultlimit }} rows.</p>
+    </div>
+    <div id="statsresults">
+        {% include "statsResults.html" %}
     </div>
 </div>
