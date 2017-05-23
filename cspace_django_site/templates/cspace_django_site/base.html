@@ -25,7 +25,8 @@
     <link rel="stylesheet" type="text/css" href="{% static 'common/css/theme.blue.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'cspace_django_site/css/smoothness/jquery-ui-1.10.3.custom.min.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'common/css/PublicSearch.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'cspace_django_site/css/' %}{{ device }}.css"/>
+    <!-- the following link may be used if you want to include device-specific styles, based on the device detected by the backend -->
+    <!-- link rel="stylesheet" type="text/css" href="{% static 'cspace_django_site/css/' %}{{ device }}.css"/ -->
     {% block extrastyle %}{% endblock %}
     <link rel="stylesheet" type="text/css" href="{% static 'cspace_django_site/css/print.css' %}"/>
 
