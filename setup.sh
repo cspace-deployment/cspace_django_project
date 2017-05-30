@@ -8,7 +8,19 @@
 # individual webapps can be enabled and disabled
 #
 
-if [ $# -ne 2 -a "$1" != 'show' -a "$1" != 'updatejs' ]; then
+function buildjs()
+{
+    if [ ! -d ~/$1_node_modules/ ]; then
+        mv ~/$1_node_modules/ ./node_modules/
+    fi
+    npm install
+    npm build
+    ./node_modules/.bin/webpack
+    ./node_modules/.bin/eslint client_modules/js/app.js
+    mv ./node_modules/ ~/$1_node_modules/
+}
+
+if [ $# -ne 2 -a "$1" != 'show' ]; then
     echo "Usage: $0 <enable|disable|deploy|redeploy|refresh|updatejs|configure|show> <TENANT|CONFIGURATION|WEBAPP>"
     echo
     echo "where: TENANT = 'default' or the name of a deployable tenant"
@@ -109,11 +121,8 @@ elif [ "${COMMAND}" = "deploy" ]; then
     python manage.py syncdb --noinput
     # python manage.py migrate
     python manage.py loaddata fixtures/*.json
-    # do this just in case the javascript has been tweaked
-    npm install
-    npm build
-    ./node_modules/.bin/webpack
-    ./node_modules/.bin/eslint client_modules/js/app.js
+    # rebuild the js libraries in case the javascript has been tweaked
+    buildjs $2
     # update the static files
     python manage.py collectstatic --noinput
     echo
@@ -132,11 +141,8 @@ elif [ "${COMMAND}" = "redeploy" ]; then
     echo ">>>> deploying $TAG"
     echo "*************************************************************************************************"
     git checkout ${TAG}
-    # do this just in case the javascript has been tweaked
-    npm install
-    npm build
-    ./node_modules/.bin/webpack
-    ./node_modules/.bin/eslint client_modules/js/app.js
+    # rebuild the js libraries in case the javascript has been tweaked
+    buildjs $2
     python manage.py collectstatic --noinput
     echo
     echo "*************************************************************************************************"
@@ -157,11 +163,8 @@ elif [ "${COMMAND}" = "refresh" ]; then
     # the underlying cspace_django_project code should be up to date as well...
     git pull -v
     python manage.py syncdb --noinput
-    # do this just in case the javascript has been tweaked
-    npm install
-    npm build
-    ./node_modules/.bin/webpack
-    ./node_modules/.bin/eslint client_modules/js/app.js
+    # rebuild the js libraries in case the javascript has been tweaked
+    buildjs $2
     python manage.py collectstatic --noinput
     echo
     echo "*************************************************************************************************"
@@ -174,11 +177,8 @@ elif [ "${COMMAND}" = "refresh" ]; then
 elif [ "${COMMAND}" = "updatejs" ]; then
     # the underlying cspace_django_project code should be up to date...
     git pull -v
-    # do this just in case the javascript has been tweaked
-    npm install
-    npm build
-    ./node_modules/.bin/webpack
-    ./node_modules/.bin/eslint client_modules/js/app.js
+    # rebuild the js libraries in case the javascript has been tweaked
+    buildjs $2
     python manage.py collectstatic --noinput
     echo
     echo "*************************************************************************************************"
