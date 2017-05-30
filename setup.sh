@@ -10,7 +10,7 @@
 
 function buildjs()
 {
-    if [ ! -d ~/$1_node_modules/ ]; then
+    if [ -d ~/$1_node_modules/ ]; then
         mv ~/$1_node_modules/ ./node_modules/
     fi
     npm install
