@@ -3,10 +3,18 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version cdp_4.1-40
-Fri Apr 28 08:53:49 PDT 2017
+This is version cdp_4.1-41
+Mon May 29 19:45:33 PDT 2017
 
-e4cce04 (HEAD -> master, origin/master, origin/HEAD) UCBG-439: do not let 'default' setting conflict with other 'special' settings
+8a8634d (HEAD -> master, origin/master, origin/HEAD) DJAN-96: move node_modules out of deployed directory
+3a29195 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+29caf0a BAMPFA-528: make term-matching work for both BAMPFA and PAHMA.
+e4dc482 DJAN-76: comment out link for device-specific css.
+dabbe66 Merge branch 'master' of github.com:cspace-deployment/cspace_django_project
+6b07646 DJAN-100: Print CSS hides control bar in statistics panel in search webapp
+564ba4a DJAN-73: useful script for analyzing profile logs
+f3ac656 (tag: cdp_4.1-40) revise change log for version cdp_4.1-40
+e4cce04 UCBG-439: do not let 'default' setting conflict with other 'special' settings
 c81cf92 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 40bfbce DJAN-97: batch scripts now handle unmatched objects correctly
 f8e74c5 (tag: cdp_4.1-39) revise change log for version cdp_4.1-39
