@@ -18,6 +18,7 @@ from cspace_django_site import settings
 
 config = cspace.getConfig(path.join(settings.BASE_PARENT_DIR, 'config'), 'suggestpostgres')
 connect_string = config.get('connect', 'connect_string')
+institution = config.get('connect', 'institution')
 
 import sys, json, re
 import cgi
@@ -89,10 +90,10 @@ def dbtransaction(q, elementID, connect_string):
             # objectnumber is special: not an authority, no need for joins
             template = """SELECT cc.objectnumber
             FROM collectionobjects_common cc
-            JOIN collectionobjects_pahma cp ON (cc.id = cp.id)
+            JOIN collectionobjects_INSTITUTION cp ON (cc.id = cp.id)
             JOIN misc ON misc.id = cc.id AND misc.lifecyclestate <> 'deleted'
             WHERE cc.objectnumber like '%s%%'
-            ORDER BY cp.sortableobjectnumber LIMIT 30;"""
+            ORDER BY cp.sortableobjectnumber LIMIT 30;""".replace('INSTITUTION',institution)
         elif srchindex == 'ucgbtaxon':
             template = """SELECT termdisplayname
             -- , tc.refname, h_tg.*
