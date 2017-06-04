@@ -5,7 +5,9 @@
         <div style="float: left; ; width: 50%;">
             <div class="result-title">
                 <input type="checkbox" name="item-{{ item.counter }}" value="{{ item.csid }}" checked/>
+                &nbsp;
                 <b><a href="?maxresults=1&displayType=full&{{ item.accessionfield }}={{ item.accession }}">{{ item.accession }}</a></b>
+                <a target=_new href="?resultsOnly=true&maxresults=1&displayType=full&{{ item.accessionfield }}={{ item.accession }}"><img src="{% static "common/images/permalink.svg" %}" class="cspaceLink"></a>
                 {% if user.is_active and user.is_staff %}
                 <a target="cspace" href="{{ cspaceserver }}/collectionspace/ui/{{ institution }}/html/{{ csrecordtype }}.html?csid={{ item.csid }}">
                     <img src="{% static "common/images/open_cspace.png" %}" class="cspaceLink">Open in CSpace</a>
