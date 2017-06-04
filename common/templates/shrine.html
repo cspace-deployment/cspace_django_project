@@ -1,11 +1,12 @@
 {% load staticfiles %}
 
+<a class="cbbtn" href=".">Click here to start a new search</a>
 {% for item in items %}
     <div style="overflow: auto;">
-        <div style="width: 800px; text-align: right;">
+        <div style="width: 1000px; text-align: right;">
             <hr/><span style="padding:2px; font-size:xx-large; font-weight: bold">{{ item.mainentry|safe }}</span><hr/>
         </div>
-        <div style="float: left; width: 350px;">
+        <div style="float: left; min-width: 350px; padding-right: 10px;">
         {% if item.blobs %}
             <div style="text-align: left; padding-bottom: 10px; ">
                 <a target="image" href="{{ imageserver }}/blobs/{{ item.blobs.0 }}/derivatives/OriginalJpeg/content"><img style="max-width: 600px; height: 380px;" src="{{ imageserver }}/blobs/{{ item.blobs.0 }}/derivatives/Medium/content"/></a>
@@ -22,14 +23,11 @@
 
         <div style="float: left; ; width: 450px;">
             <div class="result-title">
-                <h2><a href="?maxresults=1&displayType=full&{{ item.accessionfield }}={{ item.accession }}">{{ item.accession }}</a>
-                {% if user.is_active and user.is_staff %}
-                <span style="font-size: x-small"><a target="cspace" href="{{ cspaceserver }}/collectionspace/ui/{{ institution }}/html/{{ csrecordtype }}.html?csid={{ item.csid }}">
-                    <img src="{% static "common/images/open_cspace.png" %}" class="cspaceLink">Open in CSpace</a></span></h2>
-                {% endif %}
+                <h2>{{ item.accession }}</h2>
             </div>
+            <table class="xxx">
             {% if item.location %}
-                <div>LatLong: {{ item.location }}
+                <tr><td>LatLong: {{ item.location }}
                     {% if item.marker %}
                         <a class="map-item">[click for map]</a>
                         <div data-marker="{{ item.location }}" class="small-map"
@@ -37,24 +35,26 @@
                             <div class="map-replace"></div>
                             {% for i in item.mapfields %}
                                 {% if i.value %}
-                                    <div>{{ i.label }}: <a class="facet-item" data-facetType="{{ i.name }}">{{ i.value }}</a></div>
+                                    <div>{{ i.label }}: <span>{{ i.value|safe }}</span></div>
                                 {% endif %}
                             {% endfor %}
                         </div>
                     {% endif %}
-                </div>
+                </td></tr>
             {% endif %}
 
             {% for i in item.otherfields %}
                 {% if i.value %}
                     {% if i.multi == 0 %}
-                        <p><i>{{ i.label }}:</i> <a class="facet-item" data-facetType="{{ i.name }}">{{ i.value|safe }}</a></p>
+                        <tr><td><i>{{ i.label }}:</i></td><td><span>{{ i.value|safe }}</span></td></tr>
                     {% elif i.multi == 1 %}
+                        <td>
                         {% for t in i.value %}
-                            <p><i>{{ i.label }}:</i> <a class="facet-item" data-facetType="{{ i.name }}">{{ t|safe }}</a></p>
+                            <p><<i>{{ i.label }}:</i></td><span>{{ t|safe }}</span></p>
                         {% endfor %}
+                        </td>
                     {% else %}
-                        <p><i>{{ i.label }}:</i>
+                        <tr><td><i>{{ i.label }}:</i></td><td>
                             {% if i.special %}
                                 <table border="1">
                                     <tr>
@@ -66,15 +66,16 @@
                             {% else %}
                                 <ul style="text-indent: 15px">
                                     {% for t in i.value %}
-                                        <li><a class="facet-item" data-facetType="{{ i.name }}">{{ t|safe }}</a></li>
+                                        <li><span>{{ t|safe }}</span></li>
                                     {% endfor %}
                                 </ul>
                             {% endif %}
-                        </p>
+                        </td></tr>
                     {% endif %}
                 {% endif %}
             {% endfor %}
         {% if item.cards %}
+            <tr><td>
             <hr/>
             <h5>Catalog Card{{ item.cards|pluralize }}:</h5>
             <div style="text-align: left;">
@@ -82,9 +83,9 @@
                     <a target="image" href="{{ imageserver }}/blobs/{{ t }}/derivatives/OriginalJpeg/content"><img style="max-width: 600px; height: {{ sizecompact }}" src="{{ imageserver }}/blobs/{{ t }}/derivatives/{{ derivativecompact }}/content"/></a>
                 {% endfor %}
             </div>
+            </td></tr>
         {% endif %}
+            </table>
         </div>
-
     </div>
-        <hr/>
 {% endfor %}
