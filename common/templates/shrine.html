@@ -48,20 +48,26 @@
                     {% if i.multi == 0 %}
                         <tr><td><i>{{ i.label }}:</i></td><td><span>{{ i.value|safe }}</span></td></tr>
                     {% elif i.multi == 1 %}
-                        <td>
-                        {% for t in i.value %}
-                            <p><<i>{{ i.label }}:</i></td><span>{{ t|safe }}</span></p>
-                        {% endfor %}
-                        </td>
+                        <tr><td><i>{{ i.label }}:</i></td>
+                            <td>
+                                {% if i.value|length == 1 %}
+                                    <span>{{ i.value.0|safe }}</span>
+                                {% else %}
+                                    {% for t in i.value %}
+                                        <li><span>{{ t|safe }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </td>
+                        </tr>
                     {% else %}
                         <tr><td><i>{{ i.label }}:</i></td><td>
                             {% if i.special %}
                                 <table border="1">
-                                    <tr>
+                                    <tr><td>
                                         {% for t in i.value %}
-                                            <td><span style="background-color:{{ t }}; width:20px">&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+                                            <span style="background-color:{{ t }}; width:20px">&nbsp;&nbsp;&nbsp;&nbsp;</span>
                                         {% endfor %}
-                                    </tr>
+                                    </td></tr>
                                 </table>
                             {% else %}
                                 <ul style="text-indent: 15px">

@@ -28,7 +28,7 @@ def get_item(request, itemid):
         if 'objectno' in i['fieldtype']:
             searchfield = i['name']
             break
-    requestObject = {searchfield: itemid, 'resultsOnly': 'true'}
+    requestObject = {searchfield: itemid, 'resultsOnly': 'true', 'displayType': 'full'}
     form = forms.Form(requestObject)
 
     if form.is_valid():
