@@ -10,6 +10,7 @@ import urllib2
 import time
 import logging
 import base64
+import re
 
 config = cspace.getConfig(path.join(settings.BASE_PARENT_DIR, 'config'), 'imageserver')
 username = config.get('connect', 'username')
@@ -24,6 +25,7 @@ imageunavailable = config.get('info', 'imageunavailable')
 try:
     derivatives_served = config.get('info', 'derivatives_served')
     derivatives_served = derivatives_served.split(',')
+    print 'Derivatives served: %s' % derivatives_served
 except:
     print 'No derivatives are restricted'
     derivatives_served = None
@@ -74,6 +76,16 @@ def get_image(request, image):
         data = f.read()
         headers = f.info()
         content_type = headers.type
+        content_disposition = ''
+        for h in headers.headers:
+            if 'Content-Disposition' in h:
+                content_disposition = h
+                break
+        try:
+            extractfilename = re.search('filename="(.*)"',content_disposition)
+            filename = extractfilename.group(1)
+        except:
+            filename = ''
 
     except:
         msg = 'image error'
