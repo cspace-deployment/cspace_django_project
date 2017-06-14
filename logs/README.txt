@@ -1,1 +1,0 @@
-This file should be in the "logs" directory of the Django project directory -i.e., the same directory as the Django "manage.py" file.
