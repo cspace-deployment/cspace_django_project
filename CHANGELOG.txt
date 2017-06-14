@@ -3,10 +3,12 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version cdp_4.1-45
-Wed Jun 14 15:22:43 PDT 2017
+This is version cdp_4.1-46
+Wed Jun 14 15:25:23 PDT 2017
 
-5996588 (HEAD -> master, origin/master, origin/HEAD) NOJIRA: detect filename in content disposition in http header
+4393204 (HEAD -> master, origin/master, origin/HEAD) NOJIRA: add back logs directory
+4d7bf77 (tag: cdp_4.1-45) revise change log for version cdp_4.1-45
+5996588 NOJIRA: detect filename in content disposition in http header
 572dd09 NOJIRA: list of apps is now a whitelist, not a blacklist
 4b6b2cd NOJIRA: minor refactoring to clarify displayType handling
 773ee5f NOJIRA: add support for KML files; minor refactoring of SWOD behavior
