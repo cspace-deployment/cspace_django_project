@@ -39,7 +39,6 @@ logger = logging.getLogger(__name__)
 logger.info('%s :: %s :: %s' % ('imaginator startup', '-', '%s | %s' % (prmz.SOLRSERVER, prmz.IMAGESERVER)))
 
 
-@login_required()
 def index(request):
 
     context = setConstants({}, prmz, request)
@@ -47,6 +46,8 @@ def index(request):
     if request.method == 'GET':
         context['searchValues'] = request.GET
         prmz.MAXFACETS = 0
+        # default display type is Full
+        context['displayType'] = 'full'
 
         if 'keyword' in request.GET:
             context['keyword'] = request.GET['keyword']
@@ -57,11 +58,9 @@ def index(request):
             context['maxresults'] = prmz.MAXRESULTS
             if "Metadata" in request.GET['submit']:
                 context['resultType'] = 'metadata'
-                context['displayType'] = 'full'
             elif "Images" in request.GET['submit']:
                 context['resultType'] = 'images'
                 context['pixonly'] = 'true'
-                context['displayType'] = 'grid'
             elif "Lucky" in request.GET['submit']:
                 context['resultType'] = 'metadata'
                 context['maxresults'] = 1
