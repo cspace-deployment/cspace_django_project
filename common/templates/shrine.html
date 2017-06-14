@@ -11,7 +11,7 @@
             <div style="text-align: left; padding-bottom: 10px; ">
                 <a target="image" href="{{ imageserver }}/blobs/{{ item.blobs.0 }}/derivatives/OriginalJpeg/content"><img style="max-width: 600px; height: 380px;" src="{{ imageserver }}/blobs/{{ item.blobs.0 }}/derivatives/Medium/content"/></a>
             </div>
-            <div style="text-align: left;">
+            <div style="text-align: left; max-width: 500px;">
                 {% for t in item.blobs %}
                     {% if forloop.counter != 1 %}
                     <a target="image" href="{{ imageserver }}/blobs/{{ t }}/derivatives/OriginalJpeg/content"><img style="max-width: 600px; height: {{ sizecompact }}" src="{{ imageserver }}/blobs/{{ t }}/derivatives/{{ derivativecompact }}/content"/></a>
@@ -27,11 +27,11 @@
             </div>
             <table class="xxx">
             {% if item.location %}
-                <tr><td>LatLong: {{ item.location }}
+                <tr><td>LatLong:</td>
+                    <td>{{ item.location }}
                     {% if item.marker %}
                         <a class="map-item">[click for map]</a>
-                        <div data-marker="{{ item.location }}" class="small-map"
-                             style="display:none; margin-bottom:10px;">
+                        <div data-marker="{{ item.location }}" class="small-map" style="display:none; margin-bottom:10px;">
                             <div class="map-replace"></div>
                             {% for i in item.mapfields %}
                                 {% if i.value %}
@@ -40,7 +40,8 @@
                             {% endfor %}
                         </div>
                     {% endif %}
-                </td></tr>
+                    </td>
+                </tr>
             {% endif %}
 
             {% for i in item.otherfields %}
