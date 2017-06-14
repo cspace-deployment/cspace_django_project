@@ -226,12 +226,13 @@ $(document).ready(function () {
 
                 $('#tabs').tabs({ active: 0 });
 
-                $('#waitingImage').css({
-                    display: "none"
-                });
                 xga('send', 'pageview', undefined, trackingid);
             });
-        }
+
+            $('#waitingImage').css({
+                display: "none"
+            });
+        };
     };
 
     $(document).on('click', '#select-items', function() {
@@ -246,7 +247,6 @@ $(document).ready(function () {
         $('#select-items').prop('checked', false);
     });
 
-
     $(document).on('click', '#summarize', function () {
         var formData = getFormData('#selectedItems');
         formData[$(this).attr('name')] = '';
@@ -260,10 +260,11 @@ $(document).ready(function () {
                 $('#statsresults').html(data);
 
                 $('#statsListing').tablesorter({theme: 'blue'});
-                $('#waitingImage').css({
-                    display: "none"
-                });
                 xga('send', 'pageview', undefined, trackingid);
+            });
+
+            $('#waitingImage').css({
+                display: "none"
             });
 //        } else if ($(this).attr('id') == 'downloadstats') {
 //            $.post("../statistics/", formData).done(function (data) {
@@ -309,6 +310,10 @@ $(document).ready(function () {
         var formData = getFormData('#search');
         formData['search-default'] = '';
 
+        $('#waitingImage').css({
+            display: "block"
+        });
+
         $.post("../results/", formData).done(function (data) {
             $('#resultsPanel').html(data);
 
@@ -325,12 +330,21 @@ $(document).ready(function () {
 
             $('#tabs').tabs({ active: 1 });
             xga('send', 'pageview', undefined, trackingid);
+
+        });
+
+        $('#waitingImage').css({
+            display: "none"
         });
     });
 
-    $(document).on('click', '#map-bmapper, #map-google', function () {
+    $(document).on('click', '#map-bmapper, #map-kml, #map-google', function () {
         var formData = getFormData('#selectedItems');
         formData[$(this).attr('name')] = '';
+
+        $('#waitingImage').css({
+            display: "block"
+        });
 
         if ($(this).attr('id') == 'map-bmapper') {
             $.post("../bmapper/", formData).done(function (data) {
@@ -342,7 +356,16 @@ $(document).ready(function () {
                 $('#maps').html(data);
             });
             xga('send', 'pageview', undefined, trackingid);
-        }
+        } else if ($(this).attr('id') == 'map-kml') {
+            $.post("../kml/", formData).done(function (data) {
+                window.open(data, '_blank');
+            });
+            xga('send', 'pageview', undefined, trackingid);
+        };
+
+        $('#waitingImage').css({
+            display: "none"
+        });
     });
 // we need to make sure this gets done in the event the page is created anew (e.g. via a pasted URL)
 $('#tabs').tabs({ active: 0 });
