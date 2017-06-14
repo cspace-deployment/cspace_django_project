@@ -1,6 +1,5 @@
 __author__ = 'jblowe'
 
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, HttpResponse
 import json
 from django.conf import settings
@@ -21,7 +20,7 @@ TITLE = 'Applications Available'
 
 landingConfig = cspace.getConfig(path.join(settings.BASE_PARENT_DIR, 'config'), 'landing')
 hiddenApps = landingConfig.get('landing', 'hiddenApps').split(',')
-loginRequiredApps = landingConfig.get('landing', 'loginRequiredApps').split(',')
+publicApps = landingConfig.get('landing', 'publicApps').split(',')
 
 
 def getapplist(request):
@@ -35,7 +34,7 @@ def getapplist(request):
 def index(request):
     appList = getapplist(request)
     if not request.user.is_authenticated():
-        appList = [app for app in appList if not app[0] in loginRequiredApps]
+        appList = [app for app in appList if app[0] in publicApps]
     context = {}
     context['version'] = appconfig.getversion()
     context['appList'] = appList
@@ -49,6 +48,6 @@ def index(request):
 
 def applist(request):
     appList = getapplist(request)
-    if 'publiconly' in request.GET:
-            appList = [app for app in appList if not app[0] in loginRequiredApps]
+    if not request.user.is_authenticated():
+        appList = [app for app in appList if app[0] in publicApps]
     return HttpResponse(json.dumps(appList))
