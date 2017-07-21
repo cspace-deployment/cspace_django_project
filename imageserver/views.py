@@ -22,6 +22,15 @@ port = config.get('connect', 'port')
 port = ':%s' % port if port else ''
 
 imageunavailable = config.get('info', 'imageunavailable')
+
+unavailable_mime_type = 'jpg'
+try:
+    unavailable_mime_type = re.search(r'^.*?\.(.*)', imageunavailable).group(1)
+    if unavailable_mime_type.lower() == 'svg':
+        unavailable_mime_type = 'svg+xml'
+except:
+    print 'could not extract MIME-type for 404 image: %s; assuming "jpg"' % imageunavailable
+
 try:
     derivatives_served = config.get('info', 'derivatives_served')
     derivatives_served = derivatives_served.split(',')
@@ -90,8 +99,11 @@ def get_image(request, image):
     except:
         msg = 'image error'
         data = open(path.join(settings.STATIC_ROOT, 'cspace_django_site/images', imageunavailable), 'r').read()
-        content_type = 'image/jpeg'
+        content_type = 'image/%s' % unavailable_mime_type
+        filename = imageunavailable
 
     elapsedtime = time.time() - elapsedtime
     logger.info('%s :: %s :: %s' % (msg, '-', '%s :: %8.3f seconds' % (image, elapsedtime)))
-    return HttpResponse(data, content_type=content_type)
+    response = HttpResponse(data, content_type=content_type)
+    response['Content-Disposition'] = "filename=%s" % filename
+    return response
