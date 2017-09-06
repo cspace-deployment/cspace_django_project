@@ -236,6 +236,87 @@ def setupBMapper(request, requestObject, context, prmz):
     return context
     # return HttpResponseRedirect(context['bmapperurl'])
 
+def makePlacemark(placename, longitude, latitude, altitude):
+
+    return """<Placemark>
+    <name>%s</name>
+    <visibility>0</visibility>
+    <LookAt>
+    <longitude>%s</longitude>
+    <latitude>%s</latitude>
+    <altitude>%s</altitude>
+    <heading>0</heading>
+    <tilt>0</tilt>
+    <range>7500.000000000000</range>
+    <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+    </LookAt>
+    <styleUrl>#s_ylw-pushpin82</styleUrl>
+    <Point>
+    <gx:drawOrder>1</gx:drawOrder>
+    <coordinates>%s,%s,%s</coordinates>
+    </Point>
+    </Placemark>""" % (placename, longitude, latitude, altitude, longitude, latitude, altitude)
+
+def setupKML(request, requestObject, context, prmz):
+
+    context['berkeleymapper'] = 'set'
+    context = doSearch(context, prmz, request)
+    mappableitems, numSelected = getMapPoints(context, requestObject)
+    context['mapmsg'] = []
+    filename = 'kml-%s.kml' % datetime.datetime.utcnow().strftime("%Y%m%d%H%M%S")
+    #filehandle = open(path.join(prmz.LOCALDIR, filename), 'wb')
+    response = HttpResponse(content_type='application/kml')
+    response.write("""
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+        <name>KmlFile</name>
+        <Style id="s_ylw-pushpin82">
+                <IconStyle>
+                        <scale>1.2</scale>
+                        <Icon>
+                                <href>http://maps.google.com/mapfiles/kml/shapes/donut.png</href>
+                        </Icon>
+                </IconStyle>
+        </Style>
+        <Style id="s_ylw-pushpin_hl91">
+                <IconStyle>
+                        <scale>1.4</scale>
+                        <Icon>
+                                <href>http://maps.google.com/mapfiles/kml/shapes/donut.png</href>
+                        </Icon>
+                </IconStyle>
+        </Style>
+        <StyleMap id="m_ylw-pushpin10">
+                <Pair>
+                        <key>normal</key>
+                        <styleUrl>#s_ylw-pushpin82</styleUrl>
+                </Pair>
+                <Pair>
+                        <key>highlight</key>
+                        <styleUrl>#s_ylw-pushpin_hl91</styleUrl>
+                </Pair>
+        </StyleMap>
+""")
+
+    for i in mappableitems:
+        (long,lat) = i['location'].split(',')
+        try:
+            place = i['otherfields']['fcp'].split(',')
+            place = i[0]
+        except:
+            place = 'X'
+        response.write(makePlacemark(place, lat, long, '0'))
+
+    response.write("""
+        </Document>
+        </kml>""")
+    context['mapmsg'].append('%s points of the %s selected objects examined had latlongs (%s in result set).' % (
+        len(mappableitems), numSelected, context['count']))
+    # context['mapmsg'].append('if our connection to berkeley mapper were working, you be able see them plotted there.')
+    response['Content-Disposition'] = 'attachment; filename="%s"' % filename
+    return response
+
 
 def setup4PDF(request, context, prmz):
     csvformat, fieldset, csvitems = setupCSV(request, context, prmz)
@@ -518,7 +599,7 @@ def doSearch(context, prmz, request):
     else:
         solrfl = getfields(displayFields, 'solrfield', prmz)
     solrfl += prmz.REQUIRED  # always get these
-    if 'map-google' in requestObject or 'csv' in requestObject or 'pdf' in requestObject or 'map-bmapper' in requestObject or 'summarize' in requestObject or 'downloadstats' in requestObject:
+    if 'map-google' in requestObject or 'csv' in requestObject or 'pdf' in requestObject or 'map-kml' in requestObject or 'map-bmapper' in requestObject or 'summarize' in requestObject or 'downloadstats' in requestObject:
         querystring = requestObject['querystring']
         url = requestObject['url']
         # Did the user request the full set?

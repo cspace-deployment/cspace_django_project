@@ -12,8 +12,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django import forms
 from cspace_django_site.main import cspace_django_site
-from common.utils import writeCsv, doSearch, setupGoogleMap, setupBMapper, computeStats, setupCSV, setup4Print, setup4PDF
+from common.utils import writeCsv, doSearch, computeStats
 from common.utils import setDisplayType, setConstants, loginfo
+from common.utils import setupGoogleMap, setupBMapper, computeStats, setupCSV, setupKML, setup4PDF
 
 # from common.utils import CSVPREFIX, CSVEXTENSION
 from common.appconfig import loadFields, loadConfiguration
@@ -76,11 +77,15 @@ def bmapper(request):
 
         if form.is_valid():
             context = {'searchValues': requestObject}
-            context = setupBMapper(request, requestObject, context, prmz)
 
-            loginfo(logger, 'bmapper', context, request)
-            return HttpResponse(context['bmapperurl'])
-
+            if 'kml' in request.path:
+                response = setupKML(request, requestObject, context, prmz)
+                loginfo(logger, 'kml', context, request)
+                return response
+            else:
+                context = setupBMapper(request, requestObject, context, prmz)
+                loginfo(logger, 'bmapper', context, request)
+                return HttpResponse(context['bmapperurl'])
 
 @login_required()
 def gmapper(request):
@@ -134,9 +139,13 @@ def dispatch(request):
                 context['messages'] = messages
                 return search(request)
 
-
     elif 'preview' in request.POST:
         messages.error(request, 'Problem creating print version. Sorry!')
+        context = {'messages': messages}
+        return search(request)
+
+    else:
+        messages.error(request, 'Un-implemented action!')
         context = {'messages': messages}
         return search(request)
 
