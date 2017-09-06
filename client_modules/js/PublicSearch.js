@@ -97,6 +97,15 @@ function checkPage(Page,increment) {
 $(document).ready(function () {
     var display;
 
+    $(document).on('click', '#grouper-btn', function (e) {
+        e.preventDefault();
+        var itemList = $('.sel-item').map(function () {
+            return $(this).data('grouper');
+        }).toArray().join(" ");
+        $('#objects').val(itemList);
+        $('.grouperForm').submit();
+    });
+
     new Clipboard('.cbbtn');
 
     $('#next').click(function() {
