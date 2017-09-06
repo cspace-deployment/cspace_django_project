@@ -11,11 +11,13 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, render_to_response, redirect
 from django.template.loader import render_to_string
 from django.http import HttpResponse, HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django import forms
 from cspace_django_site.main import cspace_django_site
-from common.utils import writeCsv, doSearch, setupGoogleMap, setupBMapper, computeStats, setupCSV, setup4Print, setup4PDF
-from common.utils import setDisplayType, setConstants, loginfo
+from common.utils import writeCsv, doSearch, setConstants, loginfo
+from common.utils import setupGoogleMap, setupBMapper, computeStats, setupCSV, setup4PDF
+from common.utils import setup4Print, setDisplayType
 
 # from common.utils import CSVPREFIX, CSVEXTENSION
 from common.appconfig import loadFields, loadConfiguration
@@ -42,6 +44,11 @@ def direct(request):
     return redirect('search/')
 
 
+def accesscontrolalloworigin(stuff2return):
+    response = HttpResponse(stuff2return)
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
+
 def search(request):
     if request.method == 'GET' and request.GET != {}:
         context = {'searchValues': dict(request.GET.iteritems())}
@@ -53,6 +60,7 @@ def search(request):
     loginfo(logger, 'start search', context, request)
     context['additionalInfo'] = AdditionalInfo.objects.filter(live=True)
     return render(request, 'search.html', context)
+
 
 # @profile("retrieve.prof")
 def retrieveResults(request):
@@ -67,6 +75,8 @@ def retrieveResults(request):
             loginfo(logger, 'results.%s' % context['displayType'], context, request)
             return render(request, 'searchResults.html', context)
 
+
+@csrf_exempt
 def facetJSON(request):
     if request.method == 'GET' and request.GET != {}:
         requestObject = dict(request.GET.iteritems())
@@ -80,12 +90,14 @@ def facetJSON(request):
             #del context['FIELDS']
             #del context['facets']
             if not 'items' in context:
-                return HttpResponse(json.dumps('error'))
+                return accesscontrolalloworigin(json.dumps('error'))
             else:
-                return HttpResponse(json.dumps({'facets': context['facets'],'fields': context['fields']}))
+                return accesscontrolalloworigin(json.dumps({'facets': context['facets'],'fields': context['fields']}))
     else:
-        return HttpResponse(json.dumps('no data seen'))
+        return accesscontrolalloworigin(json.dumps('no data seen'))
 
+
+@csrf_exempt
 def retrieveJSON(request):
     if request.method == 'GET' and request.GET != {}:
         requestObject = dict(request.GET.iteritems())
@@ -99,16 +111,18 @@ def retrieveJSON(request):
             #del context['FIELDS']
             #del context['facets']
             if not 'items' in context:
-                return HttpResponse(json.dumps('error'))
+                return accesscontrolalloworigin(json.dumps('error'))
             else:
-                return HttpResponse(json.dumps({'items': context['items'],'labels': context['labels']}))
+                return accesscontrolalloworigin(json.dumps({'items': context['items'],'labels': context['labels']}))
     else:
-        return HttpResponse(json.dumps('no data seen'))
+        return accesscontrolalloworigin(json.dumps('no data seen'))
+
 
 def JSONentry(request): 
     context = setConstants({}, prmz, request)
     
     return render(request, 'json_searchentry.html', context)
+
 
 def bmapper(request):
     if request.method == 'POST' and request.POST != {}:
@@ -172,7 +186,6 @@ def dispatch(request):
                 messages.error(request, 'Problem creating .pdf file. Sorry!')
                 context['messages'] = messages
                 return search(request)
-
 
     elif 'preview' in request.POST:
         messages.error(request, 'Problem creating print version. Sorry!')
