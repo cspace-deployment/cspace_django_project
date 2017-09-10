@@ -94,9 +94,11 @@ def index(request):
                 if objectnumbers == '':
                     pass
                 else:
+                    objectnumbers_escaped = objectnumbers.replace(')','\)').replace('(','\(').replace('+','\+')
+                    objectnumbers_escaped = objectnumbers_escaped.split(' ')
                     objectnumbers = objectnumbers.split(' ')
                     if len(objectnumbers) > 0:
-                        queryterms.append('%s: (' % prmz.NUMBERFIELD + " OR ".join(objectnumbers) + ')')
+                        queryterms.append('%s: (' % prmz.NUMBERFIELD + " OR ".join(objectnumbers_escaped) + ')')
 
             if 'groupaction' in context:
                 context = setup_solr_search(queryterms, context, prmz, request)

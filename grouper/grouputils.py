@@ -112,7 +112,7 @@ def find_group(request, grouptitle, pgSz):
     asquery = '%s?as=%s_common%%3Atitle%%3D%%27%s%%27&wf_deleted=false&pgSz=%s' % ('groups', 'groups', grouptitle, pgSz)
 
     # Make authenticated connection to cspace server...
-    (groupurl, grouprecord, dummy) = getfromCSpace(asquery, request)
+    (groupurl, grouprecord, dummy, elapsedtime) = getfromCSpace(asquery, request)
     if grouprecord is None:
         return(None, None, 0, [], 'Error: the search for group \'%s.\' failed.' % grouptitle)
     grouprecordtree = fromstring(grouprecord)
@@ -122,10 +122,8 @@ def find_group(request, grouptitle, pgSz):
     groupcsid = groupcsid.text
 
     uri = 'collectionobjects?rtObj=%s&pgSz=%s' % (groupcsid, pgSz)
-    totalItems = 0
-    # Make authenticated connection to ucjeps.cspace...
     try:
-        (groupurl, groupmembers, dummy) = getfromCSpace(uri, request)
+        (groupurl, groupmembers, dummy, elapsedtime) = getfromCSpace(uri, request)
         groupmembers = fromstring(groupmembers)
         totalItems = groupmembers.find('.//totalItems')
         totalItems = int(totalItems.text)
@@ -171,7 +169,7 @@ def find_group_relations(request, groupcsid):
         relationsquery = 'relations?%s=%s&pgSz=1000' % (qtype, groupcsid)
 
         # Make authenticated connection to ucjeps.cspace...
-        (groupurl, searchresult, dummy) = getfromCSpace(relationsquery, request)
+        (groupurl, searchresult, dummy, elapsedtime) = getfromCSpace(relationsquery, request)
         if searchresult is None:
             return(None, None, 'Error: We could not find the groupcsid \'%s.\' Please try another.' % groupcsid)
         relationlist = fromstring(searchresult)
