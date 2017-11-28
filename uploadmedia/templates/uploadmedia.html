@@ -82,12 +82,12 @@
                     <h2>
                         <li>Select action to perform</li>
                     </h2>
-                    <input type="submit" name="createmedia"
+                    <input class="prettyBtn" type="submit" name="createmedia"
                            value="Upload to CSpace and Create Media Records NOW (100 media files max)">
                     <br/><br/>
-                    <input type="submit" name="uploadmedia"
+                    <input class="prettyBtn" type="submit" name="uploadmedia"
                            value="Upload to CSpace and Queue for LATER CSpace Ingestion"></td>
-                    <!-- <input type="submit" name="deletemedia"
+                    <!-- <input class="prettyBtn" type="submit" name="deletemedia"
                                    value="DELETE CSpace Blob and Media records associated with these images">
                     -->
 
@@ -114,19 +114,19 @@
             </h2>
             <form action="{% url 'uploadmedia:showqueue' %}" method="post">
                 {% csrf_token %}
-                <input type="submit" name="checkjobs" value="View the Job Queue">
+                <input class="prettyBtn" type="submit" name="checkjobs" value="View the Job Queue">
                 (display the most recent <select id="num2display" name="num2display">
                     <option value="50">50</option>
                     <option value="100">100</option>
                     <option value="500">500</option>
                 </select> jobs.)
-                <input type="submit" name="showerrors" value="List Images That Failed to Load">
+                <input class="prettyBtn" type="submit" name="showerrors" value="List Images That Failed to Load">
                 {% include "showerrors.html" %}
                 {% include "showqueue.html" %}
             </form>
         {% if items %}
             <h2>{{ filename }}</h2>
-            {% include "grid.html" %}
+            {% include "bmu_grid.html" %}
         {% endif %}
         {% if filecontent %}
             <hr/>

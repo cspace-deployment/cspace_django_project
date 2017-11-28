@@ -49,12 +49,13 @@ def jobsummary(jobstats):
             result[0] = count - 1
             inputimages = imagefilenames
         if 'ingested' in status:
+            ingestedimages = imagefilenames
             result[1] = count - 1
-            try:
-                result[2] = result[0] - result[1]
-                result[3] = [image for image in inputimages if image not in imagefilenames and image != 'name']
-            except:
-                pass
+    try:
+        result[2] = result[0] - result[1]
+        result[3] = [image for image in inputimages if image not in ingestedimages and image != 'name']
+    except:
+        pass
     return result
 
 
@@ -63,14 +64,20 @@ def getJoblist(request):
     if 'num2display' in request.POST:
         num2display = int(request.POST['num2display'])
     else:
-        num2display = 500
+        num2display = 50
 
     jobpath = JOBDIR % ''
     filelist = [f for f in listdir(jobpath) if isfile(join(jobpath, f)) and ('.csv' in f or 'trace.log' in f)]
     jobdict = {}
     errors = []
-    for f in sorted(filelist):
-        linecount, imagefilenames = checkFile(join(jobpath, f))
+    filelist = sorted(filelist, reverse=True)
+    for f in sorted(filelist, reverse=True):
+        if len(jobdict.keys()) > num2display:
+            pass
+            imagefilenames = []
+        else:
+            # we only need to count lines if the file is with range...
+            linecount, imagefilenames = checkFile(join(jobpath, f))
         parts = f.split('.')
         if 'original' in parts[1]:
             status = 'submitted'
@@ -100,7 +107,8 @@ def getJoblist(request):
             errors.append([ajob[0], image])
         for state in ajob[2]:
             if state[1] in ['ingested', 'pending', 'job started']: ajob[1] = False
-    return joblist[0:num2display], errors, len(joblist), len(errors)
+    num_jobs = len(joblist)
+    return joblist[0:num2display], errors, num_jobs, len(errors)
 
 
 def checkFile(filename):
@@ -309,6 +317,8 @@ def rendermedia(filecontent):
                 # media['otherfields'].append({'label': 'File', 'value': row[i]})
             elif FIELDS[i] == 'objectCSID':
                 media['csid'] = row[i]
+            elif FIELDS[i] == 'mediaCSID':
+                media['media'] = row[i]
             elif FIELDS[i] == 'blobCSID':
                 media['blobs'] = [ row[i] ]
             elif FIELDS[i] == 'creator':

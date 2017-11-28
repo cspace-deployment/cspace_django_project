@@ -48,6 +48,11 @@ im.BMUoptions = getBMUoptions()
 def setContext(context, elapsedtime):
     # context['status'] = 'up'
     context['additionalInfo'] = additionalInfo
+    context['imageserver'] = prmz.IMAGESERVER
+    context['cspaceserver'] = prmz.CSPACESERVER
+    context['institution'] = prmz.INSTITUTION
+    # context['csrecordtype'] = prmz.CSRECORDTYPE
+    context['csrecordtype'] = 'media'
     context['apptitle'] = TITLE
     context['version'] = prmz.VERSION
     context['elapsedtime'] = '%8.2f' % elapsedtime
