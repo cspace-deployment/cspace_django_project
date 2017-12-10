@@ -3,10 +3,20 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version cdp_4.1-46
-Wed Jun 14 15:25:23 PDT 2017
+This is version cdp_4.1-47
+Sun Sep 10 19:15:19 PDT 2017
 
-4393204 (HEAD -> master, origin/master, origin/HEAD) NOJIRA: add back logs directory
+d4b7992 (HEAD -> master, origin/master, origin/HEAD) DJAN-94: max objects for grouper is now 1,000
+0891b63 NOJIRA: repair waiting image functionality for webapps
+2b42499 DJAN-94: minor refactoring of grouper internals
+e6b33e7 DJAN-94: add grouper to cspace_django_project
+bb6e509 DJAN-113: initial scaffolding for KML support
+6a23ed4 UCJEPS-531: add decorators, etc. to JSON results to allow CORS (cross-origin) access
+6cbfb5b DJAN-94: add ability to create groups from a Portal search
+795b159 DJAN-111: return correct mimetype corresponding to unavailable image
+80fdd46 DJAN-111: new, improved 404 image unavailable images
+b656a36 (tag: cdp_4.1-46) revise change log for version cdp_4.1-46
+4393204 NOJIRA: add back logs directory
 4d7bf77 (tag: cdp_4.1-45) revise change log for version cdp_4.1-45
 5996588 NOJIRA: detect filename in content disposition in http header
 572dd09 NOJIRA: list of apps is now a whitelist, not a blacklist

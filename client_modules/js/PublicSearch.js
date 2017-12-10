@@ -216,7 +216,7 @@ $(document).ready(function () {
         }
         else {
             $('#waitingImage').css({
-                display: "block"
+                display: "inline"
             });
 
             $.post("../results/", formData).done(function (data) {
@@ -236,11 +236,12 @@ $(document).ready(function () {
                 $('#tabs').tabs({ active: 0 });
 
                 xga('send', 'pageview', undefined, trackingid);
+
+                $('#waitingImage').css({
+                    display: "none"
+                });
             });
 
-            $('#waitingImage').css({
-                display: "none"
-            });
         };
     };
 
