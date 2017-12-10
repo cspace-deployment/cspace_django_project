@@ -7,8 +7,10 @@ import time
 from os import path
 from xml.sax.saxutils import escape
 import traceback
+import ConfigParser
 
-from cswaExtras import postxml, relationsPayload, getConfig, getCSID
+from cswaExtras import postxml, relationsPayload, getCSID
+
 
 # NB: this is set in utils, but we cannot import that Django module in this ordinary script due to dependencies
 FIELDS2WRITE = 'name size objectnumber date creator contributor rightsholder imagenumber handling approvedforweb'.split(' ')
@@ -239,8 +241,8 @@ if __name__ == "__main__":
         sys.exit(1)
 
     try:
-        form = {'webapp': sys.argv[2]}
-        config = getConfig(form)
+        config = ConfigParser.RawConfigParser()
+        config.read(sys.argv[2])
         if not config:
             raise
     except:

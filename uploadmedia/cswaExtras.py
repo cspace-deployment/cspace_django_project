@@ -3,7 +3,6 @@
 
 import os
 import sys
-import ConfigParser
 
 import time
 import urllib2
@@ -57,18 +56,6 @@ except ImportError:
                 #print("running with ElementTree")
             except ImportError:
                 print("Failed to import ElementTree from any known place")
-
-
-def getConfig(form):
-    try:
-        fileName = form.get('webapp') + '.cfg'
-        config = ConfigParser.RawConfigParser()
-        config.read(fileName)
-        # test to see if it seems like it is really a config file
-        logo = config.get('info', 'logo')
-        return config
-    except:
-        return False
 
 
 def postxml(requestType, uri, realm, server, username, password, payload):
