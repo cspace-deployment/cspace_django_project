@@ -7,7 +7,7 @@
         {% include "toggled.html" %}
             <form enctype="multipart/form-data" action="{% url 'uploadmedia:uploadfiles' %}" method="post">
                 {% csrf_token %}
-        <ol>
+        <ol style="margin-left: 20px;">
             <h2>
                 <li>Select Files to Upload</li>
             </h2>
@@ -109,8 +109,10 @@
                 {% endif %}
         </ol>
             </form>
+        <hr/>
+        <ul style="margin-left: 20px;">
             <h2>
-                Check on jobs and uploads
+                <li>Check on jobs and uploads</li>
             </h2>
             <form action="{% url 'uploadmedia:showqueue' %}" method="post">
                 {% csrf_token %}
@@ -134,7 +136,7 @@
             <pre>{{ filecontent|safe }}</pre>
         {% endif %}
         <!-- form action="{% url 'uploadmedia:checkfilename' %}" method="post">
-            <h2>Check filename syntax</h2>
+            <h2><li>Check filename syntax</li></h2>
             {% csrf_token %}
             <button name="checkfilename">Filename(s) to check (separated by blanks):</button>
             <input type="text" name="filenames2check" style="width:500px;" value="{{ filenames2check }}">
@@ -156,5 +158,6 @@
             {% endif %}
         </form -->
         <hr/>
+        </ul>
     </div>
 {% endblock %}
