@@ -192,6 +192,11 @@ def loadConfiguration(configFileName):
         print 'this webapp will probably not work.'
         raise
 
+    try:
+        prmz.CSRECORDTYPE = config.get('search', 'CSRECORDTYPE')
+    except:
+        prmz.CSRECORDTYPE = 'cataloging'  # default
+
     return prmz
 
 def loadFields(fieldFile, prmz):
