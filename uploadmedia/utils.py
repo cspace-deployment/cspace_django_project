@@ -41,18 +41,23 @@ def getJobfile(jobnumber):
 
 
 def jobsummary(jobstats):
+    # [ n_imagesuploaded, n_imagesingested, n_errors, [ list of images in error ]
     result = [0, 0, 0, []]
+    pending = False
     for jobname, status, count, imagefilenames in jobstats:
         if 'pending' in status:
             result[0] = count - 1
+            pending = True
         if 'submitted' in status:
             result[0] = count - 1
             inputimages = imagefilenames
         if 'ingested' in status:
-            ingestedimages = imagefilenames
             result[1] = count - 1
-    try:
+            ingestedimages = imagefilenames
+    # compute discrepancy for non-pending jobs, if any
+    if not pending:
         result[2] = result[0] - result[1]
+    try:
         result[3] = [image for image in inputimages if image not in ingestedimages and image != 'name']
     except:
         pass
