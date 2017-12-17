@@ -12,9 +12,9 @@
             <label for="text-input">&nbsp;</label>
             <input aria-labelledby="text-input" type="text" name="keyword" size="40" id="keyword" value="{{ keyword }}"><br/>
             <!-- input type="hidden" name="maxresults" value="{{ maxresults }}" -->
-            <!-- input type="submit" name="submit" value="I'm feeling lucky" style="margin: 20px;" -->
-            <input type="submit" name="submit" value="Search the Metadata" style="margin: 20px;">
-            <input type="submit" name="submit" value="Search for Images" style="margin: 20px;">
+            <!-- input class="prettyBtn" type="submit" name="submit" value="I'm feeling lucky" style="margin: 20px;" -->
+            <input class="prettyBtn" type="submit" name="submit" value="Search the Metadata" style="margin: 20px;">
+            <input class="prettyBtn" type="submit" name="submit" value="Search for Images" style="margin: 20px;">
         </div>
         {% for field in form.hidden_fields %}
             <div style="display:none;">{{ field }}</div>

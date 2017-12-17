@@ -12,7 +12,7 @@
         <input type="text" name="keyword" value="{{ keyword }}"> keywords<br/>
         <input type="text" name="maxresults" value="{{ maxresults }}"> maximum number of objects to retrieve<br/>
         <input type="hidden" name="pixonly" value="{{ pixonly }}">
-        <input type="submit" value="Search">
+        <input class="prettyBtn" type="submit" value="Search">
         {% for field in form.hidden_fields %}
             <div style="display:none;">{{ field }}</div>
         {% endfor %}

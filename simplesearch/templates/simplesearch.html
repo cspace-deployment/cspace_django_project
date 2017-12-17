@@ -9,7 +9,7 @@
     {% endif %}
     <form action="" method="get">
         <input type="text" name="kw" value="{{ kw }}">
-        <input type="submit" value="Search">
+        <input class="prettyBtn" type="submit" value="Search">
         <hr/>
         {% for field in form.hidden_fields %}
             <div style="display:none;">{{ field }}</div>

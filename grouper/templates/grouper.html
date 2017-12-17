@@ -29,7 +29,7 @@
                 </td>
             </tr>
             <tr>
-                <td><input type="submit" name="submit" value="Check input" style="margin: 10px;"></td>
+                <td><input class="prettyBtn" type="submit" name="submit" value="Check input" style="margin: 10px;"></td>
                 <td colspan="2">
 
                 </td>
@@ -54,7 +54,7 @@
                 {% endif %}
                 <hr/>
                 {%  if groupaction %}
-                    <input type="submit" name="updategroup" value="{{ groupaction }}">
+                    <input class="prettyBtn" type="submit" name="updategroup" value="{{ groupaction }}">
                     <b>"{{ group }}"</b>
                     (Uncheck members below to delete members from group)
                 {% else %}
