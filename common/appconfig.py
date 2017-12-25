@@ -285,8 +285,15 @@ def getversion():
         version = popen("cd " + settings.BASE_PARENT_DIR + " ; /usr/bin/git describe --always").read().strip()
         if version == '':  # try alternate location for git (this is the usual Mac location)
             version = popen("/usr/local/bin/git describe --always").read().strip()
+        version_file = open('VERSION','w')
+        version_file.write(version + '\n')
+        version_file.close()
     except:
-        version = 'Unknown'
+        try:
+            version = open('VERSION','r').read().strip()
+            version_file.close()
+        except:
+            version = 'Unknown'
     return version
 
 
