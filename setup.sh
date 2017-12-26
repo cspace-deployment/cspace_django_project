@@ -10,14 +10,22 @@
 
 function buildjs()
 {
-    if [ -d ~/$1_node_modules/ ]; then
-        mv ~/$1_node_modules/ ./node_modules/
-    fi
     npm install
     npm build
     ./node_modules/.bin/webpack
     ./node_modules/.bin/eslint client_modules/js/app.js
-    mv ./node_modules/ ~/$1_node_modules/
+}
+
+function deploy()
+{
+    python manage.py syncdb --noinput
+    # rebuild the js libraries in case the javascript has been tweaked
+    buildjs $1
+    python manage.py collectstatic --noinput
+    # update the version file
+    python common/setversion.py
+    # copy the built files to the runtime directory, but leave the config files as they are
+    rsync -aAxXS --delete --exclude node_modules --exclude .git --exclude .gitignore --exclude config . /var/www/$1
 }
 
 if [ $# -ne 2 -a "$1" != 'show' ]; then
@@ -66,6 +74,7 @@ elif [ "${COMMAND}" = "configure" ]; then
         echo
         exit
     fi
+    git clean -fd
     cp cspace_django_site/extra_$2.py cspace_django_site/extra_settings.py
     echo
     echo "*************************************************************************************************"
@@ -82,7 +91,8 @@ elif [ "${COMMAND}" = "deploy" ]; then
         echo
         exit
     fi
-    # clean out the config directory of these four types of files.
+    git clean -fd
+    # clean out the config directory of certain specific types of files.
     rm -f config/*.cfg
     rm -f config/*.csv
     rm -f config/*.xml
@@ -122,9 +132,7 @@ elif [ "${COMMAND}" = "deploy" ]; then
     # python manage.py migrate
     python manage.py loaddata fixtures/*.json
     # rebuild the js libraries in case the javascript has been tweaked
-    buildjs $2
-    # update the static files
-    python manage.py collectstatic --noinput
+    deploy $2
     echo
     echo "*************************************************************************************************"
     echo "Don't forget to check cspace_django_site/main.cfg if necessary and the rest of the"
@@ -141,9 +149,7 @@ elif [ "${COMMAND}" = "redeploy" ]; then
     echo ">>>> deploying $TAG"
     echo "*************************************************************************************************"
     git checkout ${TAG}
-    # rebuild the js libraries in case the javascript has been tweaked
-    buildjs $2
-    python manage.py collectstatic --noinput
+    deploy $2
     echo
     echo "*************************************************************************************************"
     echo "base code (only) refreshed from GitHub; no changes to configuration, or custom apps though"
@@ -156,16 +162,11 @@ elif [ "${COMMAND}" = "refresh" ]; then
     git pull -v
     cd ${CURRDIR}
     cp -r ${CONFIGDIR}/$2/apps/* .
-    # get rid of any README that might have come over with the cp of the apps.
-    rm -f README
     cp ${CONFIGDIR}/$2/project_urls.py cspace_django_site/urls.py
     cp ${CONFIGDIR}/$2/project_apps.py cspace_django_site/installed_apps.py
     # the underlying cspace_django_project code should be up to date as well...
     git pull -v
-    python manage.py syncdb --noinput
-    # rebuild the js libraries in case the javascript has been tweaked
-    buildjs $2
-    python manage.py collectstatic --noinput
+    deploy $2
     echo
     echo "*************************************************************************************************"
     echo "code, including custom apps refreshed from GitHub; no changes to configuration or fixtures though"
@@ -177,9 +178,7 @@ elif [ "${COMMAND}" = "refresh" ]; then
 elif [ "${COMMAND}" = "updatejs" ]; then
     # the underlying cspace_django_project code should be up to date...
     git pull -v
-    # rebuild the js libraries in case the javascript has been tweaked
-    buildjs $2
-    python manage.py collectstatic --noinput
+    deploy $2
     echo
     echo "*************************************************************************************************"
     echo "base code updated; no changes to configuration or deployment though"
