@@ -1,7 +1,5 @@
 *.pyc
 static_root
-uploadmedia/postblob.sh
-uploadmedia/*_Uploadmedia_*.cfg
 db.sqlite3
 logs/logfile.txt*
 logs/settings.log
