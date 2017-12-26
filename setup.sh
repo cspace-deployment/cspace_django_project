@@ -25,7 +25,7 @@ function deploy()
     # update the version file
     python common/setversion.py
     # copy the built files to the runtime directory, but leave the config files as they are
-    rsync -aAxXS --delete --exclude node_modules --exclude .git --exclude .gitignore --exclude config . /var/www/$1
+    rsync -av --delete --exclude node_modules --exclude .git --exclude .gitignore --exclude config . /var/www/$1
 }
 
 if [ $# -ne 2 -a "$1" != 'show' ]; then
