@@ -3,10 +3,15 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version cdp_4.1-48
-Tue Dec 26 09:58:22 PST 2017
+This is version cdp_4.1-49
+Tue Dec 26 12:13:36 PST 2017
 
-e1a6ba6 (HEAD -> master, origin/master, origin/HEAD) DJAN-115: continue refactoring of versioning code
+13bafd7 (HEAD -> master, origin/master, origin/HEAD) DJAN-115: adjust rsync parms so the work everywhere
+94568bf Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+aaa0104 DJAN-115: setup.sh can now deploy all tenants from the same git clone
+1880f49 NOJIRA: BMU batch script can now be safely committed: there is only one version in use.
+9da7f54 revise change log and VERSION file for version cdp_4.1-48
+e1a6ba6 (tag: cdp_4.1-48) DJAN-115: continue refactoring of versioning code
 6a30d3d DJAN-115: update pip requirements for this project
 6838d8e DJAN-115: save git version (tag) in a file, so deploy apps can get to it.
 dca4588 NOJIRA: d3 seems not to work with webpack anymore. comment it out for now.
