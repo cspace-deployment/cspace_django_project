@@ -3,10 +3,25 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version cdp_4.1-47
-Sun Sep 10 19:15:19 PDT 2017
+This is version cdp_4.1-48
+Tue Dec 26 09:58:22 PST 2017
 
-d4b7992 (HEAD -> master, origin/master, origin/HEAD) DJAN-94: max objects for grouper is now 1,000
+e1a6ba6 (HEAD -> master, origin/master, origin/HEAD) DJAN-115: continue refactoring of versioning code
+6a30d3d DJAN-115: update pip requirements for this project
+6838d8e DJAN-115: save git version (tag) in a file, so deploy apps can get to it.
+dca4588 NOJIRA: d3 seems not to work with webpack anymore. comment it out for now.
+b2b5581 NOJIRA: minor improvements to layout of BMU templates.
+76c5f04 NOJIRA: corrected undetected bug in queue counts for pending jobs.
+1167fc8 DJAN-118: specify css for buttons (don't take Chrome defaults).
+f4e0c63 DJAN-116: make links work in BMU media displays
+105e781 PAHMA-1612: adjust css for new PAHMA logo.
+92cf4b1 DJAN-116: make links work in BMU media displays
+6420e13 PAHMA-1612: update logo
+2450f6a Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+a42fd81 NOJIRA: minor refactoring of the configuration code
+fdc0128 DJAN-116, DJAN-118: fix button formatting; improve media viewing options
+2709073 (tag: cdp_4.1-47) revise change log for version cdp_4.1-47
+d4b7992 DJAN-94: max objects for grouper is now 1,000
 0891b63 NOJIRA: repair waiting image functionality for webapps
 2b42499 DJAN-94: minor refactoring of grouper internals
 e6b33e7 DJAN-94: add grouper to cspace_django_project
