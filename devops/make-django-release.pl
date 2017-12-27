@@ -14,8 +14,8 @@ my ($TAGPREFIX, $DIRECTORY, $MSG) = @ARGV;
 chdir $DIRECTORY or die("could not change to $DIRECTORY directory");
     
 my @tags = `git tag --list ${TAGPREFIX}_*`;
-if ($#tags < 0) {
-   print "can't find tags for ${TAGPREFIX}_*\n";
+if ($#tags == 0) {
+   print "can't find any tags for ${TAGPREFIX}_*\n";
    exit(1);
 }
 
@@ -28,11 +28,12 @@ foreach my $tag (@tags) {
 
     if ($revision > $last_revision) {
         $last_revision = $revision;
+        $last_version_number = $version_number;
     }
 }
 
 $last_revision++;
-my $version_number = "$version_number-$last_revision";
+my $version_number = $last_version_number
 my $tag_message = "Release tag for django project $version_number.";
 $tag_message .= ' ' . $MSG if $MSG;
 
