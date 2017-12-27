@@ -19,7 +19,7 @@ if ($#tags == 0) {
    exit(1);
 }
 
-my (@parts, $revision, $version_number, $last_revision, $revision);
+my (@parts, $revision, $version_number, $last_revision, $last_version_number, $revision);
 
 foreach my $tag (@tags) {
     @parts = split(/[\-_]/, $tag);
