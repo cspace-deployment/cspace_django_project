@@ -33,7 +33,7 @@ foreach my $tag (@tags) {
 }
 
 $last_revision++;
-my $version_number = $last_version_number
+my $version_number = $last_version_number;
 my $tag_message = "Release tag for django project $version_number.";
 $tag_message .= ' ' . $MSG if $MSG;
 
