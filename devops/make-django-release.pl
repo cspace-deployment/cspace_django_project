@@ -50,9 +50,9 @@ system "echo 'This is version $version_number' >> CHANGELOG.txt";
 system "echo '$version_number' > VERSION";
 system "date >> CHANGELOG.txt ; echo >> CHANGELOG.txt";
 system "git log --oneline --decorate >> CHANGELOG.txt";
-print  "git tag -a $version_number -m '$tag_message'\n";
-system "git tag -a $version_number -m '$tag_message'";
 system "git commit -a -m 'revise change log and VERSION file for version $version_number'";
 system "git push -v" ;
+print  "git tag -a $version_number -m '$tag_message'\n";
+system "git tag -a $version_number -m '$tag_message'";
 system "git push --tags";
 

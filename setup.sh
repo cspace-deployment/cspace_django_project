@@ -133,7 +133,7 @@ elif [ "${COMMAND}" = "deploy" ]; then
     mv config/main.cfg cspace_django_site
     echo "*************************************************************************************************"
     echo "configured system is:"
-    grep 'hostname' config/main.cfg
+    grep 'hostname' cspace_django_site/main.cfg
     echo "*************************************************************************************************"
     # just to be sure, we start over with the database...
     rm -f db.sqlite3
