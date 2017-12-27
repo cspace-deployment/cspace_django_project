@@ -24,10 +24,14 @@ function deploy()
     python manage.py collectstatic --noinput
     # update the version file
     python common/setversion.py
-    # copy the built files to the runtime directory, but leave the config files as they are
-    rsync -av --delete --exclude node_modules --exclude .git --exclude .gitignore --exclude config . /var/www/$1
+    # if this is running on a dev or prod system (evidenced by the presence of a web-accessible
+    # deployment directory), then copy the needed files there
+    # nb: the config directory is not overwritten!
+    if [ -e /var/www/$1 ]; then
+        # copy the built files to the runtime directory, but leave the config files as they are
+        rsync -av --delete --exclude node_modules --exclude .git --exclude .gitignore --exclude config . /var/www/$1
+    fi
 }
-
 if [ $# -ne 2 -a "$1" != 'show' ]; then
     echo "Usage: $0 <enable|disable|deploy|redeploy|refresh|updatejs|configure|show> <TENANT|CONFIGURATION|WEBAPP>"
     echo
@@ -120,12 +124,17 @@ elif [ "${COMMAND}" = "deploy" ]; then
         cp ${CONFIGDIR}/$2/fixtures/* fixtures
         cp -r ${CONFIGDIR}/$2/apps/* .
         # this file is not needed here
-        rm -f README
+        rm -f README*
+        rm -f config/README*
         cp ${CONFIGDIR}/$2/project_urls.py cspace_django_site/urls.py
         cp ${CONFIGDIR}/$2/project_apps.py cspace_django_site/installed_apps.py
         cp client_modules/static_assets/cspace_django_site/images/header-logo-$2.png client_modules/static_assets/cspace_django_site/images/header-logo.png
     fi
     mv config/main.cfg cspace_django_site
+    echo "*************************************************************************************************"
+    echo "configured system is:"
+    grep 'hostname' config/main.cfg
+    echo "*************************************************************************************************"
     # just to be sure, we start over with the database...
     rm -f db.sqlite3
     python manage.py syncdb --noinput
