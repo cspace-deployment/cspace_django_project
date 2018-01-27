@@ -3,10 +3,11 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version cdp_4.1-51
-Wed Dec 27 11:17:16 PST 2017
+This is version -1
+Sat Jan 27 10:25:40 PST 2018
 
-3a7d8fe (HEAD -> master, origin/master, origin/HEAD) Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+cf4f5ef (HEAD -> master, tag: cdp_4.1-51, origin/master, origin/HEAD) revise change log and VERSION file for version cdp_4.1-51
+3a7d8fe Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 1990a3a DJAN-115: add tag after final commit, etc.
 7c3acb3 revise change log and VERSION file for version cdp_4.1-50
 41d5cbd (tag: cdp_4.1-50) Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
