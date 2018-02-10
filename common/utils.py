@@ -722,7 +722,7 @@ def doSearch(context, prmz, request):
         solrtime = time.time()
         response = s.query(querystring, facet='true', facet_field=facetfields, fq={}, fields=solrfl,
                            rows=context['maxresults'], facet_limit=prmz.MAXFACETS, sort=context['sortkey'],
-                           facet_mincount=1, start=startpage)
+                           facet_mincount=1, start=startpage, defType='edismax' )
         print 'Solr search succeeded, %s results, %s rows requested starting at %s; %8.2f seconds.' % (
             response.numFound, context['maxresults'], startpage, time.time() - solrtime)
     # except:
