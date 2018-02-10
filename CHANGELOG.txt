@@ -3,10 +3,13 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version cdp_4.1-52
-Sat Jan 27 11:49:19 PST 2018
+This is version cdp_4.1-53
+Sat Feb 10 15:56:26 PST 2018
 
-63effe8 (HEAD -> master, origin/master, origin/HEAD) NOJIRA: repair versioning script.
+adb2cca (HEAD -> master, origin/master, origin/HEAD) DJAN-116, DJAN-118: minor css improvements, image filename checking feature
+7766d39 PAHMA-1610: tweaks to accommodate blacklight solr config
+31000cd (tag: cdp_4.1-52) revise change log and VERSION file for version cdp_4.1-52
+63effe8 NOJIRA: repair versioning script.
 d82869e revise change log and VERSION file for version -1
 cf4f5ef (tag: cdp_4.1-51) revise change log and VERSION file for version cdp_4.1-51
 3a7d8fe Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
