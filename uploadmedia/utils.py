@@ -302,10 +302,9 @@ def reformat(filecontent):
 
 # this somewhat desperate function makes an grid display from 'processed' files
 def rendermedia(filecontent):
-    FIELDS = 'name size objectnumber date creator contributor rightsholder imagenumber handling approvedforweb description mediaCSID objectCSID blobCSID'.split(' ')
     result = deURN(filecontent)
     rows = result.split('\n')
-    header = rows[0]
+    FIELDS = rows[0].strip().split('\t')
     rows = rows[1:]
     result = []
     for counter, row in enumerate(rows):
