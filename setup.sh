@@ -123,9 +123,6 @@ elif [ "${COMMAND}" = "deploy" ]; then
         cp ${CONFIGDIR}/$2/config/* config
         cp ${CONFIGDIR}/$2/fixtures/* fixtures
         cp -r ${CONFIGDIR}/$2/apps/* .
-        # this file is not needed here
-        rm -f README*
-        rm -f config/README*
         cp ${CONFIGDIR}/$2/project_urls.py cspace_django_site/urls.py
         cp ${CONFIGDIR}/$2/project_apps.py cspace_django_site/installed_apps.py
         cp client_modules/static_assets/cspace_django_site/images/header-logo-$2.png client_modules/static_assets/cspace_django_site/images/header-logo.png
