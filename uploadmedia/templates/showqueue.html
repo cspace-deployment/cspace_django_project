@@ -16,7 +16,6 @@
             <th/>
             <th>View Job Files</th>
             <th> </th>
-            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -60,7 +59,7 @@
                             <!-- a href="showresults/?filename={{ j.0 }}&status=showinportal">In Portal</a -->
                             <a href="showresults/?filename={{ j.0 }}&status=showmedia">View Media</a>
                         {%  elif j.1 == 'pending' %}
-                            <a href="checkimagefilenames/?filename={{ j.0 }}">Check Names</a>
+                            <a href="checkimagefilenames/?filename={{ j.0 }}">Check File</a>
                         {% endif %}
                     {% endfor %}
                 </td>

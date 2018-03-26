@@ -100,6 +100,8 @@ def getJoblist(request):
             status = 'media in progress'
         elif 'trace' in parts[1]:
             status = 'run log'
+        elif 'check' in parts[1]:
+            status = 'check'
         else:
             status = 'unknown'
         jobkey = parts[0]
