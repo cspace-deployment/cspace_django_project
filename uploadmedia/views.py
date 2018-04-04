@@ -12,10 +12,11 @@ from os import path, remove
 import logging
 import time, datetime
 from getNumber import getNumber
-from utils import SERVERLABEL, SERVERLABELCOLOR, POSTBLOBPATH, INSTITUTION, BATCHPARAMETERS, FIELDS2WRITE
+from utils import SERVERLABEL, SERVERLABELCOLOR, POSTBLOBPATH, INSTITUTION, BATCHPARAMETERS, FIELDS2WRITE, JOBDIR
 from utils import getBMUoptions, handle_uploaded_file, assignValue, get_exif, writeCsv
 from utils import getJobfile, getJoblist, loginfo, reformat, rendermedia
 from specialhandling import specialhandling
+from checkBlobs import doChecks
 
 from grouper.grouputils import getfromCSpace
 
@@ -152,12 +153,29 @@ def prepareFiles(request, BMUoptions, context):
             if not validateonly:
                 loginfo('start', getJobfile(jobnumber), request)
                 try:
-                    retcode = subprocess.call([path.join(POSTBLOBPATH, 'postblob.sh'), INSTITUTION, getJobfile(jobnumber), BATCHPARAMETERS])
-                    if retcode < 0:
-                        loginfo('process', jobnumber + " Child was terminated by signal %s" % -retcode, request)
-                    else:
-                        loginfo('process', jobnumber + ": Child returned %s" % retcode, request)
+                    file_is_OK = True
+                    if INSTITUTION == 'cinefiles':
+                        # test file content
+                        input_file = getJobfile(jobnumber) + '.step1.csv'
+                        report_file = getJobfile(jobnumber) + '.check.csv'
+                        file_is_OK = doChecks(('', 'file', JOBDIR % '', input_file, report_file))
+                        # if ok continue
+                        # otherwise ... bail
+                        if file_is_OK:
+                            pass
+                        else:
+                            images = []
+                            deletejob(request, jobnumber + '.step1.csv')
+                            jobinfo['status'] = 'jobfailed'
+                            loginfo('process', jobnumber + " QC check failed.", request)
+                    if file_is_OK:
+                        retcode = subprocess.call([path.join(POSTBLOBPATH, 'postblob.sh'), INSTITUTION, getJobfile(jobnumber), BATCHPARAMETERS])
+                        if retcode < 0:
+                            loginfo('process', jobnumber + " Child was terminated by signal %s" % -retcode, request)
+                        else:
+                            loginfo('process', jobnumber + ": Child returned %s" % retcode, request)
                 except OSError as e:
+                    jobinfo['status'] = 'jobfailed'
                     loginfo('error', "Execution failed: %s" % e, request)
                 loginfo('finish', getJobfile(jobnumber), request)
 

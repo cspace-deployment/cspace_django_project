@@ -12,7 +12,7 @@ source /var/www/venv/bin/activate
 
 TENANT=$1
 RUNDIR="/var/www/${TENANT}/uploadmedia"
-MEDIACONFIG="$RUNDIR/$3"
+MEDIACONFIG="/var/www/${TENANT}/config/$3"
 UPLOADSCRIPT="$RUNDIR/uploadMedia.py"
 
 # this should be the fully qualified name of the input file, up to ".step1.csv"

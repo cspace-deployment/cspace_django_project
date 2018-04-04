@@ -84,12 +84,10 @@
                     </h2>
                     <input class="prettyBtn" type="submit" name="createmedia"
                            value="Upload to CSpace and Create Media Records NOW (100 media files max)">
+                    <span class="error">&nbsp;Only click once, please, then be patient!</span>
                     <br/><br/>
                     <input class="prettyBtn" type="submit" name="uploadmedia"
                            value="Upload to CSpace and Queue for LATER CSpace Ingestion"></td>
-                    <!-- <input class="prettyBtn" type="submit" name="deletemedia"
-                                   value="DELETE CSpace Blob and Media records associated with these images">
-                    -->
 
                     {% if images %}
                         {% include "images.html" %}
@@ -104,6 +102,9 @@
                         {% endif %}
                         {% if jobinfo.status == 'createmedia' %}
                             <h2>Job {{ jobinfo.jobnumber }} completed. Time required: {{ elapsedtime }} seconds.</h2>
+                        {% endif %}
+                        {% if jobinfo.status == 'jobfailed' %}
+                            <h2 class="error">Job {{ jobinfo.jobnumber }} failed. Please consult 'check' file in job queue for details or report to helpdesk. Sorry!</h2>
                         {% endif %}
                     {% endif %}
                 {% endif %}
