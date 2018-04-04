@@ -299,6 +299,7 @@ def reformat(filecontent):
     result = result.replace('\n','<tr><td>')
     result = result.replace('\t','<td>')
     result = result.replace('|','<td>')
+    result = result.replace('False','<span class="error">False</span>')
     result += '</table>'
     return '<table width="100%"><tr><td>\n' + result
 

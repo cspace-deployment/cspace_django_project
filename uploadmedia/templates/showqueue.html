@@ -33,7 +33,7 @@
                     {% else %}
                         <td/>
                     {% endif %}
-                {% if jobfailed == True %}
+                {% if jobfailed %}
                     <td><span style="color: red">Failed.</span></td>
                 {% else %}
                     <td/>
@@ -43,8 +43,10 @@
                     <a href="downloadresults/{{ j.0 }}">{{ j.1 }}</a>
                     {% if j.1 == 'pending' %}
                         <a class="button" href="{% url 'uploadmedia:deletejob' %}{{ j.0 }}"><span style="color: orange"> (delete this job)</span></a>
-                        <!-- button type="submit" value="deletejob/{{ j.0 }}">Delete</button -->
+                    {% elif j.1 == 'check' %}
+                        <a class="button" href="{% url 'uploadmedia:deletejob' %}{{ j.0 }}"><span style="color: orange"> (delete this qc file)</span></a>
                     {% endif %}
+
                 {% endfor %}
                 </td>
                 <td/>
