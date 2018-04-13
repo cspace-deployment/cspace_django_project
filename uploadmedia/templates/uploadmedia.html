@@ -104,7 +104,8 @@
                             <h2>Job {{ jobinfo.jobnumber }} completed. Time required: {{ elapsedtime }} seconds.</h2>
                         {% endif %}
                         {% if jobinfo.status == 'jobfailed' %}
-                            <h2 class="error">Job {{ jobinfo.jobnumber }} failed. Please consult 'check' file in job queue for details or report to helpdesk. Sorry!</h2>
+                            <h2 class="error">Job {{ jobinfo.jobnumber }} failed.<br/>
+                                Please click <a href="showresults/?filename={{ jobinfo.jobnumber }}.check.csv&status=check}">here</a> or consult the 'check' file in job queue for details. Sorry!</h2>
                         {% endif %}
                     {% endif %}
                 {% endif %}
