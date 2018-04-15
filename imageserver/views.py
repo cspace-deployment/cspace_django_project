@@ -11,6 +11,7 @@ import time
 import logging
 import base64
 import re
+import StringIO
 
 config = cspace.getConfig(path.join(settings.BASE_PARENT_DIR, 'config'), 'imageserver')
 username = config.get('connect', 'username')
@@ -22,8 +23,32 @@ port = config.get('connect', 'port')
 port = ':%s' % port if port else ''
 
 imageunavailable = config.get('info', 'imageunavailable')
-
 unavailable_mime_type = 'jpg'
+
+# see if watermarking is enabled
+try:
+    watermark = config.get('info', 'watermark')
+    watermark = True if (watermark.lower() in 'true yes on') else False
+    watermark_image = config.get('info', 'watermarkimage')
+except:
+    watermark = False
+
+# https://stackoverflow.com/questions/32034160/creating-a-watermark-in-python
+from wand.image import Image
+
+def add_watermark(image1, image2):
+    #buffer = StringIO.StringIO()
+    with Image(blob=image1) as background:
+        with Image(filename=image2) as watermark:
+            background.watermark(image=watermark, transparency=0.20)
+            return background.make_blob()
+            #
+            # or:
+            #background.save(filename='watermark.jpg')
+            #background.save(file=buffer)
+            #return buffer
+
+
 try:
     unavailable_mime_type = re.search(r'^.*?\.(.*)', imageunavailable).group(1)
     if unavailable_mime_type.lower() == 'svg':
@@ -102,6 +127,12 @@ def get_image(request, image):
         content_type = 'image/%s' % unavailable_mime_type
         filename = imageunavailable
 
+    if watermark:
+        try:
+            data = add_watermark(data, watermark_image)
+        except:
+            raise
+            logger.info('%s :: %s :: %s' % ('watermark failed', '-', url))
     elapsedtime = time.time() - elapsedtime
     logger.info('%s :: %s :: %s' % (msg, '-', '%s :: %8.3f seconds' % (image, elapsedtime)))
     response = HttpResponse(data, content_type=content_type)
