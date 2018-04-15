@@ -3,7 +3,7 @@ import sys
 # https://stackoverflow.com/questions/5324647/how-to-merge-a-transparent-png-image-with-another-image-using-pil
 
 image1 = '8fe92c97.jpg'
-image2 = 'botgarden_watermark_1.jpg'
+image2 = 'botgarden_watermark_520x520_trans_white.png'
  
 from PIL import Image
 
@@ -26,7 +26,7 @@ from wand.image import Image
 
 with Image(filename=image1) as background:
     with Image(filename=image2) as watermark:
-        background.watermark(image=watermark, transparency=0.20)
+        background.watermark(image=watermark, transparency=0.60)
     background.save(filename='watermark.jpg')
     print 'save wand %s' % 'watermark.jpg'
 

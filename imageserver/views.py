@@ -11,7 +11,6 @@ import time
 import logging
 import base64
 import re
-import StringIO
 
 config = cspace.getConfig(path.join(settings.BASE_PARENT_DIR, 'config'), 'imageserver')
 username = config.get('connect', 'username')
@@ -131,7 +130,6 @@ def get_image(request, image):
         try:
             data = add_watermark(data, watermark_image)
         except:
-            raise
             logger.info('%s :: %s :: %s' % ('watermark failed', '-', url))
     elapsedtime = time.time() - elapsedtime
     logger.info('%s :: %s :: %s' % (msg, '-', '%s :: %8.3f seconds' % (image, elapsedtime)))
