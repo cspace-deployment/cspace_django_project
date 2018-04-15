@@ -192,14 +192,15 @@ def getBlobsFromDB(config, startdate, enddate, binariesrepo):
 
 
 def get_tifftags(fn, ret):
+    ret['filesize'] = getsize(fn)
     try:
         im = Image.open(fn)
     except:
-        for key in 'imageOK isTiff sizeOK syntaxOK resolutionOK isCompressed depthOK colorOK'.split(' '): ret[
-            key] = False
+        print 'imagemagick could not open file %s' % fn
+        for key in 'imageOK isTiff sizeOK syntaxOK resolutionOK isCompressed depthOK colorOK'.split(' '):
+            ret[key] = False
         return
 
-    ret['filesize'] = getsize(fn)
     # im = Image.open(fn)
     ret['format'] = im.format
     # The file format of the source file. For images created by the library itself
@@ -338,7 +339,7 @@ def doChecks(args):
     elif args[1] == 'file':
 
         if len(args) < 5:
-            sys.exit('Usage: %s dir directory inputfile reportname' % args[0])
+            sys.exit('Usage: %s file imagedir inputfile reportname' % args[0])
 
         blobpath = args[2]
         inputFile = args[3]
@@ -362,7 +363,7 @@ def doChecks(args):
             # print "checking file", i, tif['fullpathtofile']
             get_tifftags(tif['fullpathtofile'], tif)
         except:
-            print "failed on file", i, tif['fullpathtofile']
+            print "image file info extract failed on file", i, tif['fullpathtofile']
             file_is_OK = False
             # raise
             # tif['istiff'] = 'Error'
