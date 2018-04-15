@@ -233,7 +233,7 @@ def loadFields(fieldFile, prmz):
     s = solr.SolrConnection(url='%s/%s' % (prmz.SOLRSERVER, prmz.SOLRCORE))
 
     try:
-        response = s.query('*:*', facet='true', facet_field=facetfields, fq={}, defType='edismax',
+        response = s.query('*:*', facet='true', facet_field=facetfields, fq={},
                            rows=0, facet_limit=1000, facet_mincount=1, start=0)
 
         print 'Solr search succeeded, %s results' % (response.numFound)
