@@ -21,32 +21,25 @@ protocol = config.get('connect', 'protocol')
 port = config.get('connect', 'port')
 port = ':%s' % port if port else ''
 
-imageunavailable = config.get('info', 'imageunavailable')
-unavailable_mime_type = 'jpg'
+server = protocol + "://" + hostname + port
+
+# Get an instance of a logger, log some startup info
+logger = logging.getLogger(__name__)
+logger.info('%s :: %s :: %s' % ('imageserver startup', '-', '%s' % server))
 
 # see if watermarking is enabled
 try:
     watermark = config.get('info', 'watermark')
     watermark = True if (watermark.lower() in 'true yes on') else False
     watermark_image = config.get('info', 'watermarkimage')
+    watermark_transparency = float(config.get('info', 'watermarktransparency'))
+    logger.info('watermarking enabled. transparency: %s, image: %s' % (watermark_transparency, watermark_image))
 except:
     watermark = False
+    logger.info('%s' % 'watermarking NOT enabled.')
 
-# https://stackoverflow.com/questions/32034160/creating-a-watermark-in-python
-from wand.image import Image
-
-def add_watermark(image1, image2):
-    #buffer = StringIO.StringIO()
-    with Image(blob=image1) as background:
-        with Image(filename=image2) as watermark:
-            background.watermark(image=watermark, transparency=0.20)
-            return background.make_blob()
-            #
-            # or:
-            #background.save(filename='watermark.jpg')
-            #background.save(file=buffer)
-            #return buffer
-
+imageunavailable = config.get('info', 'imageunavailable')
+unavailable_mime_type = 'jpg'
 
 try:
     unavailable_mime_type = re.search(r'^.*?\.(.*)', imageunavailable).group(1)
@@ -63,11 +56,16 @@ except:
     print 'No derivatives are restricted'
     derivatives_served = None
 
-server = protocol + "://" + hostname + port
+# loosely based on https://stackoverflow.com/questions/32034160/creating-a-watermark-in-python
+from wand.image import Image
 
-# Get an instance of a logger, log some startup info
-logger = logging.getLogger(__name__)
-logger.info('%s :: %s :: %s' % ('imageserver startup', '-', '%s' % server))
+
+def add_watermark(image1, image2):
+    with Image(blob=image1) as background:
+        with Image(filename=image2) as watermark:
+            background.watermark(image=watermark, transparency=watermark_transparency)
+            return background.make_blob()
+
 
 # @login_required()
 def get_image(request, image):
