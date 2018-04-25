@@ -3,10 +3,30 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version cdp_4.1-53
-Sat Feb 10 15:56:26 PST 2018
+This is version cdp_4.1-54
+Tue Apr 24 18:25:19 PDT 2018
 
-adb2cca (HEAD -> master, origin/master, origin/HEAD) DJAN-116, DJAN-118: minor css improvements, image filename checking feature
+aaaaadd (HEAD -> master, origin/master, origin/HEAD) DJAN-99: refactor watermarking code to remove cruft and improve clarity
+ee5431a DJAN-98: improved botgarden watermark: white with transparent
+3480ff9 DJAN-98: minor refactoring to improve reporting
+e769d6d DJAN-119: back this out until and unless we are ready for it
+b08a343 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+891535a DJAN-99: add option to imageserver to watermark images with wand
+8c38e95 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+db495f2 DJAN-98: need Wand for watermarking; re-enable SMB as well
+74f8ebf UCJEPS-559: scaffolding for csv import and elsewhere (Counter, and csv workaround for python 2).
+f0dd833 DJAN-119: setting the query parser will be needed someday, but not now
+43148be DJAN-98: clarify handling of failed jobs.
+b18875f Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+b225f24 NOJIRA: minor refactoring of the configuration code
+6217449 DJAN-98: qc script (from batch) is now run for cinefiles. option for such checks now available generally.
+9b8b875 DJAN-98: enable the creation of 'check' files which test image files in jobs
+2c2986d DJAN-125: wrap image filename in quotes.
+7d563fb DJAN-115: setup.sh does not need to erase the READMEs after all.
+347c83f Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+7335e99 DJAN-116: make BMU media display work for all tenants.
+dbe9df3 (tag: cdp_4.1-53) revise change log and VERSION file for version cdp_4.1-53
+adb2cca DJAN-116, DJAN-118: minor css improvements, image filename checking feature
 7766d39 PAHMA-1610: tweaks to accommodate blacklight solr config
 31000cd (tag: cdp_4.1-52) revise change log and VERSION file for version cdp_4.1-52
 63effe8 NOJIRA: repair versioning script.
