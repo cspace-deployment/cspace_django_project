@@ -3,10 +3,15 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version cdp_4.1-54
-Tue Apr 24 18:25:19 PDT 2018
+This is version cdp_4.1-55
+Mon Apr 30 21:10:02 PDT 2018
 
-aaaaadd (HEAD -> master, origin/master, origin/HEAD) DJAN-99: refactor watermarking code to remove cruft and improve clarity
+9f457b7 (HEAD -> master, origin/master, origin/HEAD) PAHMA-1299: add 'special' option to support osteology queries
+1b950c2 UCJEPS-580: tweak label for lat/lon; alas location field cannot be moved by config file
+4442cf9 DJAN-94: grouper now handles the different solr id fields properly
+22b7ccc DJAN-98: add watermark_size parameter for watermarking. improve parameter checking
+c1b45ad (tag: cdp_4.1-54) revise change log and VERSION file for version cdp_4.1-54
+aaaaadd DJAN-99: refactor watermarking code to remove cruft and improve clarity
 ee5431a DJAN-98: improved botgarden watermark: white with transparent
 3480ff9 DJAN-98: minor refactoring to improve reporting
 e769d6d DJAN-119: back this out until and unless we are ready for it
