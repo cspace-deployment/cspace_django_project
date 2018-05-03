@@ -10,6 +10,7 @@ import traceback
 import ConfigParser
 
 from cswaExtras import postxml, relationsPayload, getCSID
+from cspace_django_site import settings
 
 
 # NB: this is set in utils, but we cannot import that Django module in this ordinary script due to dependencies
@@ -242,7 +243,7 @@ if __name__ == "__main__":
 
     try:
         config = ConfigParser.RawConfigParser()
-        config.read(sys.argv[2] + '.cfg')
+        config.read(path.join(path.join(settings.BASE_PARENT_DIR, 'config'), sys.argv[2] + '.cfg'))
     except:
         print "MEDIA: could not get configuration from %s" % sys.argv[2]
         sys.exit(1)
