@@ -243,7 +243,7 @@ if __name__ == "__main__":
 
     try:
         config = ConfigParser.RawConfigParser()
-        config.read(path.join(path.join(settings.BASE_PARENT_DIR, 'config'), sys.argv[2] + '.cfg'))
+        config.read(sys.argv[2] + '.cfg')
     except:
         print "MEDIA: could not get configuration from %s" % sys.argv[2]
         sys.exit(1)
