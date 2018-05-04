@@ -3,10 +3,16 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version cdp_4.1-55
-Mon Apr 30 21:10:02 PDT 2018
+This is version cdp_4.1-56
+Fri May  4 10:45:49 PDT 2018
 
-9f457b7 (HEAD -> master, origin/master, origin/HEAD) PAHMA-1299: add 'special' option to support osteology queries
+3fba1b0 (HEAD -> master, origin/master, origin/HEAD) DJAN-115: add a note about handling customizations.
+57232da DJAN-115: eliminate unneeded log 'settings.log'
+4d8f941 DJAN-115: all config files are now to be found in /config
+26c0eb3 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+8713432 DJAN-115: all config files are now to be found in /config
+7a55eac (tag: cdp_4.1-55) revise change log and VERSION file for version cdp_4.1-55
+9f457b7 PAHMA-1299: add 'special' option to support osteology queries
 1b950c2 UCJEPS-580: tweak label for lat/lon; alas location field cannot be moved by config file
 4442cf9 DJAN-94: grouper now handles the different solr id fields properly
 22b7ccc DJAN-98: add watermark_size parameter for watermarking. improve parameter checking
