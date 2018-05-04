@@ -24,12 +24,12 @@ function deploy()
     python manage.py collectstatic --noinput
     # update the version file
     python common/setversion.py
-    # if this is running on a dev or prod system (evidenced by the presence of a web-accessible
-    # deployment directory), then copy the needed files there
+    # if this is running on a dev or prod system (evidenced by the presence of web-accessible
+    # deployment directories, i.e. /var/www/*), then copy the needed files there
     # nb: the config directory is not overwritten!
     if [ -e /var/www/$1 ]; then
         # copy the built files to the runtime directory, but leave the config files as they are
-        rsync -av --delete --exclude node_modules --exclude .git --exclude .gitignore --exclude config . /var/www/$1
+        rsync -av --delete --exclude node_modules --exclude .git --exclude .gitignore --exclude config --exclude main.cfg . /var/www/$1
     fi
 }
 if [ $# -ne 2 -a "$1" != 'show' ]; then
@@ -79,12 +79,13 @@ elif [ "${COMMAND}" = "configure" ]; then
         exit
     fi
     git clean -fd
+    git reset --hard
     cp cspace_django_site/extra_$2.py cspace_django_site/extra_settings.py
     echo
     echo "*************************************************************************************************"
     echo "OK, \"$2\" is configured. Now run ./setup.sh deploy <tenant> to set up a particular tenant,"
     echo "where <tenant> is either "default" (for non-specific tenant, i.e. nightly.collectionspace.org) or"
-    echo "an existing tenant in the django_example_config repo"
+    echo "an existing tenant in the ${CONFIGDIR} repo"
     echo "*************************************************************************************************"
     echo
 elif [ "${COMMAND}" = "deploy" ]; then
@@ -116,6 +117,7 @@ elif [ "${COMMAND}" = "deploy" ]; then
         fi
         # update base code
         git pull -v
+        git reset --hard
         cd ${CONFIGDIR}
         # update tenant custom code
         git pull -v
@@ -149,24 +151,9 @@ elif [ "${COMMAND}" = "deploy" ]; then
     echo "please restart apache to pick up changes"
     echo "*************************************************************************************************"
     echo
-elif [ "${COMMAND}" = "redeploy" ]; then
-    git checkout master
-    git pull -v
-    TAG=`git tag | sort -k2 -t"-" -rn | head -1`
-    echo "*************************************************************************************************"
-    echo ">>>> deploying $TAG"
-    echo "*************************************************************************************************"
-    git checkout ${TAG}
-    deploy $2
-    echo
-    echo "*************************************************************************************************"
-    echo "base code (only) refreshed from GitHub; no changes to configuration, or custom apps though"
-    echo
-    echo "please restart apache to pick up changes!"
-    echo "*************************************************************************************************"
-    echo
 elif [ "${COMMAND}" = "refresh" ]; then
     cd ${CONFIGDIR}
+    git reset --hard
     git pull -v
     cd ${CURRDIR}
     cp -r ${CONFIGDIR}/$2/apps/* .
@@ -185,6 +172,7 @@ elif [ "${COMMAND}" = "refresh" ]; then
     echo
 elif [ "${COMMAND}" = "updatejs" ]; then
     # the underlying cspace_django_project code should be up to date...
+    git reset --hard
     git pull -v
     deploy $2
     echo
