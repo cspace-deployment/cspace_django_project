@@ -146,9 +146,7 @@ TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'co
 #)
 
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
+# A sample logging configuration.
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
 # noinspection PyUnresolvedReferences
@@ -213,8 +211,8 @@ LOGGING = {
 #
 # Log things from this file only to a separate "settings.log" file.
 #
-logging.basicConfig(filename=LOGS_DIR + os.sep + 'settings.log', level=logging.DEBUG)
-logging.debug('Settings log file started.')
+#logging.basicConfig(filename=LOGS_DIR + os.sep + 'settings.log', level=logging.DEBUG)
+#logging.debug('Settings log file started.')
 
 #
 # If the application's WSGI setup script added an environment variable to tell us
@@ -223,12 +221,13 @@ logging.debug('Settings log file started.')
 #
 WSGI_BASE = os.environ.get(__package__ + ".WSGI_BASE")
 if WSGI_BASE is not None:
-    logging.debug('WSGI_BASE was found in environment variable: ' + __package__ + ".WSGI_BASE")
+    pass
+    #logging.debug('WSGI_BASE was found in environment variable: ' + __package__ + ".WSGI_BASE")
 else:
-    logging.debug('WSGI_BASE was not set.')
+    #logging.debug('WSGI_BASE was not set.')
     WSGI_BASE = ''
 
-logging.debug('WSGI_BASE =' + WSGI_BASE)
+#logging.debug('WSGI_BASE =' + WSGI_BASE)
 LOGIN_URL = WSGI_BASE + '/accounts/login'
 LOGIN_REDIRECT_URL = WSGI_BASE + '/landing'
 
@@ -241,6 +240,7 @@ AUTHENTICATION_BACKENDS = (
     'authn.authn.CSpaceAuthN',
 )
 
+# generate a secret if there isn't one already
 try:
     from secret_key import *
 except ImportError:
