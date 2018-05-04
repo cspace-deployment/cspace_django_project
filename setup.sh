@@ -122,6 +122,8 @@ elif [ "${COMMAND}" = "deploy" ]; then
         cd ${CURRDIR}
         cp ${CONFIGDIR}/$2/config/* config
         cp ${CONFIGDIR}/$2/fixtures/* fixtures
+        # note that in some cases, this cp will overwrite customized files in the underlying contributed apps
+        # in cspace_django_project.
         cp -r ${CONFIGDIR}/$2/apps/* .
         cp ${CONFIGDIR}/$2/project_urls.py cspace_django_site/urls.py
         cp ${CONFIGDIR}/$2/project_apps.py cspace_django_site/installed_apps.py
