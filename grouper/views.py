@@ -29,10 +29,11 @@ prmz.FIELDDEFINITIONS = groupConfig.get('grouper', 'FIELDDEFINITIONS')
 # add in the the field definitions...
 prmz = loadFields(prmz.FIELDDEFINITIONS, prmz)
 
-# override a couple parameters for this app
+# override / add a couple parameters for this app
 prmz.MAXRESULTS = int(groupConfig.get('grouper', 'MAXRESULTS'))
 prmz.TITLE = groupConfig.get('grouper', 'TITLE')
 prmz.NUMBERFIELD = groupConfig.get('grouper', 'NUMBERFIELD')
+prmz.CSIDFIELD = groupConfig.get('grouper', 'CSIDFIELD')
 
 print 'Configuration for %s successfully read' % 'grouper'
 
@@ -76,7 +77,7 @@ def index(request):
 
                     if groupcsid is not None:
                         if len(list_of_objects) > 0:
-                            queryterms.append('csid_s:(' + " OR ".join(list_of_objects) + ')')
+                            queryterms.append(prmz.CSIDFIELD + ':(' + " OR ".join(list_of_objects) + ')')
                         context['groupaction'] = 'Update Group'
                     else:
                         context['groupaction'] = 'Create Group'
@@ -128,7 +129,7 @@ def index(request):
                 context['items'] = []
             else:
                 if len(list_of_objects) > 0:
-                    queryterms = ['%s: (' % 'csid_s' + " OR ".join(list_of_objects) + ')']
+                    queryterms = ['%s: (' % prmz.CSIDFIELD + " OR ".join(list_of_objects) + ')']
                 context = setup_solr_search(queryterms, context, prmz, request)
                 if prmz.MAXRESULTS < len(context['items']):
                     messages += ['Only %s items of %s are displayed below.' % (prmz.MAXRESULTS, context['items'])]
@@ -154,7 +155,7 @@ def index(request):
             messages += delete_from_group(groupcsid, items2delete, request)
             grouptitle, groupcsid, totalItems, list_of_objects, errormsg = find_group(request, urllib.quote_plus(group), prmz.MAXRESULTS)
             if len(items_ignored) > 0 : messages += ['%s items in group untouched.' % len(items_ignored)]
-            queryterms = [ '%s: (' % 'csid_s' + " OR ".join(list_of_objects) + ')' ]
+            queryterms = [ '%s: (' % prmz.CSIDFIELD + " OR ".join(list_of_objects) + ')' ]
             context = setup_solr_search(queryterms, context, prmz, request)
 
         if len(messages) > 0:

@@ -21,9 +21,36 @@ protocol = config.get('connect', 'protocol')
 port = config.get('connect', 'port')
 port = ':%s' % port if port else ''
 
-imageunavailable = config.get('info', 'imageunavailable')
+server = protocol + "://" + hostname + port
 
+# Get an instance of a logger, log some startup info
+logger = logging.getLogger(__name__)
+logger.info('%s :: %s :: %s' % ('imageserver startup', '-', '%s' % server))
+
+# see if watermarking is enabled
+try:
+    watermark = config.get('info', 'watermark')
+    watermark = True if (watermark.lower() in 'true yes on') else False
+    watermark_image = config.get('info', 'watermarkimage')
+    watermark_transparency = float(config.get('info', 'watermarktransparency'))
+    if watermark_transparency > 1.0 or watermark_transparency < 0.0:
+        logger.info('watermarktransparency value is invalid: %s' % watermark_transparency)
+        raise
+    watermark_percent = float(config.get('info', 'watermarkpercent'))
+    if watermark_percent > 1.0 or watermark_percent < 0.0:
+        logger.info('watermarkpercent value is invalid: %s' % watermark_percent)
+        raise
+    if not path.isfile(watermark_image):
+        logger.info('could not find watermark image: %s' % watermark_image)
+        raise
+    logger.info('watermarking enabled. transparency: %s, image: %s' % (watermark_transparency, watermark_image))
+except:
+    watermark = False
+    logger.info('%s' % 'configuration problem. watermarking NOT enabled.')
+
+imageunavailable = config.get('info', 'imageunavailable')
 unavailable_mime_type = 'jpg'
+
 try:
     unavailable_mime_type = re.search(r'^.*?\.(.*)', imageunavailable).group(1)
     if unavailable_mime_type.lower() == 'svg':
@@ -39,11 +66,24 @@ except:
     print 'No derivatives are restricted'
     derivatives_served = None
 
-server = protocol + "://" + hostname + port
+# loosely based on https://stackoverflow.com/questions/32034160/creating-a-watermark-in-python
+from wand.image import Image
 
-# Get an instance of a logger, log some startup info
-logger = logging.getLogger(__name__)
-logger.info('%s :: %s :: %s' % ('imageserver startup', '-', '%s' % server))
+
+def add_watermark(image1, image2):
+    with Image(blob=image1) as background:
+        with Image(filename=image2) as watermark:
+            background_size = background.size
+            watermark_size = watermark.size
+            # (width, height): is the width bigger than the height?
+            if background_size[0] > background_size[1]:
+                background_to_watermark_ratio = float(background_size[0]) / watermark_size[0]
+            else:
+                background_to_watermark_ratio = float(background_size[1]) / watermark_size[1]
+            watermark.transform(resize='%s%%' % int(100.0 * background_to_watermark_ratio * watermark_percent))
+            background.watermark(image=watermark, transparency=watermark_transparency)
+            return background.make_blob()
+
 
 # @login_required()
 def get_image(request, image):
@@ -102,8 +142,14 @@ def get_image(request, image):
         content_type = 'image/%s' % unavailable_mime_type
         filename = imageunavailable
 
+    if watermark:
+        try:
+            data = add_watermark(data, watermark_image)
+        except:
+            raise
+            logger.info('%s :: %s :: %s' % ('watermark failed', '-', url))
     elapsedtime = time.time() - elapsedtime
     logger.info('%s :: %s :: %s' % (msg, '-', '%s :: %8.3f seconds' % (image, elapsedtime)))
     response = HttpResponse(data, content_type=content_type)
-    response['Content-Disposition'] = "filename=%s" % filename
+    response['Content-Disposition'] = 'filename="%s"' % filename
     return response

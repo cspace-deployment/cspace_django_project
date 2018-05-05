@@ -12,10 +12,19 @@ from os import path, remove
 import logging
 import time, datetime
 from getNumber import getNumber
-from utils import SERVERLABEL, SERVERLABELCOLOR, POSTBLOBPATH, INSTITUTION, BATCHPARAMETERS, FIELDS2WRITE
+from utils import SERVERLABEL, SERVERLABELCOLOR, POSTBLOBPATH, INSTITUTION, BATCHPARAMETERS, FIELDS2WRITE, JOBDIR
 from utils import getBMUoptions, handle_uploaded_file, assignValue, get_exif, writeCsv
 from utils import getJobfile, getJoblist, loginfo, reformat, rendermedia
 from specialhandling import specialhandling
+from checkBlobs import doChecks
+
+from grouper.grouputils import getfromCSpace
+
+try:
+    from xml.etree.ElementTree import tostring, parse, Element, fromstring
+except:
+    print("could not import with xml.etree.ElementTree")
+    raise
 
 # read common config file, just for the version info
 from common.appconfig import loadConfiguration
@@ -144,12 +153,29 @@ def prepareFiles(request, BMUoptions, context):
             if not validateonly:
                 loginfo('start', getJobfile(jobnumber), request)
                 try:
-                    retcode = subprocess.call([path.join(POSTBLOBPATH, 'postblob.sh'), INSTITUTION, getJobfile(jobnumber), BATCHPARAMETERS])
-                    if retcode < 0:
-                        loginfo('process', jobnumber + " Child was terminated by signal %s" % -retcode, request)
-                    else:
-                        loginfo('process', jobnumber + ": Child returned %s" % retcode, request)
+                    file_is_OK = True
+                    if INSTITUTION == 'cinefiles':
+                        # test file content
+                        input_file = getJobfile(jobnumber) + '.step1.csv'
+                        report_file = getJobfile(jobnumber) + '.check.csv'
+                        file_is_OK = doChecks(('', 'file', JOBDIR % '', input_file, report_file))
+                        # if ok continue
+                        # otherwise ... bail
+                        if file_is_OK:
+                            pass
+                        else:
+                            images = []
+                            deletejob(request, jobnumber + '.step1.csv')
+                            jobinfo['status'] = 'jobfailed'
+                            loginfo('process', jobnumber + " QC check failed.", request)
+                    if file_is_OK:
+                        retcode = subprocess.call([path.join(POSTBLOBPATH, 'postblob.sh'), INSTITUTION, getJobfile(jobnumber), BATCHPARAMETERS])
+                        if retcode < 0:
+                            loginfo('process', jobnumber + " Child was terminated by signal %s" % -retcode, request)
+                        else:
+                            loginfo('process', jobnumber + ": Child returned %s" % retcode, request)
                 except OSError as e:
+                    jobinfo['status'] = 'jobfailed'
                     loginfo('error', "Execution failed: %s" % e, request)
                 loginfo('finish', getJobfile(jobnumber), request)
 
@@ -223,19 +249,39 @@ def uploadfiles(request):
 
 
 @login_required()
-def checkfilename(request):
+def checkimagefilenames(request):
     elapsedtime = time.time()
     context = setConstants(request, im)
-    if 'filenames2check' in request.POST and request.POST['filenames2check'] != '':
-        listoffilenames = request.POST['filenames2check']
-        filenames = listoffilenames.split(' ')
-        objectnumbers = [getNumber(o, INSTITUTION) for o in filenames]
-    else:
+    try:
+        filename = request.GET['filename']
+        (jobnumber, step, csv ) = filename.split('.')
+        context['jobnumber'] = jobnumber
+        context['filename'] = filename
+        file_handle = open(getJobfile(filename), "rb")
+        lines = file_handle.read().splitlines()
+        recordtypes = [f.split("|") for f in lines]
+        filenames = [ r[0] for r in recordtypes[1:]]
         objectnumbers = []
-        listoffilenames = ''
+        seen = {}
+        for o in filenames:
+            objitems = getNumber(o, INSTITUTION)
+            if objitems[1] in seen:
+                objectnumbers.append(objitems + (seen[objitems[1]],))
+            else:
+                asquery = '%s?as=%s_common:%s%%3D%%27%s%%27&wf_deleted=false&pgSz=%s' % ('collectionobjects', 'collectionobjects', 'objectNumber', objitems[1], 10)
+                (objecturl, objectx, dummy, itemtime) = getfromCSpace(asquery, request)
+                objectx = fromstring(objectx)
+                totalItems = objectx.find('.//totalItems')
+                totalItems = int(totalItems.text)
+                #objectcsids = [e.text for e in objectx.findall('.//csid')]
+                objectnumbers.append(objitems + (totalItems,))
+                seen[objitems[1]] = totalItems
+        file_handle.close()
+    except:
+        raise
+        objectnumbers = []
     elapsedtime = time.time() - elapsedtime
     context = setContext(context, elapsedtime)
-    context['filenames2check'] = listoffilenames
     context['objectnumbers'] = objectnumbers
 
     return render(request, 'uploadmedia.html', context)

@@ -15,7 +15,7 @@
                 <h3 style="padding: 9px 0px;">{{ item.mainentry|safe }}</h3>
             </div>
             {% if item.location %}
-                <div>LatLong: {{ item.location }}
+                <div><i>Lat / Lon:</i> {{ item.location }}
                     {% if item.marker %}
                         <a class="map-item">[click for map]</a>
                         <div data-marker="{{ item.location }}" class="small-map"

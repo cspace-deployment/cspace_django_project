@@ -599,7 +599,7 @@ def doSearch(context, prmz, request):
     else:
         solrfl = getfields(displayFields, 'solrfield', prmz)
     solrfl += prmz.REQUIRED  # always get these
-    if 'map-google' in requestObject or 'csv' in requestObject or 'pdf' in requestObject or 'map-kml' in requestObject or 'map-bmapper' in requestObject or 'summarize' in requestObject or 'downloadstats' in requestObject:
+    if 'map-google' in requestObject or 'csv' in requestObject or 'pdf' in requestObject or 'map-kml' in requestObject or 'map-bmapper' in requestObject or 'summarize' in requestObject or 'downloadstats' in requestObject or 'special' in requestObject:
         querystring = requestObject['querystring']
         url = requestObject['url']
         # Did the user request the full set?

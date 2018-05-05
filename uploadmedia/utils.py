@@ -100,6 +100,8 @@ def getJoblist(request):
             status = 'media in progress'
         elif 'trace' in parts[1]:
             status = 'run log'
+        elif 'check' in parts[1]:
+            status = 'check'
         else:
             status = 'unknown'
         jobkey = parts[0]
@@ -297,15 +299,15 @@ def reformat(filecontent):
     result = result.replace('\n','<tr><td>')
     result = result.replace('\t','<td>')
     result = result.replace('|','<td>')
+    result = result.replace('False','<span class="error">False</span>')
     result += '</table>'
     return '<table width="100%"><tr><td>\n' + result
 
 # this somewhat desperate function makes an grid display from 'processed' files
 def rendermedia(filecontent):
-    FIELDS = 'name size objectnumber date creator contributor rightsholder imagenumber handling approvedforweb description mediaCSID objectCSID blobCSID'.split(' ')
     result = deURN(filecontent)
     rows = result.split('\n')
-    header = rows[0]
+    FIELDS = rows[0].strip().split('\t')
     rows = rows[1:]
     result = []
     for counter, row in enumerate(rows):
