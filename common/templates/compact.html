@@ -34,7 +34,11 @@
             {% for i in item.otherfields %}
                 {% if i.value %}
                     {% if i.multi == 0 %}
-                        <p><i>{{ i.label }}:</i> <a class="facet-item" data-facetType="{{ i.name }}">{{ i.value|safe }}</a></p>
+                        {% if 'mailto:' in i.value %}
+                            <p><i>{{ i.label }}:</i><a href="{{ i.value }}">click here</a></p>
+                        {% else %}
+                            <p><i>{{ i.label }}:</i> <a class="facet-item" data-facetType="{{ i.name }}">{{ i.value|safe }}</a></p>
+                        {% endif %}
                     {% elif i.multi == 1 %}
                         {% for t in i.value %}
                             <p><i>{{ i.label }}:</i> <a class="facet-item" data-facetType="{{ i.name }}">{{ t|safe }}</a></p>

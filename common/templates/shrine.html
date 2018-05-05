@@ -27,7 +27,7 @@
             </div>
             <table class="xxx">
             {% if item.location %}
-                <tr><td>LatLong:</td>
+                <tr><td><i>Lat / Long</i></td>
                     <td>{{ item.location }}
                     {% if item.marker %}
                         <a class="map-item">[click for map]</a>
@@ -47,7 +47,11 @@
             {% for i in item.otherfields %}
                 {% if i.value %}
                     {% if i.multi == 0 %}
-                        <tr><td><i>{{ i.label }}:</i></td><td><span>{{ i.value|safe }}</span></td></tr>
+                        {% if 'mailto:' in i.value %}
+                            <tr><td><i>{{ i.label }}:</i></td><td><span><a href="{{ i.value }}">click here</a></span></td></tr>
+                        {% else %}
+                            <tr><td><i>{{ i.label }}:</i></td><td><span>{{ i.value|safe }}</span></td></tr>
+                        {% endif %}
                     {% elif i.multi == 1 %}
                         <tr><td><i>{{ i.label }}:</i></td>
                             <td>
