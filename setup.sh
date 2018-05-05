@@ -116,8 +116,8 @@ elif [ "${COMMAND}" = "deploy" ]; then
             exit
         fi
         # update base code
-        git pull -v
         git reset --hard
+        git pull -v
         cd ${CONFIGDIR}
         # update tenant custom code
         git pull -v
@@ -172,7 +172,6 @@ elif [ "${COMMAND}" = "refresh" ]; then
     echo
 elif [ "${COMMAND}" = "updatejs" ]; then
     # the underlying cspace_django_project code should be up to date...
-    git reset --hard
     git pull -v
     deploy $2
     echo
