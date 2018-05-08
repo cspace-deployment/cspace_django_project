@@ -10,7 +10,6 @@ import traceback
 import ConfigParser
 
 from cswaExtras import postxml, relationsPayload, getCSID
-from cspace_django_site import settings
 
 
 # NB: this is set in utils, but we cannot import that Django module in this ordinary script due to dependencies
