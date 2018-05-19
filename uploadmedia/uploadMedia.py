@@ -67,8 +67,12 @@ def mediaPayload(mh, institution):
 
     elif institution == 'botgarden':
         if 'imagenumber' in mh:
-            # non-integer image numbers are an error for this tenant
-            int(mh['imagenumber'])
+            # labels are OK, but they must be marked "not approved for public"
+            if 'label' == mh['imagenumber'].lower():
+                mh['imagenumber'] = '0'
+                payload = payload.replace('<approvedForWeb>true</approvedForWeb>', '<postToPublic>no</postToPublic>')
+            else:
+                int(mh['imagenumber'])
             payload = payload.replace('#IMAGENUMBERELEMENT#', '<imageNumber>%s</imageNumber>' % mh['imagenumber'])
         payload = payload.replace('<primaryDisplay>false</primaryDisplay>', '')
         payload = payload.replace('<approvedForWeb>true</approvedForWeb>','<postToPublic>yes</postToPublic>')
