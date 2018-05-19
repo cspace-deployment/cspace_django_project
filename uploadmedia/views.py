@@ -270,9 +270,12 @@ def checkimagefilenames(request):
             else:
                 asquery = '%s?as=%s_common:%s%%3D%%27%s%%27&wf_deleted=false&pgSz=%s' % ('collectionobjects', 'collectionobjects', 'objectNumber', objitems[1], 10)
                 (objecturl, objectx, dummy, itemtime) = getfromCSpace(asquery, request)
-                objectx = fromstring(objectx)
-                totalItems = objectx.find('.//totalItems')
-                totalItems = int(totalItems.text)
+                if objectx is None:
+                    totalItems = 0
+                else:
+                    objectx = fromstring(objectx)
+                    totalItems = objectx.find('.//totalItems')
+                    totalItems = int(totalItems.text)
                 #objectcsids = [e.text for e in objectx.findall('.//csid')]
                 objectnumbers.append(objitems + (totalItems,))
                 seen[objitems[1]] = totalItems
