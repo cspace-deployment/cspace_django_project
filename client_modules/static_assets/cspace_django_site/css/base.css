@@ -13,8 +13,9 @@ body {
 
 td, th {
     vertical-align: top;
-    padding: 5px;
-    font-family: 'Open Sans', Arial, sans-serif;
+    padding: 0 0 2px 8px;
+    /* padding: 5px; */
+    /* font-family: 'Open Sans', Arial, sans-serif; */
     /* border-bottom: 1px solid #eee; */
 }
 
@@ -39,7 +40,7 @@ h2 {
 }
 
 p {
-    margin: 0 0 3px 0;
+    margin: 0 0 2px 8px;
 }
 
 input, textarea, select, .form-row p {
@@ -109,6 +110,19 @@ p.tiny{
     padding: 3px;
     margin-bottom: 6px;
     display: inline;
+}
+
+td.subheader {
+    padding-top: 6px;
+    text-indent: -6px;
+}
+
+.otheritems td:nth-child(1)  {
+     white-space: nowrap;
+}
+
+.otheritems li  {
+     padding-bottom: 3px;
 }
 
 li.facet {
