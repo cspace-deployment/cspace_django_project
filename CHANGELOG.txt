@@ -3,10 +3,18 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version cdp_4.1-57
-Fri May  4 20:17:51 PDT 2018
+This is version cdp_4.1-58
+Mon May 21 16:42:27 PDT 2018
 
-caf6860 (HEAD -> master, origin/master, origin/HEAD) DJAN-12: minor rendering improvments
+f465d21 (HEAD -> master, origin/master, origin/HEAD) NOJIRA: show url for debugging REST calls
+3b383d2 DJAN-61: minor layout improvement to search form
+1352234 DJAN-61: minor layout improvements to Full display; add 'spaceless' to some templates
+9f24b9d DJAN-61: minor layout improvements to images, pagination controls
+c7dec6a DJAN-98: 'Check Names' function on pending jobs handles pathological cases
+09c9513 UCBG-468: mark label images as 'do not post to public', but do upload them
+f926601 DJAN-115: this is not a django app, settings not needed here
+9d6e931 (tag: cdp_4.1-57) revise change log and VERSION file for version cdp_4.1-57
+caf6860 DJAN-12: minor rendering improvments
 92c5dfa DJAN-12: use 'Open Sans', like the new v5.0 UI does
 bd44013 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 5ca9628 DJAN-115: don't need to, and in fact, should reset repo for updatejs
