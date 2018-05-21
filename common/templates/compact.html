@@ -70,7 +70,7 @@
         {% if item.blobs %}
             <div style="text-align: right;">
                 {% for t in item.blobs %}
-                    <a target="image" href="{{ imageserver }}/blobs/{{ t }}/derivatives/OriginalJpeg/content"><img style="max-width: 600px; height: {{ sizecompact }}" src="{{ imageserver }}/blobs/{{ t }}/derivatives/{{ derivativecompact }}/content"/></a>
+                    <a target="image" href="{{ imageserver }}/blobs/{{ t }}/derivatives/OriginalJpeg/content"><img style="max-width: 600px; height: {{ sizecompact }}; padding: 0px 4px 4px 0px;" src="{{ imageserver }}/blobs/{{ t }}/derivatives/{{ derivativecompact }}/content"/></a>
                 {% endfor %}
             </div>
         {% endif %}
