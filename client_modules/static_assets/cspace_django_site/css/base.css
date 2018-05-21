@@ -19,6 +19,11 @@ td, th {
     /* border-bottom: 1px solid #eee; */
 }
 
+form#search td, th {
+    vertical-align: top;
+    padding: 0 0 6px 6px;
+}
+
 th {
     text-align: left;
     font-size: 13px;
