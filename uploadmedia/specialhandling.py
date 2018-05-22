@@ -15,5 +15,5 @@ def specialhandling(imageinfo, constants, BMUoptions, institution):
                 pass
 
         # if this is an image of a label, mark it appropriately
-        if '_label' in imageinfo['name']:
+        if '_label' in imageinfo['name'].lower():
             imageinfo['approvedforweb'] = 'no'
