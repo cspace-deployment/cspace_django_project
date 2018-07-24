@@ -34,18 +34,16 @@ try:
     watermark_image = config.get('info', 'watermarkimage')
     watermark_transparency = float(config.get('info', 'watermarktransparency'))
     if watermark_transparency > 1.0 or watermark_transparency < 0.0:
-        logger.info('watermarktransparency value is invalid: %s' % watermark_transparency)
-        raise
+        raise Exception('watermarktransparency value is invalid: %s' % watermark_transparency)
     watermark_percent = float(config.get('info', 'watermarkpercent'))
     if watermark_percent > 1.0 or watermark_percent < 0.0:
-        logger.info('watermarkpercent value is invalid: %s' % watermark_percent)
-        raise
+        raise Exception('watermarkpercent value is invalid: %s' % watermark_percent)
     if not path.isfile(watermark_image):
-        logger.info('could not find watermark image: %s' % watermark_image)
-        raise
+        raise Exception('could not find watermark image: %s' % watermark_image)
     logger.info('watermarking enabled. transparency: %s, image: %s' % (watermark_transparency, watermark_image))
-except:
+except Exception as inst:
     watermark = False
+    logger.info(inst.args[0])
     logger.info('%s' % 'configuration problem. watermarking NOT enabled.')
 
 imageunavailable = config.get('info', 'imageunavailable')
