@@ -220,14 +220,18 @@ def getBMUoptions():
 # following function taken from stackoverflow and modified...thanks!
 def get_exif(fn):
     ret = {}
-    i = Image.open(fn)
-    try:
-        info = i._getexif()
-        for tag, value in info.items():
-            decoded = TAGS.get(tag, tag)
-            ret[decoded] = value
-    except:
+    if 'image' in fn.content_type:
+        i = Image.open(fn)
+        try:
+            info = i._getexif()
+            for tag, value in info.items():
+                decoded = TAGS.get(tag, tag)
+                ret[decoded] = value
+        except:
+            pass
+    else:
         pass
+
     return ret
 
 
