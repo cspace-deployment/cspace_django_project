@@ -9,8 +9,8 @@ FFMPEG="cp"
 # this should be the fully qualified name of the input file, up to ".original.csv"
 JOB="$1"
 IMGDIR=$(dirname "$1")
-TRACELOG="$JOB.streaming.trace.log"
-OUTPUTFILE=$JOB.streaming.temp.csv
+TRACELOG="$JOB-streaming.trace.log"
+OUTPUTFILE=$JOB-streaming.temp2.csv
 LOGDIR=$IMGDIR
 
 rm -f $OUTPUTFILE
@@ -25,7 +25,7 @@ function trace()
 }
 
 # make a new job ...by grepping the streaming files from the completed BMU job.
-INPUTFILE=$JOB.streaming.csv
+INPUTFILE=$JOB-streaming.temp1.csv
 grep -v -i "\.jpg" $JOB.original.csv | grep -v -i "\.tif" > $INPUTFILE
 
 if [ "1" == $(wc -l < "$INPUTFILE") ]
@@ -49,6 +49,7 @@ trace "output file: $OUTPUTFILE"
 
 while IFS='|' read -r FILENAME size objectnumber digitizedDate creator contributor rightsholder imagenumber handling approvedforweb copyright imagetype type source description
 do
+  # 'name' is the column header for the filename...
   if [ ! $FILENAME == "name" ]
   then
       FILEPATH="$IMGDIR/$FILENAME"
@@ -69,12 +70,12 @@ do
       TRANSCODED_FILE=$FILENAME
   fi
 
-  echo "$TRANSCODED_FILE|$size|$objectnumber|$CSID|$digitizedDate|$creator|$contributor|$rightsholder|$imagenumber|handling|approvedforweb|copyright|imagetype|type|source|description" >>  $OUTPUTFILE
+  echo "$TRANSCODED_FILE|$size|$objectnumber|$digitizedDate|$creator|$contributor|$rightsholder|$imagenumber|$handling|$approvedforweb|$copyright|$imagetype|$type|$source|$description" >>  $OUTPUTFILE
 done < $INPUTFILE
 
 trace "Servable version(s) created and ready for ingestion."
 
-mv $OUTPUTFILE $JOB.streaming.step1.csv
+mv $OUTPUTFILE $JOB-streaming.step1.csv
 rm $INPUTFILE
 
 trace "**** END OF RUN ******************** `date` **************************"
