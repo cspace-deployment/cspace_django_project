@@ -49,9 +49,19 @@ def add2group(groupcsid, list_of_objects, request):
         return ['no objects added to the group.']
 
     messages = []
+    seen = {}
+    duplicates = {}
 
     for object in list_of_objects:
         # messages.append("posting group2obj to relations REST API...")
+
+        if object in seen:
+            # it's a duplicate, skip it
+            duplicates[object] = True
+            messages.append('duplicate item %s not added again' % object)
+            continue
+        else:
+            seen[object] = True
 
         # "urn:cspace:institution.cspace.berkeley.edu:group:id(%s)" % groupCSID
         groupElements = {}

@@ -140,6 +140,7 @@ def index(request):
             for item in request.POST:
                 if "item-" in item:
                     items_included.append(request.POST[item])
+                    # add this item to the group if it's not a member already
                     if request.POST[item] in list_of_objects:
                         pass
                     else:
