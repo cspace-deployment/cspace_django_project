@@ -14,7 +14,7 @@ my ($TAGPREFIX, $DIRECTORY, $MSG) = @ARGV;
 chdir $DIRECTORY or die("could not change to $DIRECTORY directory");
     
 my @tags = `git tag --list ${TAGPREFIX}-*`;
-if ($#tags <= 0) {
+if ($#tags < 0) {
    print "can't find any tags for ${TAGPREFIX}-*\n";
    exit(1);
 }
