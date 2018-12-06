@@ -125,8 +125,11 @@
                     <option value="500">500</option>
                 </select> jobs.)
                 <input class="prettyBtn" type="submit" name="showerrors" value="List Images That Failed to Load">
-                {% include "showerrors.html" %}
-                {% include "showqueue.html" %}
+                {% if display == 'showerrors' %}
+                    {% include "showerrors.html" %}
+                {% elif display == 'checkjobs' %}
+                    {% include "showqueue.html" %}
+                {% endif %}
             </form>
         {% if items %}
             <h2>{{ filename }}</h2>

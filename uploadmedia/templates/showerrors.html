@@ -1,7 +1,6 @@
 {% if errors %}
     <hr/>
-    <h1>{{ errorcount }} image{{ errorcount|pluralize }} not properly ingested</h1>
-    (First {{ jobs|length }} jobs analyzed.)
+    <h1>{{ errorcount }} image{{ errorcount|pluralize }} in the most recent {{ jobs|length }} job{{ jobs|pluralize }} (of {{ jobcount }}) not properly ingested.</h1>
     <table cellspace="1" id="resultsListing" class="tablesorter">
         <thead>
         <tr>

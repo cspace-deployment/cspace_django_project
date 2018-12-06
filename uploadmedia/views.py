@@ -333,7 +333,6 @@ def deletejob(request, filename):
 
     except:
         logger.info('%s :: %s' % ('uploadmedia tried and failed to delete job', filename))
-    #return redirect('../showqueue')
     return showqueue(request)
 
 
@@ -343,11 +342,12 @@ def showqueue(request):
     context = setConstants(request, im)
     jobs, errors, jobcount, errorcount = getJoblist(request)
     if 'checkjobs' in request.POST:
-        errors = None
+        display_type = 'checkjobs'
     elif 'showerrors' in request.POST:
-        jobs = None
+        display_type = 'showerrors'
     else:
-        errors = None
+        display_type = None
+    context['display'] = display_type
     context['jobs'] = jobs
     context['errors'] = errors
     context['jobcount'] = jobcount

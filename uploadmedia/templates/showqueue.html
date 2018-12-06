@@ -1,44 +1,43 @@
-{% if jobs %}
-    <hr/>
-    <h1>{{ jobcount }} job{{ jobcount|pluralize }} in the queue.
+<hr/>
+<h1>{{ jobcount }} job{{ jobcount|pluralize }} in the queue.
     {% if jobcount > jobs|length %}
-        Only the first {{ jobs|length }} displayed.
+        Only the most recent {{ jobs|length }} jobs displayed.
     {% endif %}
-    </h1>
-    <table cellspace="1" id="resultsListing" class="tablesorter">
-        <thead>
+</h1>
+<table cellspace="1" id="resultsListing" class="tablesorter">
+    <thead>
+    <tr>
+        <th>Job Number</th>
+        <th>Job Summary</th>
+        <th>Job Errors</th>
+        <th>Job Flag</th>
+        <th>Download Job Files</th>
+        <th/>
+        <th>View Job Files</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for jobno,jobfailed,jobinfo,jobsummary in jobs %}
         <tr>
-            <th>Job Number</th>
-            <th>Job Summary</th>
-            <th>Job Errors</th>
-            <th>Job Flag</th>
-            <th>Download Job Files</th>
-            <th/>
-            <th>View Job Files</th>
-            <th> </th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for jobno,jobfailed,jobinfo,jobsummary in jobs %}
-            <tr>
-                <td>{{ jobno }}</td>
-                <td>{{ jobsummary.0 }} submitted, {{ jobsummary.1 }} ingested.</td>
-                    {% if jobsummary.2 > 0 %}
-                        <td style="max-width: 600px;">
-                        <span style="color: red">{{ jobsummary.2 }} image{{ jobsummary.2|pluralize }} failed to load.</span>
-                        {% for image in jobsummary.3 %}
-                            {{ image }}
-                        {% endfor %}
-                        </td>
-                    {% else %}
-                        <td/>
-                    {% endif %}
-                {% if jobfailed %}
-                    <td><span style="color: red">Failed.</span></td>
-                {% else %}
-                    <td/>
-                {% endif %}
-                <td>
+            <td>{{ jobno }}</td>
+            <td>{{ jobsummary.0 }} submitted, {{ jobsummary.1 }} ingested.</td>
+            {% if jobsummary.2 > 0 %}
+                <td style="max-width: 600px;">
+                    <span style="color: red">{{ jobsummary.2 }} image{{ jobsummary.2|pluralize }} failed to load.</span>
+                    {% for image in jobsummary.3 %}
+                        {{ image }}
+                    {% endfor %}
+                </td>
+            {% else %}
+                <td/>
+            {% endif %}
+            {% if jobfailed %}
+                <td><span style="color: red">Failed.</span></td>
+            {% else %}
+                <td/>
+            {% endif %}
+            <td>
                 {% for j in jobinfo %}
                     <a href="downloadresults/{{ j.0 }}">{{ j.1 }}</a>
                     {% if j.1 == 'pending' %}
@@ -48,25 +47,24 @@
                     {% endif %}
 
                 {% endfor %}
-                </td>
-                <td/>
-                <td>
+            </td>
+            <td/>
+            <td>
                 {% for j in jobinfo %}
                     <a href="showresults/?filename={{ j.0 }}&status={{ j.1 }}">{{ j.1 }}</a>
                 {% endfor %}
-                </td>
-                <td>
-                    {% for j in jobinfo %}
-                        {%  if j.1 == 'ingested' %}
-                            <!-- a href="showresults/?filename={{ j.0 }}&status=showinportal">In Portal</a -->
-                            <a href="showresults/?filename={{ j.0 }}&status=showmedia">View Media</a>
-                        {%  elif j.1 == 'pending' %}
-                            <a href="checkimagefilenames/?filename={{ j.0 }}">Check File</a>
-                        {% endif %}
-                    {% endfor %}
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-{% endif %}
+            </td>
+            <td>
+                {% for j in jobinfo %}
+                    {% if j.1 == 'ingested' %}
+                        <!-- a href="showresults/?filename={{ j.0 }}&status=showinportal">In Portal</a -->
+                        <a href="showresults/?filename={{ j.0 }}&status=showmedia">View Media</a>
+                    {% elif j.1 == 'pending' %}
+                        <a href="checkimagefilenames/?filename={{ j.0 }}">Check File</a>
+                    {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
