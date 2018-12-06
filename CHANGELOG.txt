@@ -3,10 +3,19 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version cdp_5.0-1
-Sat Nov 17 11:16:44 PST 2018
+This is version cdp_5.0-2
+Thu Dec  6 08:03:05 PST 2018
 
-b65a16b (HEAD -> master, origin/master, origin/HEAD) HMP-42: BMU now tolerates non-image media
+6847691 (HEAD -> master, origin/master, origin/HEAD) NOJIRA: release-making script not counting tags properly
+1548f05 UJ-44: minor refactoring of BMU templates
+a3218a8 BG-15: grouper should not tolerate duplicates in groups
+0f5c466 HMP-42: further revisions to initial streaming media trancoding script
+700801a UJ-44: refactored and improved BMU run status report
+188fe16 UJ-44: refactor checkBlobs.pl into Python, improve clarity
+fa2d048 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+ce2012d HMP-42: initial version of a script to do transcoding of streaming media files
+e84905e (tag: cdp_5.0-1) revise change log and VERSION file for version cdp_5.0-1
+b65a16b HMP-42: BMU now tolerates non-image media
 bbf6130 DJAN-94: add a test to Grouper
 f3b9efb NOJIRA: rename the BMU 'test upload' script
 300a8d3 DJAN-99: correct coding of exceptions for watermarking
