@@ -3,10 +3,17 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version cdp_5.0-3
-Wed Jan  2 06:24:07 PST 2019
+This is version cdp_5.0-4
+Wed Jan  2 07:06:06 PST 2019
 
-7a107c4 (HEAD -> master, origin/master, origin/HEAD) Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+f65ae70 (HEAD -> master, origin/master, origin/HEAD) DJAN-75: python requirements for RHEL7
+38bbe83 UJ-44: update BMU documentation
+779218f NOJIRA: this version of wsgi.py is required for Django 1.8 on RHEL7
+6d7ebce Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+b1c1839 (tag: cdp_5.0-3) revise change log and VERSION file for version cdp_5.0-3
+1badb7e UJ-56: make some 'legacy' search urls work again
+f3f3051 UJ-56: minor css improvement for import page
+7a107c4 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 a2836d7 UJ-59: flush output buffers after each update
 098367c Merge pull request #41 from cesarvh/master
 285f356 NOJIRA: Removed toolbox
