@@ -136,7 +136,8 @@ def uploadmedia(mediaElements, config, http_parms):
         messages.append('got mediacsid %s elapsedtime %s ' % (mediaCSID, elapsedtime))
         mediaElements['mediaCSID'] = mediaCSID
         messages.append("media REST API post succeeded...")
-        # for PAHMA, each uploaded image becomes the primary
+        # for PAHMA, each uploaded image becomes the primary, in turn
+        # i.e. the last image in a set of images for the same object becomes the primary
         if http_parms.institution == 'pahma':
             primary_payload = """<?xml version="1.0" encoding="utf-8" standalone="yes"?>
             <ns2:invocationContext xmlns:ns2="http://collectionspace.org/services/common/invocable"
@@ -147,7 +148,9 @@ def uploadmedia(mediaElements, config, http_parms):
             """
 
             try:
-                postxml('POST', 'batch/563d0999-d29e-4888-b58d', http_parms.realm, http_parms.server, http_parms.username, http_parms.password, primary_payload)
+                # don't try to do this step for now, until we get it straightened out...
+                pass
+                # postxml('POST', 'batch/563d0999-d29e-4888-b58d', http_parms.realm, http_parms.server, http_parms.username, http_parms.password, primary_payload)
             except:
                 print "batch job to set primary image failed."
 
