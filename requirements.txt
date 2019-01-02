@@ -4,11 +4,12 @@ Pillow<3.0
 PyGreSQL
 Pygments
 Wand>=0.4.4
+dirq
 django-extensions
 django-filter
 django-positions
-django-tables2
-django-tables2-reports
+#django-tables2
+#django-tables2-reports
 djangorestframework
 itsdangerous
 #numpy
