@@ -1,5 +1,11 @@
 ## Deploying and Configuring the Bulk Media Uploader (BMU)
 
+This webapp and its associated "batch processes" provide a means to upload multiple media files
+in one fell swoop and (optionally, provided the media files are appropriately names) relate the media
+files to object records
+
+_Caveat utilizator!_ This is all fresh and wet behind the gills!
+
 The BMU uses the "standard" multi-file upload capability provided by most
 HTTP client framework to allow users to upload batches of images and
 provide associated metadata. 
@@ -206,3 +212,31 @@ Trinity Miller
 urn:cspace:pahma.cspace.berkeley.edu:orgauthorities:name(organization):item:name(8107)'Phoebe A. Hearst Museum of Anthropology'
 
 NB: the image files mentioned in this file must also be present in this same directory.
+
+
+## UCB-SPECIFIC FEATURES
+
+There are a number of UCB-specific customizations incorporated directly into the code. These
+are conditionally executed depending on the configuration provided (in the config file)
+
+Some of these are handled as part of the initial upload (i.e. online, by the BMU webapp itself). Others
+are implemented in the batch script ```uploadMedia.py``` which does the actual ingestion, usual at night
+via ```cron```.
+
+Here's a list:
+
+* For PAHMA, the "set primary" batch job is run after each media record is created; this ensures that
+the last uploaded record in a sequence of records for an object becomes the primary. This convention allows
+PAHMA staff to determine which media record will become primary without having to login to the regular UI,
+find the media record, and mark it as primary by hand.
+* For botgarden, media file names containing "_label" are assigned an image number of "999" so that they are displayed at the end of a sequence of images.
+Also, the contributors initials are extracted from the file name and used to look up the refName of contributor
+(supplied in the configuration file) so that a reference to their authority record can be inserted into the
+database.
+* For CineFiles, a number of fields are extracted from the EXIF data and added to media records.
+* The different tenants have different conventions for handling image sequencing. These are all handled by
+custom code in the batch script.
+* The different tenants have different object number patterns. While in general the BMU uses the initial characters
+up to an underscore to look up as the object number, more complex parsing of filenames is often required.
+This is performed during upload by code in ```getNumber.py```.
+
