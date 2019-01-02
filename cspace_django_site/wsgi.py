@@ -25,8 +25,8 @@ WSGI_BASE = '/%s' % PROJECT_NAME
 os.environ.setdefault("cspace_django_site.WSGI_BASE", WSGI_BASE)
 
 # NOTE: Comment out for Ubuntu, Apache2, production deployment
-application = django.core.handlers.wsgi.WSGIHandler()
+#application = django.core.handlers.wsgi.WSGIHandler()
 
 # NOTE: Uncomment lines below for Ubuntu, Apache2, production deployment
-# from django.core.wsgi import get_wsgi_application
-# application = get_wsgi_application()
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
