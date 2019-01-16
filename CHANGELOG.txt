@@ -3,10 +3,11 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version cdp_5.0-4
-Wed Jan  2 07:06:06 PST 2019
+This is version cdp_5.0-5
+Wed Jan 16 10:12:49 PST 2019
 
-f65ae70 (HEAD -> master, origin/master, origin/HEAD) DJAN-75: python requirements for RHEL7
+c565730 (HEAD -> master, tag: cdp_5.0-4, origin/master, origin/HEAD) revise change log and VERSION file for version cdp_5.0-4
+f65ae70 DJAN-75: python requirements for RHEL7
 38bbe83 UJ-44: update BMU documentation
 779218f NOJIRA: this version of wsgi.py is required for Django 1.8 on RHEL7
 6d7ebce Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
