@@ -40,7 +40,7 @@ def getNumber(filename,institution):
     elif institution == 'botgarden':
         # 12.1234_1_CL.jpg
         # i.e. accession number_image order_Initials of creator
-        objectnumber = sub(r'(?i).(jpe?g|tiff?|png|wav|mp3|aac)$','',filename)
+        objectnumber = sub(r'(?i)\.(jpe?g|tiff?|png|wav|mp3|aac|x3d.*)$','',filename)
         try:
             # or even 53.1185_3_VH_Delosperma_tradescantioides_A.JPG
             parts = objectnumber.split('_')
@@ -56,5 +56,5 @@ def getNumber(filename,institution):
         objectnumber = filename
         objectnumber = objectnumber.split('_')[0]
     # the following is a last ditch attempt to get an object number from a filename...
-    objectnumber = sub(r'(?i).(jpe?g|tiff?|png|wav|mp3|aac)$', '', objectnumber)
+    objectnumber = sub(r'(?i)\.(jpe?g|tiff?|png|wav|mp3|aac|x3d.*)$', '', objectnumber)
     return filename, objectnumber, imagenumber, extra
