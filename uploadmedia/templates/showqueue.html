@@ -21,10 +21,16 @@
     {% for jobno,jobfailed,jobinfo,jobsummary in jobs %}
         <tr>
             <td>{{ jobno }}</td>
-            <td>{{ jobsummary.0 }} submitted, {{ jobsummary.1 }} ingested.</td>
-            {% if jobsummary.2 > 0 %}
+            <td>
+                {% if jobsummary.4 == 'completed' %}
+                    all {{ jobsummary.0 }} ingested.
+                {% else %}
+                    {{ jobsummary.0 }} submitted, {{ jobsummary.1 }} ingested.
+                {% endif %}
+            </td>
+            {% if jobsummary.4 == 'problem' %}
                 <td style="max-width: 600px;">
-                    <span style="color: red">{{ jobsummary.2 }} image{{ jobsummary.2|pluralize }} failed to load.</span>
+                    <span style="color: red">{{ jobsummary.2 }} media file{{ jobsummary.2|pluralize }} failed to load.</span>
                     {% for image in jobsummary.3 %}
                         {{ image }}
                     {% endfor %}
@@ -33,9 +39,15 @@
                 <td/>
             {% endif %}
             {% if jobfailed %}
-                <td><span style="color: red">Failed.</span></td>
+                <td><span style="color: red">failed</span></td>
             {% else %}
-                <td/>
+                <td>
+                {% if jobsummary.4 == 'problem' %}
+                    <span style="color: red; font-weight: bold">{{ jobsummary.4 }}</span>
+                {% elif jobsummary.4 == 'in progress' or jobsummary.4 == 'pending' %}
+                    <span style="color: green">{{ jobsummary.4 }}</span>
+                {% endif %}
+                </td>
             {% endif %}
             <td>
                 {% for j in jobinfo %}
