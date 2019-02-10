@@ -147,9 +147,13 @@ files = []
 
 for filename in os.listdir(DIR):
     if not '.csv' in filename: continue
+    try:
+        (run, step, extension) = filename.split('.')
+    except:
+        # skip .csv files that don't match the pattern
+        continue
     FH = open(os.path.join(DIR, filename), "rb")
     # filename = filename.replace('.csv','')
-    (run, step, extension) = filename.split('.')
     for i, line in enumerate(FH.readlines()):
         line = line.strip()
         objectCSID = ''
