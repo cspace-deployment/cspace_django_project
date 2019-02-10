@@ -393,11 +393,11 @@ def setupCSV(request, requestObject, context, prmz):
 
 def setDisplayType(requestObject, prmz):
     displayType = prmz.DEFAULTDISPLAY
-    if 'displayType' in requestObject:
-        if requestObject['displayType'] == 'search-default':
-            displayType = prmz.DEFAULTDISPLAY
-        else:
-            displayType = requestObject['displayType']
+    # a silly oversight has the parameter as 'displayType' in older portals, and 'displaytype' in the current one
+    if   'displayType' in requestObject: displayType = requestObject['displayType']
+    elif 'displaytype' in requestObject: displayType = requestObject['displaytype']
+    if displayType == 'search-default':
+        displayType = prmz.DEFAULTDISPLAY
     for value, label in prmz.BUTTONOPTIONS:
         if ('search-%s' % value) in requestObject:
             displayType = value
@@ -609,7 +609,7 @@ def doSearch(context, prmz, request):
     else:
         for p in requestObject:
             # skip form values that are not strictly input values
-            if p in ['csrfmiddlewaretoken', 'displayType', 'resultsOnly', 'maxresults', 'url', 'querystring', 'pane',
+            if p in ['csrfmiddlewaretoken', 'displayType', 'displaytype', 'resultsOnly', 'maxresults', 'url', 'querystring', 'pane',
                      'pixonly', 'locsonly', 'acceptterms', 'submit', 'start', 'sortkey', 'count', 'summarizeon',
                      'summarize', 'summaryfields', 'lastpage']: continue
             if p == '_': continue

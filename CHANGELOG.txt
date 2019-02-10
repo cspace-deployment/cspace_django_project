@@ -3,10 +3,25 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version cdp_5.0-2
-Thu Dec  6 08:03:05 PST 2018
+This is version cdp_5.0-5
+Wed Jan 16 10:12:49 PST 2019
 
-6847691 (HEAD -> master, origin/master, origin/HEAD) NOJIRA: release-making script not counting tags properly
+c565730 (HEAD -> master, tag: cdp_5.0-4, origin/master, origin/HEAD) revise change log and VERSION file for version cdp_5.0-4
+f65ae70 DJAN-75: python requirements for RHEL7
+38bbe83 UJ-44: update BMU documentation
+779218f NOJIRA: this version of wsgi.py is required for Django 1.8 on RHEL7
+6d7ebce Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+b1c1839 (tag: cdp_5.0-3) revise change log and VERSION file for version cdp_5.0-3
+1badb7e UJ-56: make some 'legacy' search urls work again
+f3f3051 UJ-56: minor css improvement for import page
+7a107c4 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+a2836d7 UJ-59: flush output buffers after each update
+098367c Merge pull request #41 from cesarvh/master
+285f356 NOJIRA: Removed toolbox
+e294c50 NOJIRA: Fixed config.examples and added toolbox
+6e8b581 NOJIRA: do not try to run 'set primary' batch job, for now. it doesn't work.
+fb5e242 (tag: cdp_5.0-2) revise change log and VERSION file for version cdp_5.0-2
+6847691 NOJIRA: release-making script not counting tags properly
 1548f05 UJ-44: minor refactoring of BMU templates
 a3218a8 BG-15: grouper should not tolerate duplicates in groups
 0f5c466 HMP-42: further revisions to initial streaming media trancoding script
