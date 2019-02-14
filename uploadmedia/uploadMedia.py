@@ -119,7 +119,7 @@ def uploadblob(mediaElements, config, http_parms):
 
     blobURL = response.headers['location']
     blobCSID = blobURL.split('/')[-1:][0]
-    print 'got blobcsid %s elapsedtime %s ' % (blobCSID, time.time() - elapsedtime)
+    print 'blobcsid %s elapsedtime %s ' % (blobCSID, time.time() - elapsedtime)
     mediaElements['blobCSID'] = blobCSID
     return mediaElements
 
@@ -131,13 +131,13 @@ def uploadmedia(mediaElements, config, http_parms):
         uri = 'media'
 
         messages = []
-        messages.append("posting to media REST API...")
+        #messages.append("posting to media REST API...")
         payload = mediaPayload(mediaElements, http_parms.institution)
         (url, data, mediaCSID, elapsedtime) = postxml('POST', uri, http_parms.realm, http_parms.server, http_parms.username, http_parms.password, payload)
         # elapsedtimetotal += elapsedtime
-        messages.append('got mediacsid %s elapsedtime %s ' % (mediaCSID, elapsedtime))
+        messages.append('mediacsid %s elapsedtime %s ' % (mediaCSID, elapsedtime))
         mediaElements['mediaCSID'] = mediaCSID
-        messages.append("media REST API post succeeded...")
+        #messages.append("media REST API post succeeded...")
         # for PAHMA, each uploaded image becomes the primary, in turn
         # i.e. the last image in a set of images for the same object becomes the primary
         if http_parms.institution == 'pahma':
@@ -175,8 +175,7 @@ def uploadmedia(mediaElements, config, http_parms):
 
                 uri = 'relations'
 
-                messages.append("posting media2obj to relations REST API...")
-
+                #messages.append("posting media2obj to relations REST API...")
                 mediaElements['objectCsid'] = objectCSID
                 mediaElements['subjectCsid'] = mediaCSID
                 # "urn:cspace:institution.cspace.berkeley.edu:media:id(%s)" % mediaCSID
@@ -187,12 +186,12 @@ def uploadmedia(mediaElements, config, http_parms):
                 payload = relationsPayload(mediaElements)
                 (url, data, csid, elapsedtime) = postxml('POST', uri, http_parms.realm, http_parms.server, http_parms.username, http_parms.password, payload)
                 # elapsedtimetotal += elapsedtime
-                messages.append('got relation csid %s elapsedtime %s ' % (csid, elapsedtime))
+                messages.append('relation media2obj csid %s elapsedtime %s ' % (csid, elapsedtime))
                 mediaElements['media2objCSID'] = csid
-                messages.append("relations REST API post succeeded...")
+                #messages.append("relations REST API post succeeded...")
 
                 # reverse the roles
-                messages.append("posting obj2media to relations REST API...")
+                #messages.append("posting obj2media to relations REST API...")
                 temp = mediaElements['objectCsid']
                 mediaElements['objectCsid'] = mediaElements['subjectCsid']
                 mediaElements['subjectCsid'] = temp
@@ -201,9 +200,9 @@ def uploadmedia(mediaElements, config, http_parms):
                 payload = relationsPayload(mediaElements)
                 (url, data, csid, elapsedtime) = postxml('POST', uri, http_parms.realm, http_parms.server, http_parms.username, http_parms.password, payload)
                 #elapsedtimetotal += elapsedtime
-                messages.append('got relation csid %s elapsedtime %s ' % (csid, elapsedtime))
+                messages.append('relation obj2media csid %s elapsedtime %s ' % (csid, elapsedtime))
                 mediaElements['obj2mediaCSID'] = csid
-                messages.append("relations REST API post succeeded...")
+                #messages.append("relations REST API post succeeded...")
                 for m in messages:
                     print "   %s" % m
     return mediaElements
