@@ -7,7 +7,7 @@ if [[ -z $CS_TEMP_MMIN ]]; then
         # 2880 mins = 48 hours
 fi
 
-TEMP_DIR=$1/$2
+TEMP_DIR=$1
 
 if [[ ! -d $TEMP_DIR ]]; then
         echo "could not find $TEMP_DIR"
