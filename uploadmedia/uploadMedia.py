@@ -109,6 +109,7 @@ def uploadblob(mediaElements, config, http_parms):
     #files = {'file': (filename, open(fullpath, 'rb'), 'image/jpeg')}
     files = {'file': (filename, open(fullpath, 'rb'))}
 
+    elapsedtime = time.time()
     response = requests.post(url, data=payload, files=files, auth=HTTPBasicAuth(http_parms.username, http_parms.password))
     if response.status_code != 201:
         print "blob creation failed!"
@@ -118,6 +119,7 @@ def uploadblob(mediaElements, config, http_parms):
 
     blobURL = response.headers['location']
     blobCSID = blobURL.split('/')[-1:][0]
+    print 'got blobcsid %s elapsedtime %s ' % (blobCSID, time.time() - elapsedtime)
     mediaElements['blobCSID'] = blobCSID
     return mediaElements
 
@@ -202,7 +204,8 @@ def uploadmedia(mediaElements, config, http_parms):
                 messages.append('got relation csid %s elapsedtime %s ' % (csid, elapsedtime))
                 mediaElements['obj2mediaCSID'] = csid
                 messages.append("relations REST API post succeeded...")
-
+                for m in messages:
+                    print "   %s" % m
     return mediaElements
 
 

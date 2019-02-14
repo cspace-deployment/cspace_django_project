@@ -8,6 +8,7 @@ import time
 import urllib2
 import re
 import psycopg2
+import base64
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -59,20 +60,26 @@ except ImportError:
 
 
 def postxml(requestType, uri, realm, server, username, password, payload):
+
     passman = urllib2.HTTPPasswordMgr()
     passman.add_password(realm, server, username, password)
     authhandler = urllib2.HTTPBasicAuthHandler(passman)
     opener = urllib2.build_opener(authhandler)
+
+    unencoded_credentials = "%s:%s" % (username, password)
+    auth_value = 'Basic %s' % base64.b64encode(unencoded_credentials).strip()
+    opener.addheaders = [('Authorization', auth_value)]
     urllib2.install_opener(opener)
     url = "%s/cspace-services/%s" % (server, uri)
-    elapsedtime = 0.0
-
-    elapsedtime = time.time()
     request = urllib2.Request(url, payload, {'Content-Type': 'application/xml'})
+
     # default method for urllib2 with payload is POST
     if requestType == 'PUT': request.get_method = lambda: 'PUT'
+    elapsedtime = 0.00
     try:
+        elapsedtime = time.time()
         f = urllib2.urlopen(request)
+        elapsedtime = time.time() - elapsedtime
     except urllib2.URLError, e:
         if hasattr(e, 'reason'):
             sys.stderr.write('We failed to reach a server.\n')
@@ -95,7 +102,6 @@ def postxml(requestType, uri, realm, server, username, password, payload):
         csid = csid.group(1)
     else:
         csid = ''
-    elapsedtime = time.time() - elapsedtime
     return (url, data, csid, elapsedtime)
 
 
@@ -113,4 +119,3 @@ def relationsPayload(f):
 """
     payload = payload % (f['objectCsid'], f['objectDocumentType'], f['subjectCsid'], f['subjectDocumentType'])
     return payload
-
