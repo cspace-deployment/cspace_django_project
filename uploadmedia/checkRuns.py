@@ -40,17 +40,17 @@ def checkJobs(jobs, joberrors, report_type):
         output_line = job + ":\t"
 
         if steps['discrepancy'] == 0:
-            output_line += '%s ingested' % pluralize(steps['original'], 'image')
+            output_line += '%s ingested' % pluralize(steps['original'], 'media file')
         else:
             try:
                 output_line += '%s uploaded, %s ingested, %s' % (
-                    pluralize(steps['original'], 'image'), pluralize(steps['processed'], 'image'),
+                    pluralize(steps['original'], 'media file'), pluralize(steps['processed'], 'media file'),
                     pluralize(steps['discrepancy'], 'problem'))
             except:
                 if 'check' in steps:
-                    output_line += 'job failed qc check; %s attempted' % pluralize(steps['check'], 'image')
+                    output_line += 'job failed qc check; %s attempted' % pluralize(steps['check'], 'media file')
                 elif 'step1' in steps:
-                    output_line += 'job pending, %s' % pluralize(steps['step1'], 'image')
+                    output_line += 'job pending, %s' % pluralize(steps['step1'], 'media file')
                 else:
                     output_line += 'run files incomplete %s' % steps
         if steps['error messages seen'] != 0:
@@ -116,10 +116,14 @@ def checkSteps(images):
 
 
 def usage():
-    print "usage: python checkRuns.py <directory> <jobs missing duplicates images csids> <full summary>"
+    print "usage: python checkRuns.py <bmu_directory> <jobs missing duplicates images csids> <full summary>"
 
 
 ########## Main ##############
+if len(sys.argv) < 4:
+    usage()
+    sys.exit(1)
+
 DIR = sys.argv[1]
 images = {}
 jobs = {}
@@ -129,10 +133,6 @@ joberrors = {}
 errors = {}
 csids = {}
 JOB = {}
-
-if len(sys.argv) < 4:
-    usage()
-    sys.exit(1)
 
 if (sys.argv[1]):  # if we have a single job, just do stats for it..
     JOB = sys.argv[1]
@@ -194,6 +194,7 @@ for filename in os.listdir(DIR):
                                             (name, size, objectnumber, date, creator, contributor, rightsholder,
                                              imagenumber, handling, approvedforweb, copyright, imagetype, source,
                                              locality, mediaCSID, objectCSID) = line.split('\t')
+                                            blobCSID = 'not provided'
                                         except:
                                             raise
             elif step == 'original' or step == 'step1':
