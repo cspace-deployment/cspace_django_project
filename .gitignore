@@ -7,7 +7,7 @@ config/*.cfg
 config/*.csv
 config/*.xml
 fixtures/*.json
-package-log.json
+package-lock.json
 *.DS_Store
 .idea
 cspace_django_site/project_urls.py
