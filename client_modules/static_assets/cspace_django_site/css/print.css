@@ -1,6 +1,6 @@
 @media print {
   #branding { display: none; }
-  #search { display: none; }
+  /* #search { display: none; } */
   #searchstats { display: none; }
   #selectedresults { display: none; }
   #emailableurl { display: none; }
