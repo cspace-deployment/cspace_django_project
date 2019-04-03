@@ -3,10 +3,28 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version cdp_5.0-5
-Wed Jan 16 10:12:49 PST 2019
+This is version 5.1.0-rc1
+Wed Apr  3 09:48:57 PDT 2019
 
-c565730 (HEAD -> master, tag: cdp_5.0-4, origin/master, origin/HEAD) revise change log and VERSION file for version cdp_5.0-4
+f0c3126 (HEAD -> master) CSW-1: release script now support 'release candidates'; tweaks to deploy script
+9639ca9 HMP-88: improve .gitignore
+edd598e CC-446: minor style improvement to legacy django webapps print css
+47e72a1 HMP-88: improve .gitignore
+6ebe258 HMP-88: moved this elsewhere.
+97f831d (origin/master, origin/HEAD) HMP-88: some 'helper scripts' for transcoding streaming media, and helping with X3D files
+a6dd953 HMP-52: repaired bug in 'processed' file handling, 'images' are now 'media files'
+e7b5d08 CC-17: handle the bmu temp directory parameter correctly
+e311c32 CC-17: this script needs to take the bmu temp directory as a parameter
+77f7d47 CC-20: clean up messaging wrt to elapsed times
+513d236 HMP-52: allow BMU to accept .mp4 files
+40a513e CC-20: add authN to header, thereby avoiding urllib2 401 retry
+1a08eb9 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+eaeaafc HMP-49: accept x3d files in BMU uploads
+5f8ea32 HMP-52: improve results display in BMU job queue
+85c38ad HMP-49: accept .wav, .mp3, and .aac in BMU uploads
+e2ae244 UJ-44: handle wayward BMU files more gracefully
+7657b8f (tag: cdp_5.0-5) revise change log and VERSION file for version cdp_5.0-5
+c565730 (tag: cdp_5.0-4) revise change log and VERSION file for version cdp_5.0-4
 f65ae70 DJAN-75: python requirements for RHEL7
 38bbe83 UJ-44: update BMU documentation
 779218f NOJIRA: this version of wsgi.py is required for Django 1.8 on RHEL7
@@ -287,7 +305,7 @@ f3d6fa6 DJAN-81: this needs to look for a file, not a directory
 cb7f825 DJAN-81: bulletproof the configuration process a bit
 985bfb1 NOJIRA: remove adhocreports from default apps, for now...
 123ca70 NOJIRA: remove toolbox from default apps, for now...
-49778c4 (origin/DJAN-77) DJAN-81: revices support for tenant-specific deployments
+49778c4 DJAN-81: revices support for tenant-specific deployments
 ec8ba35 DJAN-77: needed by eslint
 9da96b8 Merge pull request #39 from jblowe/master
 45de7fd NOJIRA: the red warning text needs to stay here...
@@ -298,7 +316,7 @@ a76ee42 DJAN-77: remove Masonry files now include in webpack
 dd6fc8b DJAN-77: ignore '_' parameter added to query URL by React
 97bd1cd DJAN-77: improvements to js framework packaging, etc.
 e2b899b DJAN-77: refactor .js code to support npm package management
-572f392 (origin/reactify) Started work to add React, babel, etc to webpack, started work to build components for displaying search results
+572f392 Started work to add React, babel, etc to webpack, started work to build components for displaying search results
 07254b2 DJAN-51: changes to support UA in new js framework.
 1269b28 NOJIRA: don't need this logo file to be tracked...
 6dc66fa NOJIRA: don't need this logo file to be tracked...
