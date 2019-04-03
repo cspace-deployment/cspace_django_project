@@ -46,7 +46,7 @@ function deploy()
         rsync -av --delete --exclude node_modules --exclude .git --exclude .gitignore --exclude config --exclude main.cfg . /var/www/$1
     fi
 }
-if [ $# -ne 2 -a "$1" != 'show' ]; then
+if [ $# -lt 2 -a "$1" != 'show' ]; then
     echo "Usage: $0 <enable|disable|deploy|updatejs|configure|show> <TENANT|CONFIGURATION|WEBAPP> [VERSION]"
     echo
     echo "where: TENANT = 'default' or the name of a deployable tenant"
@@ -70,7 +70,13 @@ fi
 
 COMMAND=$1
 WEBAPP=$2
-VERSION=$3
+
+if [ "$3" != "" ]; then
+    VERSION="$3"
+else
+    VERSION="master"
+fi
+
 CURRDIR=`pwd`
 CONFIGDIR=~/django_example_config
 
@@ -94,8 +100,13 @@ elif [ "${COMMAND}" = "configure" ]; then
         echo
         exit
     fi
-    git clean -d
-    git reset --hard
+
+    if [ "$VERSION" != "master" ]; then
+        git clean -fd
+        git reset --hard
+        git pull -v
+    fi
+
     cp cspace_django_site/extra_$2.py cspace_django_site/extra_settings.py
     echo
     echo "*************************************************************************************************"
@@ -112,9 +123,14 @@ elif [ "${COMMAND}" = "deploy" ]; then
         echo
         exit
     fi
-    # update base code, reset to "clean" state
-    git reset --hard
-    git pull -v
+
+    if [ "$VERSION" != "master" ]; then
+        # update base code, reset to "clean" state
+        git clean -fd
+        git reset --hard
+        git pull -v
+    fi
+
     # for the generic "default" deployment, all the default apps and config are in this repo
     # no need to refer to the UCB custom repos
     if [ "${COMMAND}" = "default" ]; then
@@ -152,8 +168,9 @@ elif [ "${COMMAND}" = "deploy" ]; then
     rm -f db.sqlite3
     # $PYTHON manage.py migrate
     $PYTHON manage.py loaddata fixtures/*.json
-    # rebuild the js libraries in case the javascript has been tweaked
-    perl -i -pe 's/..\/..\/suggest/\/$ENV{t}\/suggest/' client_modules/js/PublicSearch.js
+    # TODO: fix this hack to make the small amount of js work for all the webapps
+    perl -i -pe 's/..\/..\/suggest/\/$2\/suggest/' client_modules/js/PublicSearch.js
+    # build js library, populate static dirs, rsync code to runtime dir, etc.
     deploy $2
     echo
     echo "*************************************************************************************************"
