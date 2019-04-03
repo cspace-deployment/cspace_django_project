@@ -1,39 +1,72 @@
 #!/usr/bin/perl
-# make a django project release
-# ./make-django-release.pl <tag-prefix> <django-project-directory> "commit comment"
-# e.g. ./make-django-release.pl cdp cspace_django_project "a few fixes and enhancements"
+#
+# make a django project release candidate
+# ./make-django-release.pl <release> <django-project-directory> "commit comment"
+# e.g. ./make-django-release.pl v5.1.0 cspace_django_project "a few fixes and enhancements"
+#
+# will look in the existing release candidates (if any) for <release> and make the next one in the series
+# e.g. if the current release candidate is v5.1.0-rc3, this script will make v5.1.0-rc4
+#
+# nb: if the release does not exist, a new initial release candidate is created.
+#     e.g. v5.1.1 does not existing v5.1.1-rc1 is created.
+#     therefore the actual release tag (e.g. v5.1.1) has to be made and pushed by hand
+#     at the end of the development and qa process.
 
 use strict;
 
-if (scalar @ARGV != 3)  {
-  die "Need three arguments: tag-prefix directory \"comment (can be empty)\"\n";
+if (scalar @ARGV < 3)  {
+  die "Need three (or four arguments): release directory \"comment (can be empty)\" --new (optional)\n";
 }
 
-my ($TAGPREFIX, $DIRECTORY, $MSG) = @ARGV;
+my ($RELEASE, $DIRECTORY, $MSG, $NEW) = @ARGV;
 
 chdir $DIRECTORY or die("could not change to $DIRECTORY directory");
     
-my @tags = `git tag --list ${TAGPREFIX}-*`;
-if ($#tags < 0) {
-   print "can't find any tags for ${TAGPREFIX}-*\n";
+my @tags = `git tag --list ${RELEASE}-*`;
+if ($#tags < 0 && $NEW ne '--new') {
+   print "can't find any tags for ${RELEASE}-*\n";
+   print "add --new if you want to make a new -rc1 for ${RELEASE}-*\n";
    exit(1);
 }
 
-my (@parts, $revision, $version_number, $last_revision, $last_version_number, $revision);
+my ($rc, $highest_rc, $release_to_check, $version_number);
 
-foreach my $tag (@tags) {
-    @parts = split(/[\-_]/, $tag);
-    $revision = pop(@parts);
-    $version_number = join('_', @parts);
-
-    if ($revision > $last_revision) {
-        $last_revision = $revision;
-        $last_version_number = $version_number;
+foreach my $tag (sort (@tags)) {
+    #($release_to_check, $rc) = $tag =~ /^(.*?)\-rc(\d+)/;
+    ($release_to_check, $rc) = $tag =~ /^(.*?)\-(\d+)/;
+    if ($release_to_check eq $RELEASE) {
+        $version_number = $release_to_check;
+        if (int($rc) > int($highest_rc)) {
+            $highest_rc = $rc;
+        }
     }
 }
 
-$last_revision++;
-my $version_number = "$last_version_number-$last_revision";
+if ($version_number) {
+    $highest_rc++;
+    if ($NEW ne '') {
+        print "version $version_number already exists and --new was specified\n";
+        print "can't make a new version with this value.\n";
+        print "specify a new version number or don't use --new.\n";
+        exit;
+    }
+}
+else {
+    if ($NEW eq '') {
+        print "no release candidate found for $release_to_check and --new was not specified\n";
+        print "if you want to make this the 1st release candidate for a new release, specify:\n";
+        print "$0 $RELEASE $DIRECTORY \"$MSG\" --new\n";
+        exit;
+    }
+    else {
+        # they specified --new, so make a new rc1 for this new release
+        print "making a new 1st release candidate for $RELEASE\n";
+        $highest_rc = "1";
+        $version_number = $RELEASE;
+    }
+}
+
+my $version_number = "$version_number-rc$highest_rc";
 my $tag_message = "Release tag for django project $version_number.";
 $tag_message .= ' ' . $MSG if $MSG;
 

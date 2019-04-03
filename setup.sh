@@ -7,6 +7,20 @@
 # the project can be customized for any of the UCB deployments with 'deploy'
 # individual webapps can be enabled and disabled
 #
+# this bash script does the following:
+#
+# 1. 'configure' builds a django app within the repo directory in the usual way (using manage.py)
+# 2. 'deploy':
+#     a. copies and configures the code for either 'default' or for one of the 5 UCB deployments
+#     b. "npm builds" the needed js components
+#     c. if running on a UCB server (which is detected automatically), copies the code in the runtime directory
+# 3. other maintainance functions: 'updatejs' just rebuilds the webpack, 'disable' or 'enable' individual webapps
+#
+
+# exit on errors...
+set -e
+
+PYTHON=python
 
 function buildjs()
 {
@@ -18,12 +32,12 @@ function buildjs()
 
 function deploy()
 {
-    python manage.py syncdb --noinput
+    $PYTHON manage.py syncdb --noinput
     # rebuild the js libraries in case the javascript has been tweaked
     buildjs $1
-    python manage.py collectstatic --noinput
+    $PYTHON manage.py collectstatic --noinput
     # update the version file
-    python common/setversion.py
+    $PYTHON common/setversion.py
     # if this is running on a dev or prod system (evidenced by the presence of web-accessible
     # deployment directories, i.e. /var/www/*), then copy the needed files there
     # nb: the config directory is not overwritten!
@@ -33,15 +47,16 @@ function deploy()
     fi
 }
 if [ $# -ne 2 -a "$1" != 'show' ]; then
-    echo "Usage: $0 <enable|disable|deploy|redeploy|refresh|updatejs|configure|show> <TENANT|CONFIGURATION|WEBAPP>"
+    echo "Usage: $0 <enable|disable|deploy|updatejs|configure|show> <TENANT|CONFIGURATION|WEBAPP> [VERSION]"
     echo
     echo "where: TENANT = 'default' or the name of a deployable tenant"
     echo "       CONFIGURATION = <pycharm|dev|prod>"
     echo "       WEBAPP = one of the available webapps, e.g. 'search' or 'ireports'"
+    echo "       VERSION = one of the available release candidates (tags)"
     echo
     echo "e.g. $0 disable ireports"
     echo "     $0 configure pycharm"
-    echo "     $0 deploy botgarden"
+    echo "     $0 deploy botgarden 5.1.0-rc3"
     echo "     $0 show"
     echo
     exit 0
@@ -55,6 +70,7 @@ fi
 
 COMMAND=$1
 WEBAPP=$2
+VERSION=$3
 CURRDIR=`pwd`
 CONFIGDIR=~/django_example_config
 
@@ -70,7 +86,7 @@ elif [ "${COMMAND}" = "show" ]; then
     echo
     echo "Installed apps:"
     echo
-    echo -e "from cspace_django_site.installed_apps import INSTALLED_APPS\nfor i in INSTALLED_APPS: print i" | python
+    echo -e "from cspace_django_site.installed_apps import INSTALLED_APPS\nfor i in INSTALLED_APPS: print i" | $PYTHON
     echo
 elif [ "${COMMAND}" = "configure" ]; then
     if [ ! -f "cspace_django_site/extra_$2.py" ]; then
@@ -78,7 +94,7 @@ elif [ "${COMMAND}" = "configure" ]; then
         echo
         exit
     fi
-    git clean -fd
+    git clean -d
     git reset --hard
     cp cspace_django_site/extra_$2.py cspace_django_site/extra_settings.py
     echo
@@ -96,13 +112,12 @@ elif [ "${COMMAND}" = "deploy" ]; then
         echo
         exit
     fi
-    git clean -fd
-    # clean out the config directory of certain specific types of files.
-    rm -f config/*.cfg
-    rm -f config/*.csv
-    rm -f config/*.xml
-    rm -f fixtures/*.json
-    if [ "$2" = "default" ]; then
+    # update base code, reset to "clean" state
+    git reset --hard
+    git pull -v
+    # for the generic "default" deployment, all the default apps and config are in this repo
+    # no need to refer to the UCB custom repos
+    if [ "${COMMAND}" = "default" ]; then
         cp config.examples/*.cfg config
         cp config.examples/*.csv config
         cp config.examples/*.json fixtures
@@ -115,9 +130,6 @@ elif [ "${COMMAND}" = "deploy" ]; then
             echo
             exit
         fi
-        # update base code
-        git reset --hard
-        git pull -v
         cd ${CONFIGDIR}
         # update tenant custom code
         git pull -v
@@ -138,10 +150,10 @@ elif [ "${COMMAND}" = "deploy" ]; then
     echo "*************************************************************************************************"
     # just to be sure, we start over with the database...
     rm -f db.sqlite3
-    python manage.py syncdb --noinput
-    # python manage.py migrate
-    python manage.py loaddata fixtures/*.json
+    # $PYTHON manage.py migrate
+    $PYTHON manage.py loaddata fixtures/*.json
     # rebuild the js libraries in case the javascript has been tweaked
+    perl -i -pe 's/..\/..\/suggest/\/$ENV{t}\/suggest/' client_modules/js/PublicSearch.js
     deploy $2
     echo
     echo "*************************************************************************************************"
@@ -149,25 +161,6 @@ elif [ "${COMMAND}" = "deploy" ]; then
     echo "configuration files in config/ (these are .cfg and .csv files)"
     echo
     echo "please restart apache to pick up changes"
-    echo "*************************************************************************************************"
-    echo
-elif [ "${COMMAND}" = "refresh" ]; then
-    cd ${CONFIGDIR}
-    git reset --hard
-    git pull -v
-    cd ${CURRDIR}
-    cp -r ${CONFIGDIR}/$2/apps/* .
-    cp ${CONFIGDIR}/$2/project_urls.py cspace_django_site/urls.py
-    cp ${CONFIGDIR}/$2/project_apps.py cspace_django_site/installed_apps.py
-    # the underlying cspace_django_project code should be up to date as well...
-    git pull -v
-    deploy $2
-    echo
-    echo "*************************************************************************************************"
-    echo "code, including custom apps refreshed from GitHub; no changes to configuration or fixtures though"
-    echo "you may need to create or edit .cfg files in config for any new or changed webapps."
-    echo
-    echo "please restart apache to pick up changes!"
     echo "*************************************************************************************************"
     echo
 elif [ "${COMMAND}" = "updatejs" ]; then
