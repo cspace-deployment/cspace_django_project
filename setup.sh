@@ -18,12 +18,15 @@
 #
 
 # exit on errors...
-set -e
+# set -e
 
 PYTHON=python
 
 function buildjs()
 {
+    # TODO: fix this hack to make the small amount of js work for all the webapps
+    perl -i -pe 's/..\/..\/suggest/\/$2\/suggest/' client_modules/js/PublicSearch.js
+
     npm install
     npm build
     ./node_modules/.bin/webpack
@@ -106,6 +109,7 @@ elif [ "${COMMAND}" = "configure" ]; then
         git reset --hard
         git pull -v
     fi
+    echo "installing version: $VERSION ..."
 
     cp cspace_django_site/extra_$2.py cspace_django_site/extra_settings.py
     echo
@@ -130,6 +134,7 @@ elif [ "${COMMAND}" = "deploy" ]; then
         git reset --hard
         git pull -v
     fi
+    echo "installing version: $VERSION ..."
 
     # for the generic "default" deployment, all the default apps and config are in this repo
     # no need to refer to the UCB custom repos
@@ -168,8 +173,6 @@ elif [ "${COMMAND}" = "deploy" ]; then
     rm -f db.sqlite3
     # $PYTHON manage.py migrate
     $PYTHON manage.py loaddata fixtures/*.json
-    # TODO: fix this hack to make the small amount of js work for all the webapps
-    perl -i -pe 's/..\/..\/suggest/\/$2\/suggest/' client_modules/js/PublicSearch.js
     # build js library, populate static dirs, rsync code to runtime dir, etc.
     deploy $2
     echo
