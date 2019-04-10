@@ -3,15 +3,20 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version 5.1.0-rc1
-Wed Apr  3 09:48:57 PDT 2019
+This is version 5.1.0-rc2
+Wed Apr 10 14:54:44 PDT 2019
 
-f0c3126 (HEAD -> master) CSW-1: release script now support 'release candidates'; tweaks to deploy script
+80d2fbc (HEAD -> master, origin/master, origin/HEAD) CSW-1: version-making script for webapps should use 'rc-N' convention for release candidates
+79f7592 CSW-1: need to 'syncdb' before importing fixtures
+04220a9 CSW-1: revise workaround that makes PublicSearch.js work properly
+b36cd12 CSW-1: deploy script may now support deploying 'release candidates'
+e0d1051 (tag: 5.1.0-rc1) revise change log and VERSION file for version 5.1.0-rc1
+f0c3126 CSW-1: release script now support 'release candidates'; tweaks to deploy script
 9639ca9 HMP-88: improve .gitignore
 edd598e CC-446: minor style improvement to legacy django webapps print css
 47e72a1 HMP-88: improve .gitignore
 6ebe258 HMP-88: moved this elsewhere.
-97f831d (origin/master, origin/HEAD) HMP-88: some 'helper scripts' for transcoding streaming media, and helping with X3D files
+97f831d HMP-88: some 'helper scripts' for transcoding streaming media, and helping with X3D files
 a6dd953 HMP-52: repaired bug in 'processed' file handling, 'images' are now 'media files'
 e7b5d08 CC-17: handle the bmu temp directory parameter correctly
 e311c32 CC-17: this script needs to take the bmu temp directory as a parameter
