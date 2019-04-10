@@ -32,8 +32,8 @@ if ($#tags < 0 && $NEW ne '--new') {
 my ($rc, $highest_rc, $release_to_check, $version_number);
 
 foreach my $tag (sort (@tags)) {
-    #($release_to_check, $rc) = $tag =~ /^(.*?)\-rc(\d+)/;
-    ($release_to_check, $rc) = $tag =~ /^(.*?)\-(\d+)/;
+    ($release_to_check, $rc) = $tag =~ /^(.*?)\-rc(\d+)/;
+    #($release_to_check, $rc) = $tag =~ /^(.*?)\-(\d+)/;
     if ($release_to_check eq $RELEASE) {
         $version_number = $release_to_check;
         if (int($rc) > int($highest_rc)) {
