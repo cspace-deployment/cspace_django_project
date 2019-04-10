@@ -172,6 +172,7 @@ elif [ "${COMMAND}" = "deploy" ]; then
     # just to be sure, we start over with the database...
     rm -f db.sqlite3
     # $PYTHON manage.py migrate
+    $PYTHON manage.py syncdb --noinput
     $PYTHON manage.py loaddata fixtures/*.json
     # build js library, populate static dirs, rsync code to runtime dir, etc.
     deploy $2
