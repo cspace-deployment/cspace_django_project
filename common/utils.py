@@ -720,7 +720,9 @@ def doSearch(context, prmz, request):
     print 'query: %s' % querystring
     try:
         solrtime = time.time()
-        response = s.query(querystring, facet='true', facet_field=facetfields, fq={}, fields=solrfl,
+        # TODO: this hack allows keyword searching while continuing to use the _s versions in displays
+        solrfl2 = [ sf.replace('_txt','_s') for sf in solrfl ]
+        response = s.query(querystring, facet='true', facet_field=facetfields, fq={}, fields=solrfl2,
                            rows=context['maxresults'], facet_limit=prmz.MAXFACETS, sort=context['sortkey'],
                            facet_mincount=1, start=startpage)
         print 'Solr search succeeded, %s results, %s rows requested starting at %s; %8.2f seconds.' % (
