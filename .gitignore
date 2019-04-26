@@ -11,6 +11,7 @@ fixtures/*.json
 package-lock.json
 .DS_Store
 .idea
+VERSION
 cspace_django_site/project_urls.py
 cspace_django_site/urls.py
 cspace_django_site/project_apps.py
