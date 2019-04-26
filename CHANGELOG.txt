@@ -3,10 +3,13 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version 5.1.0-rc4
-Fri Apr 26 15:38:46 PDT 2019
+This is version 5.1.0-rc5
+Fri Apr 26 16:31:10 PDT 2019
 
-57bd408 (HEAD -> master, origin/master, origin/HEAD) CSW-13: more and better documentation of django webapp deployment
+b2a37ce (HEAD -> master, origin/master, origin/HEAD) CSW-1: gitignore VERSION file
+8b72ce7 CSW-1: the spiffy new 'deploy-all' script needs to be executable
+83505b8 (tag: 5.1.0-rc4) revise change log and VERSION file for version 5.1.0-rc4
+57bd408 CSW-13: more and better documentation of django webapp deployment
 812741f CSW-1: elaborate a detail of what the webapps deployment script does
 5a58078 CSW-1: a helper script for ucb deployments on managed servers
 77f9ac1 CSW-1: remove two obsolete webapps deployment helper scripts
