@@ -3,10 +3,17 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version 5.1.0-rc3
-Wed Apr 24 14:22:11 PDT 2019
+This is version 5.1.0-rc4
+Fri Apr 26 15:38:46 PDT 2019
 
-404b933 (HEAD -> master, origin/master, origin/HEAD) NOJIRA: forgotten tweak to Solr query parsing in portals
+57bd408 (HEAD -> master, origin/master, origin/HEAD) CSW-13: more and better documentation of django webapp deployment
+812741f CSW-1: elaborate a detail of what the webapps deployment script does
+5a58078 CSW-1: a helper script for ucb deployments on managed servers
+77f9ac1 CSW-1: remove two obsolete webapps deployment helper scripts
+757eeff Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+7195c1e CSW-1: correct handling of git tags in webapps deployment script
+4b86845 (tag: 5.1.0-rc3) revise change log and VERSION file for version 5.1.0-rc3
+404b933 NOJIRA: forgotten tweak to Solr query parsing in portals
 f1676a0 CSW-1: more refactoring webapps deployment script
 a5663e2 (tag: 5.1.0-rc2) revise change log and VERSION file for version 5.1.0-rc2
 80d2fbc CSW-1: version-making script for webapps should use 'rc-N' convention for release candidates
