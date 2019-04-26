@@ -3,10 +3,13 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version 5.1.0-rc2
-Wed Apr 10 14:54:44 PDT 2019
+This is version 5.1.0-rc3
+Wed Apr 24 14:22:11 PDT 2019
 
-80d2fbc (HEAD -> master, origin/master, origin/HEAD) CSW-1: version-making script for webapps should use 'rc-N' convention for release candidates
+404b933 (HEAD -> master, origin/master, origin/HEAD) NOJIRA: forgotten tweak to Solr query parsing in portals
+f1676a0 CSW-1: more refactoring webapps deployment script
+a5663e2 (tag: 5.1.0-rc2) revise change log and VERSION file for version 5.1.0-rc2
+80d2fbc CSW-1: version-making script for webapps should use 'rc-N' convention for release candidates
 79f7592 CSW-1: need to 'syncdb' before importing fixtures
 04220a9 CSW-1: revise workaround that makes PublicSearch.js work properly
 b36cd12 CSW-1: deploy script may now support deploying 'release candidates'
