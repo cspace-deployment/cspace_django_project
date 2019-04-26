@@ -18,7 +18,8 @@
 #
 
 # exit on errors...
-set -e
+# TODO: uncomment this someday when the script really can be expected to run to completion without errors
+# set -e
 
 PYTHON=python
 
@@ -49,18 +50,30 @@ function deploy()
         # copy the built files to the runtime directory, but leave the config files as they are
         rsync -av --delete --exclude node_modules --exclude .git --exclude .gitignore --exclude config --exclude main.cfg . /var/www/$1
     fi
+
+    # put things back the way they were...
+    git checkout master
+    git branch -d deploy
 }
 
-function check_clean()
+function check_version()
 {
     if [[ $(git status -s) ]]; then
-        echo 'uncommitted changes or untracked files found. Reset repo to pristine state (reset --hard, clean -fd)'
-        read -p "continue? (Y/N): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
+        echo 'just fyi, uncommitted changes or untracked files were found.'
+        # read -p "continue as is? (y/N): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
     fi
-    echo "cleaning, resetting, and pulling..."
-    git clean -fd
-    git reset --hard
-    git pull -v
+
+    if [[ $VERSION != "" ]]; then
+        echo "installing and configuring version: $VERSION ..."
+        git checkout -b deploy ${VERSION}
+    else
+        echo "no version specified; code and repo will left as is."
+    fi
+
+    # echo "cleaning, resetting, and pulling..."
+    # git clean -fd
+    # git reset --hard
+    # git pull -v
 }
 
 if [ $# -lt 2 -a "$1" != 'show' ]; then
@@ -115,10 +128,8 @@ elif [[ "${COMMAND}" = "configure" ]]; then
         exit
     fi
 
-    # if repo is dirty, check if we should clean it up...
-    check_clean
-
-    echo "installing and configuring version: $VERSION ..."
+    # checkout correct version, if indicated...
+    check_version
 
     cp cspace_django_site/extra_$2.py cspace_django_site/extra_settings.py
     echo
@@ -137,13 +148,8 @@ elif [[ "${COMMAND}" = "deploy" ]]; then
         exit
     fi
 
-    # if repo is dirty, check if we should clean it up...
-    check_clean
-
-    echo "installing version: '$VERSION' ..."
-    if [[ $VERSION != "" ]]; then
-        git checkout $VERSION
-    fi
+    # checkout correct version, if indicated...
+    check_version
 
     # for the generic "default" deployment, all the default apps and config are in this repo
     # no need to refer to the UCB custom repos
@@ -160,16 +166,20 @@ elif [[ "${COMMAND}" = "deploy" ]]; then
             echo
             exit
         fi
-        cd ${CONFIGDIR}
 
-        # if repo is dirty, check if we should clean it up...
-        check_clean
+        # for now, until versions in both django_example_config and cspace_django_project are sync'd
+        # we don't check the version for the 'example' repo...
+        # cd ${CONFIGDIR}
+        # check_version
+        # cd ${CURRDIR}
 
-        cd ${CURRDIR}
+        rm config/*
+        rm fixtures/*
+
         cp ${CONFIGDIR}/$2/config/* config
         cp ${CONFIGDIR}/$2/fixtures/* fixtures
         # note that in some cases, this cp will overwrite customized files in the underlying contributed apps
-        # in cspace_django_project.
+        # in cspace_django_project. that is the intended behavior!
         cp -r ${CONFIGDIR}/$2/apps/* .
         cp ${CONFIGDIR}/$2/project_urls.py cspace_django_site/urls.py
         cp ${CONFIGDIR}/$2/project_apps.py cspace_django_site/installed_apps.py
@@ -199,7 +209,7 @@ elif [[ "${COMMAND}" = "updatejs" ]]; then
     deploy $2
     echo
     echo "*************************************************************************************************"
-    echo "base code updated; no changes to configuration or deployment though"
+    echo "base javascript code updated; no changes to configuration or deployment though"
     echo
     echo "please restart apache to pick up changes!"
     echo "*************************************************************************************************"

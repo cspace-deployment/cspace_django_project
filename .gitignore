@@ -6,9 +6,10 @@ logs/settings.log
 config/*.cfg
 config/*.csv
 config/*.xml
+config/*.json
 fixtures/*.json
 package-lock.json
-*.DS_Store
+.DS_Store
 .idea
 cspace_django_site/project_urls.py
 cspace_django_site/urls.py
