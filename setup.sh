@@ -45,7 +45,7 @@ function deploy()
     $PYTHON common/setversion.py
     # if this is running on a dev or prod system (evidenced by the presence of web-accessible
     # deployment directories, i.e. /var/www/*), then copy the needed files there
-    # nb: the config directory is not overwritten!
+    # nb: the config directory and cspace_django_site/main.cfg are not overwritten!
     if [[ -e /var/www/$1 ]]; then
         # copy the built files to the runtime directory, but leave the config files as they are
         rsync -av --delete --exclude node_modules --exclude .git --exclude .gitignore --exclude config --exclude main.cfg . /var/www/$1
