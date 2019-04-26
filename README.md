@@ -7,12 +7,14 @@ The following components are provided with this project:
 
 #### Core Applications (user-facing apps that you might actually use)
 
+* grouper - helps manage group membership of collectionobjects
 * imagebrowser - a "lightbox-like" app that tiles images based on a keyword query to Solr backend
 * imageserver - cacheing proxy server to serve images from CSpace server
 * imaginator - "google-lookalike" search app -- provides "N blue links" for a keyword search
+* ireports - interface to installed reports that take inputs other than CSIDs
 * internal - internal (authenticating) search appliance
 * search - public (non-authenticating) search appliance
-* ireports - interface to installed reports that take inputs other than CSIDs
+* permalinks - a permanent link for an object; renders a single object nicely
 * uploadmedia - "bulk media uploader" (BMU)
 
 #### Helper Applications (needed by other apps, e.g. search)
@@ -28,7 +30,7 @@ The following components are provided with this project:
 * hello - simple default app to help you figure out if your Django deployment is working
 * service - proxies calls to services; mostly for test purposes
 
-#### Directories (in which you'll need to understand, and/or put stuff in)
+#### Directories (which you'll need to understand, and/or put stuff in)
 
 * config - put your config files here. This directory is git-ignored
 * cspace_django_site - "core" site code -- urls.py, settings.py, etc.
@@ -38,7 +40,7 @@ The following components are provided with this project:
 
 #### More Obsure Applications (disabled by default, but available)
 
-* simplesearch - make query (kw=) to collectionobjects service
+* simplesearch - make query (kw=) to collectionobjects service, display list_items
 * batchuploadimages -- RESTful interface to upload images in bulk (_EXPERIMENTAL!_)
 
 ### Quick Start Guide
@@ -132,15 +134,17 @@ Instead there is a shell script called `setup.sh` which does the steps required 
 
 ```bash
 $ ./setup.sh 
-Usage: ./setup.sh <enable|disable|deploy|redeploy|configure|show> <TENANT|CONFIGURATION|WEBAPP>
+Usage: ./setup.sh <enable|disable|deploy|redeploy|configure|show> <TENANT|CONFIGURATION|WEBAPP> [VERSION]
 
 where: TENANT = 'default' or the name of a deployable tenant
        CONFIGURATION = <pycharm|dev|prod>
        WEBAPP = one of the available webapps, e.g. 'search' or 'ireports'
+       VERSION = an option version number (i.e. GitHub tag)
 
 e.g. ./setup.sh disable ireports
      ./setup.sh configure pycharm
-     ./setup.sh deploy botgarden
+     ./setup.sh deploy botgarden 5.1.0-rc-3
+     ./setup.sh deploy pahma
      ./setup.sh show
 ```
 
@@ -171,11 +175,10 @@ cd ~/PycharmProjects/my_test_project
 # now do the initial Django magic to initialize the project (configure options are: prod, dev, pycharm)
 ```
 
-**NB: `setup.sh` expects this repo, with this exact name, to be in your home directory!**
+*NB: `setup.sh` expects this repo (`django_example_config`), with this exact name, to be in your home directory!*
+*If your configuration directory is somewhere else or has a different name, edit the `CONFIGDIR` variable in `setup.sh` to point to yours.*
 
-If your configuration directory is somewhere else or has a different name, edit the `CONFIGDIR` variable in `setup.sh` to point to yours.
-
-**NB: While most of the parameters for tenants are set up for Production, not all are. At any rate, you will need to make sure that the configuration files in `config` are indeed correct.**
+*NB: While most of the parameters for tenants are set up for Production, not all are. At any rate, you will need to make sure that the configuration files in `config` are indeed correct.*
 
 As noted above you can disable any apps that you are not interested in. For example, if your collection does not have images
 you will not be interested in any of the webapps named image\*. It is a simple matter to disable these, and you can
@@ -229,7 +232,7 @@ You should make a version of each of the config files that you'll need, with val
 
 The sample config files included with the project in `config.examples` point to `nightly.collectionspace.org`. These provide some limited functionality: `simplesearch` works, as does the single brain-damaged `iReport` that comes with CollectionSpace proper. The `service` webapp works, but note it has no config file: it accesses the server defined in the project's  authentication configuration in `main.cfg`.
 
-### Starting and Stopping Servers
+### Starting and Stopping Development Servers
 
 You have deployed the code from GitHub to the directory it will be executed in (or, you've cloned or forked this repo
 on your local machine).
@@ -323,8 +326,7 @@ We assume that you already have CollectionSpace properly installed, configured, 
 
 ##### Step 1: Get the source code
 
-This is pretty self explanatory, although we will manipulate the location of the source code to make our lives a little
- easier when configuring our web server and enabling our site. 
+This is pretty self explanatory, although we will manipulate the location of the source code to make our lives a little easier when configuring our web server and enabling our site. 
 
 ```bash
 # Switch to the root user, being careful and mindful of your actions from here on out
@@ -334,24 +336,16 @@ $ sudo su -
 cd /usr/local/share/
 
 # Create a new directory to store your code 
-mkdir -p django/webapp
+mkdir -p django
 
 # Jump to that directory
-cd django/webapp/
+cd django
 
 # Clone the code from the remote GitHub repository 
-git clone https://github.com/cspace-deployment/cspace_django_project.git
+git clone https://github.com/cspace-deployment/cspace_django_project.git webapp
 
 # Note: if you don't have git
 apt-get install git
-
-# Copy source code to the parent directory while within the parent directory ...
-# ... this isn't entirely necessary, but it helps to keep the default url path neat.
-# You'll see why later, when configuring your Apache2 server.  
-cp -r cspace_django_project/* .
-
-# Remove the old directory
-rm -r cspace_django_project
 ```
 
 
@@ -481,7 +475,6 @@ chown www-data: logfile.txt
 ```
 
 
-
 ##### Step 7: Configure the Apache2 Web Server
 
 Necessary in order to allow the web server to talk to our CSpace Django Application, copy the 000-default-Ubuntu-VE.conf found in the 'webapp/config.examples' directory to the Apache2 'site-enabled' directory. 
@@ -550,6 +543,11 @@ tail -f logfile.txt
 
 ##### Step 10: Connecting to your PostgreSQL database
 
+You can use the default sqlite3 database for your Django models; there is really
+no good reason to go through the hassle of putting that stuff someplace else (e.g. in your database).
+
+But if you want to, here's how:
+
 Hopefully by now you have an instance of the CSpace Django Application running at http://your_ip_address/webapp. If not, feel free to post a question on the CollectionSpace Talk list, found here: http://lists.collectionspace.org/mailman/listinfo/talk_lists.collectionspace.org
 
 Continuing on, we will need to connect to your PostgreSQL database by editing various provided configuration files.
@@ -579,6 +577,8 @@ python manage.py syncdb
 NOTE: if auth fails, and your password contains special characters, you may need to wrap your password in triple quotes, ie. 'PASSWORD': """mySpecial1231412!@#$$@$%%(password"""
 
 ##### Step 11: Install and Setup Apache Solr
+
+If you are going to use any of the "portals", you'll need a Solr server.
 
 A free, open source, blazing fast, and highly popular enterprise search platform written in Java. We suggest you familiarize yourself with the Solr documentation, as it will come in handy later when extending your CSpace Django Web Applications. You can read more about Apache Solr, here: http://lucene.apache.org/solr/resources.html#documentation.
 
