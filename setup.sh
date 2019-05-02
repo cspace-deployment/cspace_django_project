@@ -26,7 +26,8 @@ PYTHON=python
 function buildjs()
 {
     # TODO: fix this hack to make the small amount of js work for all the webapps
-    perl -i -pe 's/..\/..\/suggest/\/$2\/suggest/' client_modules/js/PublicSearch.js
+    export TENANT="$TENANT"
+    perl -i -pe 's/..\/..\/suggest/\/$ENV{TENANT}\/suggest/' client_modules/js/PublicSearch.js
 
     npm install
     npm build
@@ -52,14 +53,21 @@ function deploy()
     fi
 
     # put things back the way they were...
-    git checkout master
-    git branch -d deploy
+    if [[ $VERSION != "" ]]; then
+        git checkout master
+        git branch -d deploy
+    fi
 }
 
 function check_version()
 {
     if [[ $(git status -s) ]]; then
-        echo 'just fyi, uncommitted changes or untracked files were found.'
+        echo
+        echo 'fyi, uncommitted changes or untracked files were found.'
+        echo 'initial deployments must be from a "clean" branch.'
+        echo 'cowardly refusal to proceed; please clean up and try again...'
+        echo
+        exit 1
         # read -p "continue as is? (y/N): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
     fi
 
@@ -67,7 +75,7 @@ function check_version()
         echo "installing and configuring version: $VERSION ..."
         git checkout -b deploy ${VERSION}
     else
-        echo "no version specified; code and repo will left as is."
+        echo "no version specified; deploying code as is, but with necessary modifications."
     fi
 
     # echo "cleaning, resetting, and pulling..."
@@ -99,7 +107,10 @@ if [[ ! -e manage.py ]]; then
 fi
 
 COMMAND=$1
+# the second parameter can stand for several different things!
 WEBAPP=$2
+TENANT=$2
+DEPLOYMENT=$2
 
 # nb: version is optional. if not present, current repo, with or without changes is used...
 VERSION="$3"
@@ -108,13 +119,13 @@ CURRDIR=`pwd`
 CONFIGDIR=~/django_example_config
 
 if [[ "${COMMAND}" = "disable" ]]; then
-    perl -i -pe "s/('$WEBAPP')/# \1/" cspace_django_site/installed_apps.py
-    perl -i -pe "s/(url)/# \1/ if /$WEBAPP/" cspace_django_site/urls.py
-    echo "disabled $WEBAPP"
+    perl -i -pe "s/('${WEBAPP}')/# \1/" cspace_django_site/installed_apps.py
+    perl -i -pe "s/(url)/# \1/ if /${WEBAPP}/" cspace_django_site/urls.py
+    echo "disabled ${WEBAPP}"
 elif [[ "${COMMAND}" = "enable" ]]; then
-    perl -i -pe "s/# *('$WEBAPP')/\1/" cspace_django_site/installed_apps.py
-    perl -i -pe "s/# *(url)/\1/ if /$WEBAPP/" cspace_django_site/urls.py
-    echo "enabled $WEBAPP"
+    perl -i -pe "s/# *('${WEBAPP}')/\1/" cspace_django_site/installed_apps.py
+    perl -i -pe "s/# *(url)/\1/ if /${WEBAPP}/" cspace_django_site/urls.py
+    echo "enabled ${WEBAPP}"
 elif [[ "${COMMAND}" = "show" ]]; then
     echo
     echo "Installed apps:"
@@ -122,8 +133,8 @@ elif [[ "${COMMAND}" = "show" ]]; then
     echo -e "from cspace_django_site.installed_apps import INSTALLED_APPS\nfor i in INSTALLED_APPS: print i" | $PYTHON
     echo
 elif [[ "${COMMAND}" = "configure" ]]; then
-    if [[ ! -f "cspace_django_site/extra_$2.py" ]]; then
-        echo "can't configure '$2': use 'pycharm', 'dev', or 'prod'"
+    if [[ ! -f "cspace_django_site/extra_${DEPLOYMENT}.py" ]]; then
+        echo "can't configure '${DEPLOYMENT}': use 'pycharm', 'dev', or 'prod'"
         echo
         exit
     fi
@@ -131,10 +142,10 @@ elif [[ "${COMMAND}" = "configure" ]]; then
     # checkout correct version, if indicated...
     check_version
 
-    cp cspace_django_site/extra_$2.py cspace_django_site/extra_settings.py
+    cp cspace_django_site/extra_${DEPLOYMENT}.py cspace_django_site/extra_settings.py
     echo
     echo "*************************************************************************************************"
-    echo "OK, \"$2\" is configured. Now run ./setup.sh deploy <tenant> to set up a particular tenant,"
+    echo "OK, \"${DEPLOYMENT}\" is configured. Now run ./setup.sh deploy <tenant> to set up a particular tenant,"
     echo "where <tenant> is either "default" (for non-specific tenant, i.e. nightly.collectionspace.org) or"
     echo "an existing tenant in the ${CONFIGDIR} repo"
     echo "*************************************************************************************************"
@@ -161,8 +172,8 @@ elif [[ "${COMMAND}" = "deploy" ]]; then
         cp config.examples/project_apps.py cspace_django_site/installed_apps.py
         cp client_modules/static_assets/cspace_django_site/images/CollectionToolzSmall.png client_modules/static_assets/cspace_django_site/images/header-logo.png
     else
-        if [[ ! -d "${CONFIGDIR}/$2" ]]; then
-            echo "can't deploy tenant $2: ${CONFIGDIR}/$2 does not exist"
+        if [[ ! -d "${CONFIGDIR}/${TENANT}" ]]; then
+            echo "can't deploy tenant ${TENANT}: ${CONFIGDIR}/${TENANT} does not exist"
             echo
             exit
         fi
@@ -176,14 +187,14 @@ elif [[ "${COMMAND}" = "deploy" ]]; then
         rm config/*
         rm fixtures/*
 
-        cp ${CONFIGDIR}/$2/config/* config
-        cp ${CONFIGDIR}/$2/fixtures/* fixtures
+        cp ${CONFIGDIR}/${TENANT}/config/* config
+        cp ${CONFIGDIR}/${TENANT}/fixtures/* fixtures
         # note that in some cases, this cp will overwrite customized files in the underlying contributed apps
         # in cspace_django_project. that is the intended behavior!
-        cp -r ${CONFIGDIR}/$2/apps/* .
-        cp ${CONFIGDIR}/$2/project_urls.py cspace_django_site/urls.py
-        cp ${CONFIGDIR}/$2/project_apps.py cspace_django_site/installed_apps.py
-        cp client_modules/static_assets/cspace_django_site/images/header-logo-$2.png client_modules/static_assets/cspace_django_site/images/header-logo.png
+        cp -r ${CONFIGDIR}/${TENANT}/apps/* .
+        cp ${CONFIGDIR}/${TENANT}/project_urls.py cspace_django_site/urls.py
+        cp ${CONFIGDIR}/${TENANT}/project_apps.py cspace_django_site/installed_apps.py
+        cp client_modules/static_assets/cspace_django_site/images/header-logo-${TENANT}.png client_modules/static_assets/cspace_django_site/images/header-logo.png
     fi
     mv config/main.cfg cspace_django_site
     echo "*************************************************************************************************"
@@ -196,7 +207,7 @@ elif [[ "${COMMAND}" = "deploy" ]]; then
     $PYTHON manage.py syncdb --noinput
     $PYTHON manage.py loaddata fixtures/*.json
     # build js library, populate static dirs, rsync code to runtime dir, etc.
-    deploy $2
+    deploy ${TENANT}
     echo
     echo "*************************************************************************************************"
     echo "Don't forget to check cspace_django_site/main.cfg if necessary and the rest of the"
@@ -206,7 +217,7 @@ elif [[ "${COMMAND}" = "deploy" ]]; then
     echo "*************************************************************************************************"
     echo
 elif [[ "${COMMAND}" = "updatejs" ]]; then
-    deploy $2
+    deploy ${TENANT}
     echo
     echo "*************************************************************************************************"
     echo "base javascript code updated; no changes to configuration or deployment though"
