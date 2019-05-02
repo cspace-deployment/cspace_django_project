@@ -3,11 +3,13 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version 5.1.0-rc7
-Thu May  2 09:53:46 PDT 2019
+This is version 5.1.0-rc8
+Thu May  2 10:18:22 PDT 2019
 
-9f27dcb (HEAD -> master) CSW-13: improve navigation within webapps
-3aba597 (tag: 5.1.0-rc6, origin/master, origin/HEAD) revise change log and VERSION file for version 5.1.0-rc6
+1d2c175 (HEAD -> master) CSW-1: correct improvement to navigation
+6a8b2f0 (tag: 5.1.0-rc7, origin/master, origin/HEAD) revise change log and VERSION file for version 5.1.0-rc7
+9f27dcb CSW-13: improve navigation within webapps
+3aba597 (tag: 5.1.0-rc6) revise change log and VERSION file for version 5.1.0-rc6
 4f9ad98 CSW-1: improve (and repair) webapps deployment script
 2c1da02 (tag: 5.1.0-rc5) revise change log and VERSION file for version 5.1.0-rc5
 b2a37ce CSW-1: gitignore VERSION file
