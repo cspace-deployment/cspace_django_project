@@ -41,6 +41,8 @@ function deploy()
     $PYTHON manage.py syncdb --noinput
     # rebuild the js libraries in case the javascript has been tweaked
     buildjs $1
+    # get rid of the existing static_root to force django to rebuild it from scratch
+    rm -rf static_root/
     $PYTHON manage.py collectstatic --noinput
     # update the version file
     $PYTHON common/setversion.py
@@ -64,10 +66,10 @@ function check_version()
     if [[ $(git status -s) ]]; then
         echo
         echo 'fyi, uncommitted changes or untracked files were found.'
-        echo 'initial deployments must be from a "clean" branch.'
-        echo 'cowardly refusal to proceed; please clean up and try again...'
-        echo
-        exit 1
+        # echo 'initial deployments must be from a "clean" branch.'
+        # echo 'cowardly refusal to proceed; please clean up and try again...'
+        # echo
+        # exit 1
         # read -p "continue as is? (y/N): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
     fi
 
@@ -75,7 +77,7 @@ function check_version()
         echo "installing and configuring version: $VERSION ..."
         git checkout -b deploy ${VERSION}
     else
-        echo "no version specified; deploying code as is, but with necessary modifications."
+        echo "no version specified; deploying code as is, but with specified customizations."
     fi
 
     # echo "cleaning, resetting, and pulling..."
@@ -94,7 +96,7 @@ if [ $# -lt 2 -a "$1" != 'show' ]; then
     echo
     echo "e.g. $0 disable ireports"
     echo "     $0 configure pycharm"
-    echo "     $0 deploy botgarden 5.1.0-rc3"
+    echo "     $0 deploy botgarden 5.1.0-rc8"
     echo "     $0 show"
     echo
     exit 0
