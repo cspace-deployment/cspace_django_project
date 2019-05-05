@@ -12,7 +12,7 @@
 {% else %}
     <a href="{% url 'landing:index' %}" class="expandInfo">All webapps</a>
     <span class="expandInfo">||</span>
-    <a href="/" class="expandInfo">All UCB Museums</a>
+    <a href="/" class="expandInfo">Home</a>
     <span class="expandInfo">||</span>
     <a href="{% url 'login' %}?next={{ request.path }}" id="login" class="expandInfo">{% trans 'Sign in' %}</a>
 {% endif %}
