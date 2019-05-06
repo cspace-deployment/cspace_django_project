@@ -3,11 +3,16 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version 5.1.0-rc8
-Thu May  2 10:18:22 PDT 2019
+This is version 5.1.0-rc9
+Mon May  6 08:42:43 PDT 2019
 
-1d2c175 (HEAD -> master) CSW-1: correct improvement to navigation
-6a8b2f0 (tag: 5.1.0-rc7, origin/master, origin/HEAD) revise change log and VERSION file for version 5.1.0-rc7
+fef8e79 (HEAD -> master) CSW-1: two scripts to backup existing runtime dirs and config files
+a856ae0 CSW-13: name link to main page as 'home'
+e02f8ef CSW-1: clean out static_root before doing collectstatic
+c0aa708 (origin/master, origin/HEAD) CSW-52: add cspace logo to static directory, so we can use it in various places
+df43f54 (tag: 5.1.0-rc8) revise change log and VERSION file for version 5.1.0-rc8
+1d2c175 CSW-1: correct improvement to navigation
+6a8b2f0 (tag: 5.1.0-rc7) revise change log and VERSION file for version 5.1.0-rc7
 9f27dcb CSW-13: improve navigation within webapps
 3aba597 (tag: 5.1.0-rc6) revise change log and VERSION file for version 5.1.0-rc6
 4f9ad98 CSW-1: improve (and repair) webapps deployment script
