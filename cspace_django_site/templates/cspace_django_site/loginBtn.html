@@ -4,6 +4,8 @@
     {% block userlinks %}
             <a href="{% url 'landing:index' %}" class="expandInfo">All webapps</a>
             <span class="expandInfo">||</span>
+            <a href="/" class="expandInfo">Home</a>
+            <span class="expandInfo">||</span>
             <img style="vertical-align: middle; height: 21px;  padding-left: 15px;"
                  src="{% static "cspace_django_site/images/usericon.jpg" %}"
                  title="{% filter force_escape %}{% firstof user.get_short_name user.get_username %}{% endfilter %}"/>
