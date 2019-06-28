@@ -3,38 +3,41 @@ CHANGELOG for the cspace_django_webapps
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version 5.1.0-rc9
-Mon May  6 08:42:43 PDT 2019
+This is version 5.2.0-rc1
+Fri Jun 28 09:51:10 PDT 2019
 
-fef8e79 (HEAD -> master) CSW-1: two scripts to backup existing runtime dirs and config files
+3a497b3 (HEAD -> master, origin/master, origin/HEAD) CSW-70: 'Home' link remains in all cases
+283c7db HMP-70: revise this helper script for x3d media    1 115870.4
+aa138dd (tag: 5.1.0) revise change log and VERSION file for version 5.1.0-rc9
+fef8e79 CSW-1: two scripts to backup existing runtime dirs and config files
 a856ae0 CSW-13: name link to main page as 'home'
 e02f8ef CSW-1: clean out static_root before doing collectstatic
-c0aa708 (origin/master, origin/HEAD) CSW-52: add cspace logo to static directory, so we can use it in various places
-df43f54 (tag: 5.1.0-rc8) revise change log and VERSION file for version 5.1.0-rc8
+c0aa708 CSW-52: add cspace logo to static directory, so we can use it in various places
+df43f54 revise change log and VERSION file for version 5.1.0-rc8
 1d2c175 CSW-1: correct improvement to navigation
-6a8b2f0 (tag: 5.1.0-rc7) revise change log and VERSION file for version 5.1.0-rc7
+6a8b2f0 revise change log and VERSION file for version 5.1.0-rc7
 9f27dcb CSW-13: improve navigation within webapps
-3aba597 (tag: 5.1.0-rc6) revise change log and VERSION file for version 5.1.0-rc6
+3aba597 revise change log and VERSION file for version 5.1.0-rc6
 4f9ad98 CSW-1: improve (and repair) webapps deployment script
-2c1da02 (tag: 5.1.0-rc5) revise change log and VERSION file for version 5.1.0-rc5
+2c1da02 revise change log and VERSION file for version 5.1.0-rc5
 b2a37ce CSW-1: gitignore VERSION file
 8b72ce7 CSW-1: the spiffy new 'deploy-all' script needs to be executable
-83505b8 (tag: 5.1.0-rc4) revise change log and VERSION file for version 5.1.0-rc4
+83505b8 revise change log and VERSION file for version 5.1.0-rc4
 57bd408 CSW-13: more and better documentation of django webapp deployment
 812741f CSW-1: elaborate a detail of what the webapps deployment script does
 5a58078 CSW-1: a helper script for ucb deployments on managed servers
 77f9ac1 CSW-1: remove two obsolete webapps deployment helper scripts
 757eeff Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 7195c1e CSW-1: correct handling of git tags in webapps deployment script
-4b86845 (tag: 5.1.0-rc3) revise change log and VERSION file for version 5.1.0-rc3
+4b86845 revise change log and VERSION file for version 5.1.0-rc3
 404b933 NOJIRA: forgotten tweak to Solr query parsing in portals
 f1676a0 CSW-1: more refactoring webapps deployment script
-a5663e2 (tag: 5.1.0-rc2) revise change log and VERSION file for version 5.1.0-rc2
+a5663e2 revise change log and VERSION file for version 5.1.0-rc2
 80d2fbc CSW-1: version-making script for webapps should use 'rc-N' convention for release candidates
 79f7592 CSW-1: need to 'syncdb' before importing fixtures
 04220a9 CSW-1: revise workaround that makes PublicSearch.js work properly
 b36cd12 CSW-1: deploy script may now support deploying 'release candidates'
-e0d1051 (tag: 5.1.0-rc1) revise change log and VERSION file for version 5.1.0-rc1
+e0d1051 revise change log and VERSION file for version 5.1.0-rc1
 f0c3126 CSW-1: release script now support 'release candidates'; tweaks to deploy script
 9639ca9 HMP-88: improve .gitignore
 edd598e CC-446: minor style improvement to legacy django webapps print css
@@ -53,12 +56,12 @@ eaeaafc HMP-49: accept x3d files in BMU uploads
 85c38ad HMP-49: accept .wav, .mp3, and .aac in BMU uploads
 e2ae244 UJ-44: handle wayward BMU files more gracefully
 7657b8f (tag: cdp_5.0-5) revise change log and VERSION file for version cdp_5.0-5
-c565730 (tag: cdp_5.0-4) revise change log and VERSION file for version cdp_5.0-4
+c565730 revise change log and VERSION file for version cdp_5.0-4
 f65ae70 DJAN-75: python requirements for RHEL7
 38bbe83 UJ-44: update BMU documentation
 779218f NOJIRA: this version of wsgi.py is required for Django 1.8 on RHEL7
 6d7ebce Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
-b1c1839 (tag: cdp_5.0-3) revise change log and VERSION file for version cdp_5.0-3
+b1c1839 revise change log and VERSION file for version cdp_5.0-3
 1badb7e UJ-56: make some 'legacy' search urls work again
 f3f3051 UJ-56: minor css improvement for import page
 7a107c4 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
@@ -67,7 +70,7 @@ a2836d7 UJ-59: flush output buffers after each update
 285f356 NOJIRA: Removed toolbox
 e294c50 NOJIRA: Fixed config.examples and added toolbox
 6e8b581 NOJIRA: do not try to run 'set primary' batch job, for now. it doesn't work.
-fb5e242 (tag: cdp_5.0-2) revise change log and VERSION file for version cdp_5.0-2
+fb5e242 revise change log and VERSION file for version cdp_5.0-2
 6847691 NOJIRA: release-making script not counting tags properly
 1548f05 UJ-44: minor refactoring of BMU templates
 a3218a8 BG-15: grouper should not tolerate duplicates in groups
@@ -76,7 +79,7 @@ a3218a8 BG-15: grouper should not tolerate duplicates in groups
 188fe16 UJ-44: refactor checkBlobs.pl into Python, improve clarity
 fa2d048 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 ce2012d HMP-42: initial version of a script to do transcoding of streaming media files
-e84905e (tag: cdp_5.0-1) revise change log and VERSION file for version cdp_5.0-1
+e84905e revise change log and VERSION file for version cdp_5.0-1
 b65a16b HMP-42: BMU now tolerates non-image media
 bbf6130 DJAN-94: add a test to Grouper
 f3b9efb NOJIRA: rename the BMU 'test upload' script
@@ -90,7 +93,7 @@ f465d21 NOJIRA: show url for debugging REST calls
 c7dec6a DJAN-98: 'Check Names' function on pending jobs handles pathological cases
 09c9513 UCBG-468: mark label images as 'do not post to public', but do upload them
 f926601 DJAN-115: this is not a django app, settings not needed here
-9d6e931 (tag: cdp_4.1-57) revise change log and VERSION file for version cdp_4.1-57
+9d6e931 revise change log and VERSION file for version cdp_4.1-57
 caf6860 DJAN-12: minor rendering improvments
 92c5dfa DJAN-12: use 'Open Sans', like the new v5.0 UI does
 bd44013 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
@@ -99,18 +102,18 @@ f2933bc Merge branch 'master' of https://github.com/cspace-deployment/cspace_dja
 3ed8708 UCJEPS-564: make 'constants' in Full record display work properly
 2b0f063 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 bd3fab1 DJAN-115: setup.sh now resets the base repo to a clean, change-free state
-9102ebb (tag: cdp_4.1-56) revise change log and VERSION file for version cdp_4.1-56
+9102ebb revise change log and VERSION file for version cdp_4.1-56
 3fba1b0 DJAN-115: add a note about handling customizations.
 57232da DJAN-115: eliminate unneeded log 'settings.log'
 4d8f941 DJAN-115: all config files are now to be found in /config
 26c0eb3 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 8713432 DJAN-115: all config files are now to be found in /config
-7a55eac (tag: cdp_4.1-55) revise change log and VERSION file for version cdp_4.1-55
+7a55eac revise change log and VERSION file for version cdp_4.1-55
 9f457b7 PAHMA-1299: add 'special' option to support osteology queries
 1b950c2 UCJEPS-580: tweak label for lat/lon; alas location field cannot be moved by config file
 4442cf9 DJAN-94: grouper now handles the different solr id fields properly
 22b7ccc DJAN-98: add watermark_size parameter for watermarking. improve parameter checking
-c1b45ad (tag: cdp_4.1-54) revise change log and VERSION file for version cdp_4.1-54
+c1b45ad revise change log and VERSION file for version cdp_4.1-54
 aaaaadd DJAN-99: refactor watermarking code to remove cruft and improve clarity
 ee5431a DJAN-98: improved botgarden watermark: white with transparent
 3480ff9 DJAN-98: minor refactoring to improve reporting
@@ -130,17 +133,17 @@ b225f24 NOJIRA: minor refactoring of the configuration code
 7d563fb DJAN-115: setup.sh does not need to erase the READMEs after all.
 347c83f Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 7335e99 DJAN-116: make BMU media display work for all tenants.
-dbe9df3 (tag: cdp_4.1-53) revise change log and VERSION file for version cdp_4.1-53
+dbe9df3 revise change log and VERSION file for version cdp_4.1-53
 adb2cca DJAN-116, DJAN-118: minor css improvements, image filename checking feature
 7766d39 PAHMA-1610: tweaks to accommodate blacklight solr config
-31000cd (tag: cdp_4.1-52) revise change log and VERSION file for version cdp_4.1-52
+31000cd revise change log and VERSION file for version cdp_4.1-52
 63effe8 NOJIRA: repair versioning script.
 d82869e revise change log and VERSION file for version -1
-cf4f5ef (tag: cdp_4.1-51) revise change log and VERSION file for version cdp_4.1-51
+cf4f5ef revise change log and VERSION file for version cdp_4.1-51
 3a7d8fe Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 1990a3a DJAN-115: add tag after final commit, etc.
 7c3acb3 revise change log and VERSION file for version cdp_4.1-50
-41d5cbd (tag: cdp_4.1-50) Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
+41d5cbd Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 92960e0 DJAN-115: fix previous incorrect update to versioning script
 6c6fb9c revise change log and VERSION file for version cdp_4.1
 8720f50 DJAN-115: use version number corresponding to latest tag
@@ -148,12 +151,12 @@ b21ef93 DJAN-115: use version number corresponding to latest tag
 2f6db6a DJAN-115: use version number corresponding to latest tag
 7465218 DJAN-115: only rsync files to /var/www/... if /var/www... exists
 9bfc420 revise change log and VERSION file for version cdp_4.1-49
-13bafd7 (tag: cdp_4.1-49) DJAN-115: adjust rsync parms so the work everywhere
+13bafd7 DJAN-115: adjust rsync parms so the work everywhere
 94568bf Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 aaa0104 DJAN-115: setup.sh can now deploy all tenants from the same git clone
 1880f49 NOJIRA: BMU batch script can now be safely committed: there is only one version in use.
 9da7f54 revise change log and VERSION file for version cdp_4.1-48
-e1a6ba6 (tag: cdp_4.1-48) DJAN-115: continue refactoring of versioning code
+e1a6ba6 DJAN-115: continue refactoring of versioning code
 6a30d3d DJAN-115: update pip requirements for this project
 6838d8e DJAN-115: save git version (tag) in a file, so deploy apps can get to it.
 dca4588 NOJIRA: d3 seems not to work with webpack anymore. comment it out for now.
@@ -167,7 +170,7 @@ f4e0c63 DJAN-116: make links work in BMU media displays
 2450f6a Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 a42fd81 NOJIRA: minor refactoring of the configuration code
 fdc0128 DJAN-116, DJAN-118: fix button formatting; improve media viewing options
-2709073 (tag: cdp_4.1-47) revise change log for version cdp_4.1-47
+2709073 revise change log for version cdp_4.1-47
 d4b7992 DJAN-94: max objects for grouper is now 1,000
 0891b63 NOJIRA: repair waiting image functionality for webapps
 2b42499 DJAN-94: minor refactoring of grouper internals
@@ -177,29 +180,29 @@ bb6e509 DJAN-113: initial scaffolding for KML support
 6cbfb5b DJAN-94: add ability to create groups from a Portal search
 795b159 DJAN-111: return correct mimetype corresponding to unavailable image
 80fdd46 DJAN-111: new, improved 404 image unavailable images
-b656a36 (tag: cdp_4.1-46) revise change log for version cdp_4.1-46
+b656a36 revise change log for version cdp_4.1-46
 4393204 NOJIRA: add back logs directory
-4d7bf77 (tag: cdp_4.1-45) revise change log for version cdp_4.1-45
+4d7bf77 revise change log for version cdp_4.1-45
 5996588 NOJIRA: detect filename in content disposition in http header
 572dd09 NOJIRA: list of apps is now a whitelist, not a blacklist
 4b6b2cd NOJIRA: minor refactoring to clarify displayType handling
 773ee5f NOJIRA: add support for KML files; minor refactoring of SWOD behavior
 100e55d PAHMA-863: improve rendering of geocoded data
-aafbba8 (tag: cdp_4.1-44) revise change log for version cdp_4.1-44
+aafbba8 revise change log for version cdp_4.1-44
 626d3c0 PAHMA-863: more beautiful render of permalink metadata
 e786d03 PAHMA-863: use correct href for permalink on permalink display
 58c8af2 PAHMA-863: use correct href for permalink on permalink display
 f95581c PAHMA-863: use correct href for permalink on Full display
 51e4404 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 ec56848 PAHMA-863: refactor permalink to not use redirects and relative URLs
-d5d37fb (tag: cdp_4.1-43) revise change log for version cdp_4.1-43
+d5d37fb revise change log for version cdp_4.1-43
 c8572dc PAHMA-863: add permalink app to support prettier URLs for permalinks.
 4002c07 PAHMA-863: add 'permalink' link to records in Full display
 f585612 PAHMA-863: refine look-and-feel of 'permanent' disiplay
-2f072a5 (tag: cdp_4.1-42) revise change log for version cdp_4.1-42
+2f072a5 revise change log for version cdp_4.1-42
 8fd7189 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 ada572b DJAN-96: fix directory existence check.
-a64cc39 (tag: cdp_4.1-41) revise change log for version cdp_4.1-41
+a64cc39 revise change log for version cdp_4.1-41
 8a8634d DJAN-96: move node_modules out of deployed directory
 3a29195 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 29caf0a BAMPFA-528: make term-matching work for both BAMPFA and PAHMA.
@@ -207,19 +210,19 @@ e4dc482 DJAN-76: comment out link for device-specific css.
 dabbe66 Merge branch 'master' of github.com:cspace-deployment/cspace_django_project
 6b07646 DJAN-100: Print CSS hides control bar in statistics panel in search webapp
 564ba4a DJAN-73: useful script for analyzing profile logs
-f3ac656 (tag: cdp_4.1-40) revise change log for version cdp_4.1-40
+f3ac656 revise change log for version cdp_4.1-40
 e4cce04 UCBG-439: do not let 'default' setting conflict with other 'special' settings
 c81cf92 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 40bfbce DJAN-97: batch scripts now handle unmatched objects correctly
-f8e74c5 (tag: cdp_4.1-39) revise change log for version cdp_4.1-39
+f8e74c5 revise change log for version cdp_4.1-39
 4b96fb5 DJAN-97: handle cases where media failed to match an object in reporting
 e4ab54b Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 741833f PAHMA-863: initial stab at a 'persistent web page' for objects
-d3ac51a (tag: cdp_4.1-38) revise change log for version cdp_4.1-38
+d3ac51a revise change log for version cdp_4.1-38
 ddee92c Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 ffa8292 NOJIRA: minor improvement changelog updating in release script
 ed21d3f NOJIRA: hmmm...somehow enable/disable got ... broken.
-a020578 (tag: cdp_4.1-37) revise change log for version cdp_4.1-37
+a020578 revise change log for version cdp_4.1-37
 04c1045 NOJIRA: fix typo in release-making script
 c3ce314 NOJIRA: modify request header to provide authentication up front
 f673ad4 NOJIRA: start some resembling a real change log
@@ -237,7 +240,7 @@ bde9666 Added proptypes to toolbox and got autocomplete working
 c547ce3 PAHMA-1219: insert source attribute for autocomplete
 5ca5bc0 Better fix for tablesorter initialization
 57a9c94 Exposed Masonry and ImagesLoaded, fixed issue where tablesorter was not getting initialized when a user landed at a search results set as opposed to performing a search
-7a4aeac (tag: cdp_4.1-36) DJAN-51: we don't need to make this call to ga
+7a4aeac DJAN-51: we don't need to make this call to ga
 35fa0f5 DJAN-51: clarify code that creates tracker
 a75e38f NOJIRA: revert this javascript trick: it fixes the emailable url but breaks the toolbox
 be789de UCBG-436: label images are numbered '0', and marked 'not approved for web'
@@ -249,7 +252,7 @@ cfc9d71 Merge pull request #28 from ynejati/master
 806b00c UCBG-436: handle 'excrescences' in filenames
 4eafdb1 NOJIRA: remove UCB UA tracking ids.
 d304213 NOJIRA: allow the production image server to be used (by default) in Dev deployments
-36fd6b2 (tag: cdp_4.1-35) NOJIRA: a few scripts to help with maintaining and deploying webapps
+36fd6b2 NOJIRA: a few scripts to help with maintaining and deploying webapps
 91c1b71 Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 113e794 NOJIRA: 'image unavailable' link was wrong
 c83f2a2 NOJIRA: correct handling of TO (range searches), and correct locony and pixonly handling
@@ -261,24 +264,24 @@ e1fdb42 Include password tip on db auth fail for db config
 6027e40 Include instructions to allow Apache access to log
 482cdbd Update setup.sh deploy default instructions
 1be38b2  Add need to install the python-dev package
-e32af5b (tag: cdp_4.1-34) NOJIRA: don't need to clean out clone for refresh
+e32af5b NOJIRA: don't need to clean out clone for refresh
 dedf965 NOJIRA: minor improvements to setup.sh
 ff40ac2 UCBG-436: modest refactoring of BMU online and batch components
 b22ce6c NOJIRA: only try to create relations records to object if object was found.
 1957d36 NOJIRA: new webapps need to be able to handle DELETE REST requests
-c21db40 (tag: cdp_4.1-33) NOJIRA: oops. not this one.
-28ea0a0 (tag: cdp_4.1-32) NOJIRA: add some revised images
-d87452b (tag: cdp_4.1-31) DJAN-54: allow default values to be set for search values
-cb8c5a0 (tag: cdp_4.1-30) PAHMA-1154: BMU shell script now emits a bit of run info
+c21db40 NOJIRA: oops. not this one.
+28ea0a0 NOJIRA: add some revised images
+d87452b DJAN-54: allow default values to be set for search values
+cb8c5a0 PAHMA-1154: BMU shell script now emits a bit of run info
 b5accae UCBG-436: have to use 'name' not 'filename' due to dependencies
 01088f7 UCBG-436: include filename in log output
 be83bf6 UCBG-436: files with non-numeric image numbers are now rejected
 f54c2d7 NOJIRA: minor refactoring to reduce redundancy and clarify code
 b232437 DJAN-90: eliminate duplicate id that break copy-to-clipboard feature
-a40fea5 (tag: cdp_4.1-29) DJAN-86: display on displayName in BMU file renderings
+a40fea5 DJAN-86: display on displayName in BMU file renderings
 3b30eee PAHMA-1544: recreating the bit of catalog card handling code
-90d4ead (tag: cdp_4.1-28) UCBG-337: further improvements to print css
-b83ceac (tag: cdp_4.1-27) PAHMA-1219: improve footer info
+90d4ead UCBG-337: further improvements to print css
+b83ceac PAHMA-1219: improve footer info
 baf59f3 UCBG-436: enable image number handling, eliminate date extraction from filename
 ece51ed improvements to README, now a README.md
 5191ff2 PAHMA-1541: improve error handling in BMU batch process
@@ -293,7 +296,7 @@ db4079c NOJIRA: removed misplaced image file
 32f193e DJAN-12: needed graphics for tree display in hierarchy viewer
 d97c491 DJAN-12: some of the jquery stuff seems to need these images
 dd73287 UCBG-436: initial BMU customization to support botgarden
-0ed66f6 (tag: cdp_4.1-26, tag: cdp_4.1-25) NOJIRA: enable 'nav bar' items for BMU
+0ed66f6 NOJIRA: enable 'nav bar' items for BMU
 3097753 NOJIRA: remove blank lines
 adc7eac PAHMA-1219: css used by some legacy webapps
 3bbb39e DJAN-12: minor refactoring of landing page URLs
@@ -386,15 +389,15 @@ c994a81 PAHMA-1219: revisions to initial toolbox experiment
 636c489 PAHMA-1219: initial experimental version of the 'toolbox' (legacy webapp replacement)
 db9f92b DJAN-69, DJAN-12: refactor templates (banner and footer now consistent between apps, etc.)
 c23cfe0 Merge pull request #24 from cspace-deployment/master
-e07ddfb (tag: cdp_4.1-24) Merge pull request #34 from jblowe/master
+e07ddfb Merge pull request #34 from jblowe/master
 cd9fc13 NOJIRA: refactor BMU so it continues to work with http and ports specified
 e9e3331 DJAN-57: handle case where record has no blobs
-9f18ef6 (tag: cdp_4.1-23, tag: cdp_4.1-22) Merge pull request #33 from jblowe/master
+9f18ef6 Merge pull request #33 from jblowe/master
 d2e3133 UCJEPS-632: small map in full display was using 'marker' value, not full latlong value
 90065e3 DJAN-57: fix handling of special fields in general
-cf90852 (tag: cdp_4.1-21) Merge pull request #32 from jblowe/master
+cf90852 Merge pull request #32 from jblowe/master
 78c74c9 DJAN-57: fix handling of blobs
-f71760f (tag: cdp_4.1-20) Merge pull request #31 from jblowe/master
+f71760f Merge pull request #31 from jblowe/master
 1f1e1f0 DJAN-57: fix handling of csids for selected records
 a9d49c1 Merge pull request #30 from jblowe/master
 52eaab5 NOJIRA: offer option to set SOLRDIR in the startup script
@@ -423,7 +426,7 @@ a4e4865 Merge pull request #23 from jblowe/master
 cb06f54 Merge pull request #22 from jblowe/master
 7722edf Merge branch 'master' of https://github.com/cspace-deployment/cspace_django_project
 ed1fcb5 CSPACE-6804: initial version of 'demo' Solr4 ETL.
-16fc535 (tag: cdp_4.1-19) Merge pull request #21 from jblowe/master
+16fc535 Merge pull request #21 from jblowe/master
 e49c044 PAHMA-1495: add missing join to misc in query in getCSID
 3d2c6e2 UCBG-428: customizations to BMU for botgarden. minor.
 511c0f3 NOJIRA: restore hello app, somehow disabled, minor refactoring of setup script
@@ -431,7 +434,7 @@ e49c044 PAHMA-1495: add missing join to misc in query in getCSID
 22ccfa7 NOJIRA: recover collectiontoolz default logo
 0419a7e UCJEPS-622: initial scaffolding to include taxonomy editor
 bebad94 NOJIRA: incremental improvements to deployment script
-43fbe3b (tag: cdp_4.1-18) Merge pull request #20 from jblowe/master
+43fbe3b Merge pull request #20 from jblowe/master
 4cba9b2 PAHMA-1411: handle hyphens corrrectly
 03a8098 Merge pull request #19 from jblowe/master
 cec89b3 PAHMA-1220: recover update to internal portal
@@ -440,20 +443,20 @@ cec89b3 PAHMA-1220: recover update to internal portal
 ce123eb Update README.md
 cf9b7e1 Merge pull request #18 from jblowe/master
 ab1fc0b CSPACE-6758: improvements to deployment scripts and documentation
-e5ec4c4 (tag: cdp_4.1-17) Merge pull request #17 from jblowe/master
+e5ec4c4 Merge pull request #17 from jblowe/master
 12415cd NOJIRA: correct unnoticed regression in result set size in Portal
 c2e5a03 Merge pull request #16 from reginax/DJAN-55
 fe329a5 DJAN-55: added fix for field definitions (sorting by 'order')
-899fab8 (tag: cdp_4.1-16) Merge pull request #15 from jblowe/master
+899fab8 Merge pull request #15 from jblowe/master
 18a0d51 UCJEPS-614: add initial support for record types other than cataloging
 41064bb NOJIRA: minor refactoring
 46abbce Merge pull request #14 from jblowe/master
 09868bc NOJIRA: tweaks to landing
-cbb393c (tag: cdp_4.1-15) Merge pull request #13 from jblowe/master
+cbb393c Merge pull request #13 from jblowe/master
 7c92a8b NOJIRA: continuing minor improvements to landing app.
-d65dbc8 (tag: cdp_4.1-14, tag: cdp_4.1-13) Merge pull request #12 from jblowe/master
+d65dbc8 Merge pull request #12 from jblowe/master
 e7bbf44 NOJIRA: disable reportlab PDF code: needs a higher version of Python than we run
-cc4bbf2 (tag: cdp_4.1-12) Merge pull request #11 from jblowe/master
+cc4bbf2 Merge pull request #11 from jblowe/master
 fa75b3d NOJIRA: show software version number in BMU footer
 b897621 NOJIRA: update README.md
 964f90d Merge pull request #10 from jblowe/master
@@ -484,7 +487,7 @@ f485cb9 NOJIRA: bulletproof iReports webapps
 87f56c8 UCJEPS-629: handle special xml characters in payloads
 c4d9321 NOJIRA: disable batchuploadimages and simplesearch by default
 ab18fd1 NOJIRA: set ImageServer derivatives appropriately
-5727c45 (tag: cdp_4.1-11) Merge pull request #6 from collectionspace/master
+5727c45 Merge pull request #6 from collectionspace/master
 3f15480 Merge pull request #18 from jblowe/master
 da3d7af BAMPFA-114: customize page number for Cinefiles
 eb0087d PAHMA-1431: use the CSID of the newly installed production batch job
@@ -504,7 +507,7 @@ c2ca9a5 Merge pull request #4 from jblowe/master
 4cb4983 NOJIRA: new BAMPFA logo
 5d8eef2 Merge branch 'master' of https://github.com/jblowe/cspace_django_project
 1321753 BAMPFA-404: fix css that was ruining image aspects
-535bbff (tag: cdp_4.1-9) Merge pull request #3 from collectionspace/master
+535bbff Merge pull request #3 from collectionspace/master
 c107c0b Merge pull request #6 from collectionspace/master
 496f79c Merge pull request #15 from jblowe/master
 647e7c4 BAMPFA-466: allow restrictions on images returned by imageserver; should be transparent to existing users
@@ -515,7 +518,7 @@ ebd3a2d PAHMA-1411: fix the handling of - in the 'elsewhere' case, which is the 
 5dfe8c9 NOJIRA: update README
 472d6bc UCJEPS-605: include the cleanup script
 4f054f2 UCJEPS-605: tweaks to make this work with PAHMA uploads again
-2135823 (tag: cdp_4.1-8) Merge pull request #2 from collectionspace/master
+2135823 Merge pull request #2 from collectionspace/master
 b9a821e Merge pull request #14 from jblowe/master
 4b707da NOJIRA: reset default header logo
 3d1b10e UCJEPS-605: tweaks to make replacement patterns unique
@@ -545,7 +548,7 @@ e58aa2f UCJEPS-605: ensure that Locality is in include in MH records
 b3ba071 UCJEPS-605, PAHMA-1154: slide parameters now inserted only for slides; added ability to delete pending jobs
 28a5701 UCJEPS-605: sequence number is now represented in hex
 cd51996 UCJEPS-605: handle autosequencing of 'borndigital' images, improve/repair handling of other types
-041b08b (tag: cdp_4.1-7) Merge pull request #9 from jblowe/master
+041b08b Merge pull request #9 from jblowe/master
 f5ac3d9 Merge remote-tracking branch 'upstream/master'
 f24246e NOJIRA: add migrations to imag* apps and ireports (for nav bar); other minor cleanup
 7dcb65e UCJEPS-605: provide additional fields to batch process and ensure they are included.
