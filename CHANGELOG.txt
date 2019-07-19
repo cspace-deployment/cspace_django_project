@@ -1,12 +1,16 @@
-CHANGELOG for the cspace_django_webapps
+CHANGELOG for cdp
 
 OK, it is not a *real* change log, but a list of changes resulting from git log
 with some human annotation after the fact.
 
-This is version 5.2.0-rc1
-Fri Jun 28 09:51:10 PDT 2019
+This is version 5.1.2
+Fri Jul 19 07:03:21 PDT 2019
 
-3a497b3 (HEAD -> master, origin/master, origin/HEAD) CSW-70: 'Home' link remains in all cases
+b830af9 (HEAD -> master, origin/master, origin/HEAD) CSW-1: improvements to 'release making script'
+64c2f17 HMP-103: minor refactoring of BMU backend batch script
+343a163 HMP-103: BMU is now able to upload large media (streaming of multipart forms enhanced)
+32ae1e9 (tag: 5.2.0-rc1) revise change log and VERSION file for version 5.2.0-rc1
+3a497b3 CSW-70: 'Home' link remains in all cases
 283c7db HMP-70: revise this helper script for x3d media    1 115870.4
 aa138dd (tag: 5.1.0) revise change log and VERSION file for version 5.1.0-rc9
 fef8e79 CSW-1: two scripts to backup existing runtime dirs and config files
